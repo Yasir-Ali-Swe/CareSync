@@ -1,4 +1,4 @@
-# 🏥 MedConnect – Doctor Appointment & Consultation System
+# 🏥 CareSync – Doctor Appointment & Consultation System
 
 A production-grade multi-role Doctor Appointment System built using the MERN stack.  
 The platform enables Patients, Doctors, and Admins to manage appointments, profiles, real-time communication, and notifications in a secure and scalable environment.
