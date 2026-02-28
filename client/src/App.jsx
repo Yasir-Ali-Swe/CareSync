@@ -4,6 +4,7 @@ import Login from "@/pages/auth/login";
 import Register from "@/pages/auth/register";
 import SendForgetPasswordRequest from "@/pages/auth/send-forget-password-request";
 import VerifyEmail from "@/pages/auth/verify-email";
+import ResetPassword from "@/pages/auth/forget-password";
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
         element={<SendForgetPasswordRequest />}
       />
       <Route path="/verify-email/:token" element={<VerifyEmail />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
     </Routes>
   );
 };
