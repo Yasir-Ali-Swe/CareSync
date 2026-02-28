@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import Login from "@/pages/auth/login";
 import Register from "@/pages/auth/register";
 import SendForgetPasswordRequest from "@/pages/auth/send-forget-password-request";
+import VerifyEmail from "@/pages/auth/verify-email";
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
         path="/send-forget-password-request"
         element={<SendForgetPasswordRequest />}
       />
+      <Route path="/verify-email/:token" element={<VerifyEmail />} />
     </Routes>
   );
 };
