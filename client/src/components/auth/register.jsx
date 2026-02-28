@@ -69,10 +69,12 @@ const Register = () => {
               className={"rounded-sm"}
               placeholder="Please enter your full name"
             />
-            <UserPlus
-              className="absolute top-7.5 right-3 text-foreground"
-              size={20}
-            />
+            <Label htmlFor="fullname" className={"cursor-pointer"}>
+              <UserPlus
+                className="absolute top-7.5 right-3 text-foreground"
+                size={20}
+              />
+            </Label>
           </div>
 
           <div className="flex flex-col gap-2 relative mt-3">
@@ -86,10 +88,12 @@ const Register = () => {
               className={"rounded-sm"}
               placeholder="Please enter your email"
             />
-            <Mail
-              className="absolute top-7.5 right-3 text-foreground"
-              size={20}
-            />
+            <Label htmlFor="email" className={"cursor-pointer"}>
+              <Mail
+                className="absolute top-7.5 right-3 text-foreground"
+                size={20}
+              />
+            </Label>
           </div>
 
           <div className="flex flex-col gap-2 relative mt-3">
@@ -103,19 +107,21 @@ const Register = () => {
               onChange={handleChange}
               placeholder="Please enter your password"
             />
-            {showPassword ? (
-              <Eye
-                className="absolute top-7.5 right-3 text-foreground"
-                size={20}
-                onClick={togglePasswordVisibility}
-              />
-            ) : (
-              <EyeOff
-                className="absolute top-7.5 right-3 text-foreground"
-                size={20}
-                onClick={togglePasswordVisibility}
-              />
-            )}
+            <Label htmlFor="password" className={"cursor-pointer"}>
+              {showPassword ? (
+                <Eye
+                  className="absolute top-7.5 right-3 text-foreground"
+                  size={20}
+                  onClick={togglePasswordVisibility}
+                />
+              ) : (
+                <EyeOff
+                  className="absolute top-7.5 right-3 text-foreground"
+                  size={20}
+                  onClick={togglePasswordVisibility}
+                />
+              )}
+            </Label>
           </div>
 
           <div className="flex flex-col gap-2 relative mt-3">
@@ -142,7 +148,7 @@ const Register = () => {
           </div>
 
           <div className="w-full mt-6">
-            <Button type="submit" className="w-full cursor-pointer">
+            <Button type="submit" className="w-full cursor-pointer rounded-sm">
               Register
             </Button>
           </div>
