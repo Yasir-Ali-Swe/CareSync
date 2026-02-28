@@ -58,10 +58,12 @@ const Login = () => {
               onChange={handleChange}
               placeholder="Please enter your email"
             />
-            <Mail
-              className="absolute top-7.5 right-3 text-foreground"
-              size={20}
-            />
+            <Label htmlFor="email" className={"cursor-pointer"}>
+              <Mail
+                className="absolute top-7.5 right-3 text-foreground"
+                size={20}
+              />
+            </Label>
           </div>
 
           <div className="flex flex-col gap-2 relative mt-3">
@@ -75,19 +77,29 @@ const Login = () => {
               onChange={handleChange}
               placeholder="Please enter your password"
             />
-            {showPassword ? (
-              <Eye
-                className="absolute top-7.5 right-3 text-foreground"
-                size={20}
-                onClick={togglePasswordVisibility}
-              />
-            ) : (
-              <EyeOff
-                className="absolute top-7.5 right-3 text-foreground"
-                size={20}
-                onClick={togglePasswordVisibility}
-              />
-            )}
+            <Label htmlFor="password" className={"cursor-pointer"}>
+              {showPassword ? (
+                <Eye
+                  className="absolute top-7.5 right-3 text-foreground"
+                  size={20}
+                  onClick={togglePasswordVisibility}
+                />
+              ) : (
+                <EyeOff
+                  className="absolute top-7.5 right-3 text-foreground"
+                  size={20}
+                  onClick={togglePasswordVisibility}
+                />
+              )}
+            </Label>
+          </div>
+          <div className="mt-3">
+            <Link
+              to="/send-forget-password-request"
+              className="text-sm font-semibold text-primary hover:underline underline-offset-4"
+            >
+              Forgot Password?
+            </Link>
           </div>
 
           <div className="w-full mt-6">
