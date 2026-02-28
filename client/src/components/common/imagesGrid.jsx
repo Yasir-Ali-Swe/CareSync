@@ -27,14 +27,19 @@ const ImagesGrid = () => {
             alt={user.name}
             className="w-full h-auto object-cover"
           />
-          <div className="p-4 flex items-center justify-between">
-            <h3 className="text-secondary font-semibold">{user.name}</h3>
-            <div className="flex items-center mt-1">
-              <Star className="w-4 h-4 text-yellow-500 fill-current" />
-              <span className="text-sm text-secondary font-semibold ml-1">
-                {user.rating}
-              </span>
+          <div className="p-4 flex flex-col">
+            <div className="flex items-center justify-between">
+              <h3 className="text-secondary font-semibold">{user.name}</h3>
+              <div className="flex items-center mt-1">
+                <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                <span className="text-sm text-secondary font-semibold ml-1">
+                  {user.rating}
+                </span>
+              </div>
             </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {user.rating >= 4.7 ? "Top Rated Doctor" : "Highly Rated"}
+            </p>
           </div>
         </div>
       ))}
