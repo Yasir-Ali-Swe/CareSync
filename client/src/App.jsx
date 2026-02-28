@@ -1,11 +1,14 @@
 import React from "react";
-import { Button } from "./components/ui/button.jsx";
+import { Route, Routes } from "react-router-dom";
+import Login from "@/pages/auth/login";
+import Register from "@/pages/auth/register";
 
 const App = () => {
   return (
-    <div className="h-screen flex justify-center items-center">
-      <Button>Click me</Button>
-    </div>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+    </Routes>
   );
 };
 
