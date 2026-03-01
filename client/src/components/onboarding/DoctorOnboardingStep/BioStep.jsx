@@ -46,7 +46,7 @@ const BioStep = ({ currentStep }) => {
 
   return (
     <div className="my-8 space-y-6">
-      <h1 className="text-2xl font-bold">Your Bio</h1>
+      <h1 className="text-2xl font-bold">Bio</h1>
 
       {/* Short Bio */}
       <div className="space-y-2">
