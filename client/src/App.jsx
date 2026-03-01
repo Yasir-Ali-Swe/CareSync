@@ -9,14 +9,14 @@ import ResetPassword from "@/pages/auth/forget-password";
 const App = () => {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route path="/auth/login" element={<Login />} />
+      <Route path="/auth/register" element={<Register />} />
       <Route
-        path="/send-forget-password-request"
+        path="/auth/send-forget-password-request"
         element={<SendForgetPasswordRequest />}
       />
-      <Route path="/verify-email/:token" element={<VerifyEmail />} />
-      <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <Route path="/auth/verify-email/:token" element={<VerifyEmail />} />
+      <Route path="/auth/reset-password/:token" element={<ResetPassword />} />
     </Routes>
   );
 };
