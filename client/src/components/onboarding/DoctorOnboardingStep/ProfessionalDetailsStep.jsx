@@ -76,7 +76,7 @@ const ProfessionalInfoStep = ({ currentStep }) => {
 
   return (
     <div className="my-8 space-y-6">
-      <h1 className="text-2xl font-bold">Professional Information</h1>
+      <h1 className="text-2xl font-bold">Professional Details</h1>
 
       {/* Core Professional Fields */}
       <div className="space-y-5">
