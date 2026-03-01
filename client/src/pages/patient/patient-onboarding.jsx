@@ -24,9 +24,8 @@ const PatientOnboarding = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
       <h1 className="text-primary bg-muted text-xl font-bold text-center w-full py-5">
-        Please Complete Your Profile for Further Access
+        Complete your profile to continue
       </h1>
 
       {/* Step Indicator */}
@@ -49,7 +48,7 @@ const PatientOnboarding = () => {
             return (
               <div
                 key={s}
-                className={`w-10 h-10 flex items-center justify-center rounded-sm border-2 font-semibold z-10 transition-all duration-300
+                className={`w-8 h-8 lg:w-10 lg:h-10 flex items-center justify-center rounded-sm border-2 font-semibold z-10 transition-all duration-300
                 ${
                   isCompleted
                     ? "bg-primary text-primary-foreground border-primary"
