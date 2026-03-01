@@ -1,5 +1,5 @@
 import React from "react";
-import ImagesGrid from "@/components/common/imagesGrid";
+import ImagesGrid from "@/components/common/ImagesGrid";
 import Login from "@/components/auth/login";
 import { Hospital } from "lucide-react";
 
