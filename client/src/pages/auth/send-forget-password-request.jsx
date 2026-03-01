@@ -61,7 +61,7 @@ const ForgetPasswordRequest = () => {
             </div>
             <div>
               <Link
-                to="/login"
+                to="/auth/login"
                 className="text-sm font-semibold text-primary hover:underline"
               >
                 Back to Login
