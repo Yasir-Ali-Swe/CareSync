@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import { useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,9 +23,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Plus } from "lucide-react";
+
 const PersonalInfoStep = ({ currentStep }) => {
   const navigate = useNavigate();
-  const [date, setDate] = React.useState(null);
+  const [date, setDate] = useState(null);
+  const [image, setImage] = useState(null);
 
   const handleNext = () => {
     navigate(`/patient-onboarding/${currentStep + 1}`);
@@ -34,9 +39,39 @@ const PersonalInfoStep = ({ currentStep }) => {
     navigate(`/patient-onboarding/${currentStep - 1}`);
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(URL.createObjectURL(file));
+    }
+  };
+
   return (
-    <div className="mt-8 space-y-6">
+    <div className="my-8 space-y-6">
       <h1 className="text-2xl font-bold">Personal Information</h1>
+
+      {/* Avatar Upload */}
+      <div className="flex flex-col items-center space-y-2">
+        <input
+          type="file"
+          id="avatar-upload"
+          accept="image/*"
+          className="hidden"
+          onChange={handleImageChange}
+        />
+        <label htmlFor="avatar-upload">
+          <Avatar className="w-24 h-24 cursor-pointer border border-border">
+            {image ? (
+              <AvatarImage src={image} />
+            ) : (
+              <AvatarFallback>
+                <Plus className="w-6 h-6 text-gray-500" />
+              </AvatarFallback>
+            )}
+          </Avatar>
+        </label>
+        <p className="text-sm text-muted-foreground">Click to upload</p>
+      </div>
 
       <form className="space-y-5">
         {/* Full Name */}
