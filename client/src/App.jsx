@@ -7,12 +7,21 @@ import VerifyEmail from "@/pages/auth/verify-email";
 import ResetPassword from "@/pages/auth/forget-password";
 import PatientOnboarding from "./pages/patient/patient-onboarding";
 import DoctorOnboarding from "./pages/doctor/doctor-onboarding";
-import Home from "./pages/home/home";
+import Home from "./pages/public/home";
+import Contact from "./pages/public/contact";
+import PublicLayout from "@/components/layouts/PublicLayout";
+import DoctorListingPage from "@/pages/public/DoctorListingPage";
+import MessagesPgae from "@/pages/public/MessagesPgae";
 
 const App = () => {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<PublicLayout />}>
+        <Route index element={<Home />} />
+        <Route path="/contact-us" element={<Contact />} />
+        <Route path="/doctors" element={<DoctorListingPage />} />
+        <Route path="/messages" element={<MessagesPgae />} />
+      </Route>
       <Route path="/auth/login" element={<Login />} />
       <Route path="/auth/register" element={<Register />} />
       <Route
