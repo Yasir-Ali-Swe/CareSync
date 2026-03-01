@@ -61,7 +61,7 @@ const DoctorEducationStep = ({ currentStep }) => {
 
   return (
     <div className="my-8 space-y-6">
-      <h1 className="text-2xl font-bold">Education (Medical)</h1>
+      <h1 className="text-2xl font-bold">Education Details</h1>
 
       {educationList.map((edu, index) => (
         <div key={index} className="space-y-4 ">
