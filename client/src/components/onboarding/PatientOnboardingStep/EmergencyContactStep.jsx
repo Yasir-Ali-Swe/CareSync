@@ -27,7 +27,7 @@ const EmergencyContactStep = ({ currentStep }) => {
   };
 
   return (
-    <div className="mt-8 space-y-6">
+    <div className="my-8 space-y-6">
       <h1 className="text-2xl font-bold">Emergency Contact</h1>
 
       <form className="space-y-5">
