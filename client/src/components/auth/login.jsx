@@ -95,7 +95,7 @@ const Login = () => {
           </div>
           <div className="mt-3">
             <Link
-              to="/send-forget-password-request"
+              to="/auth/send-forget-password-request"
               className="text-sm font-semibold text-primary hover:underline underline-offset-4"
             >
               Forgot Password?
@@ -114,7 +114,7 @@ const Login = () => {
         <p className="text-md text-muted-foreground text-center w-full">
           Don't have an account?{" "}
           <Link
-            to="/register"
+            to="/auth/register"
             className="text-primary hover:underline underline-offset-4"
           >
             Register
