@@ -153,28 +153,7 @@ const ProfessionalInfoStep = ({ currentStep }) => {
       </div>
 
       {/* Languages Spoken */}
-      {/* <div className="space-y-2">
-        <Label>Languages Spoken</Label>
-        <div className="flex flex-wrap gap-3">
-          {languageOptions.map((lang) => {
-            const isSelected = selectedLanguages.includes(lang);
-            return (
-              <Button
-                key={lang}
-                size="sm"
-                className={`${
-                  isSelected
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                    : "bg-secondary text-primary hover:bg-secondary/90 hover:text-primary"
-                } transition-colors duration-200`}
-                onClick={() => toggleLanguage(lang)}
-              >
-                {lang}
-              </Button>
-            );
-          })}
-        </div>
-      </div> */}
+     
 
       {/* Navigation Buttons */}
       <div className="flex justify-between pt-6">
