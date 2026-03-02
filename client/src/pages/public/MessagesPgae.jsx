@@ -2,7 +2,7 @@ import React from "react";
 import ConversationSidebar from "@/components/messages/ConversationSidebar";
 import MessageWindowHeader from "@/components/messages/MessageWindowHeader";
 import MessageInput from "@/components/messages/MessageInput";
-import MessageWindow from "@/components/messages/MessageWindow";
+import MessageWindow from "@/pages/Chat/ChatWindow";
 
 const MessagesPgae = () => {
   return (
