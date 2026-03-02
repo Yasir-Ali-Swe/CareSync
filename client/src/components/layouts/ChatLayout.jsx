@@ -7,9 +7,13 @@ import MessageWindowHeader from "../messages/MessageWindowHeader";
 const ChatLayout = () => {
   const { conversationId } = useParams();
   return (
-    <div className="flex h-screen">
-      <ConversationSidebar />
-      <div className="flex-1 flex flex-col">
+    <div className="flex h-screen w-full">
+      <ConversationSidebar
+        className={`${conversationId ? "hidden lg:block lg:w-1/4" : "block w-full lg:w-1/4"} border-r w-full`}
+      />
+      <div
+        className={`${conversationId ? "flex flex-col w-full" : "hidden lg:flex lg:flex-col"}flex-1 w-full`}
+      >
         {conversationId && <MessageWindowHeader />}
         <Outlet />
         {conversationId && <MessageInput />}
