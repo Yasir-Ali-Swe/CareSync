@@ -20,9 +20,7 @@ const MessageWindowHeader = () => {
           <h1 className="text-base font-semibold text-primary truncate">
             Yasir Ali
           </h1>
-          <p className="text-sm font-semibold text-green-500">
-            Yasir is typing...
-          </p>
+          <p className="text-sm font-semibold text-green-900 animate-pulse">typing...</p>
         </div>
       </div>
       <div className="flex items-center justify-center gap-2 mx-4">
