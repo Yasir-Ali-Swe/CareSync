@@ -20,8 +20,8 @@ const App = () => {
         <Route index element={<Home />} />
         <Route path="/contact-us" element={<Contact />} />
         <Route path="/doctors" element={<DoctorListingPage />} />
-        <Route path="/messages" element={<MessagesPgae />} />
       </Route>
+      <Route path="/messages" element={<MessagesPgae />} />
       <Route path="/auth/login" element={<Login />} />
       <Route path="/auth/register" element={<Register />} />
       <Route
