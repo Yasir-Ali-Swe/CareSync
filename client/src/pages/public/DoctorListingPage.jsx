@@ -12,28 +12,27 @@ import {
 import { Button } from "@/components/ui/button";
 
 const doctors = [
-  { id: 1, name: "Dr. A", city: "Faisalabad", specialization: "Cardiology" },
-  { id: 2, name: "Dr. B", city: "Lahore", specialization: "Dermatology" },
-  { id: 3, name: "Dr. C", city: "Karachi", specialization: "Neurology" },
-  { id: 4, name: "Dr. D", city: "Lahore", specialization: "Urology" },
-  { id: 5, name: "Dr. E", city: "Faisalabad", specialization: "Dermatology" },
-  { id: 6, name: "Dr. F", city: "Islamabad", specialization: "Cardiology" },
-  { id: 7, name: "Dr. G", city: "Karachi", specialization: "Orthopedics" },
-  { id: 8, name: "Dr. H", city: "Lahore", specialization: "Neurology" },
-  { id: 9, name: "Dr. I", city: "Faisalabad", specialization: "Urology" },
-  { id: 10, name: "Dr. J", city: "Islamabad", specialization: "Dermatology" },
-  { id: 11, name: "Dr. K", city: "Karachi", specialization: "Cardiology" },
-  { id: 12, name: "Dr. L", city: "Lahore", specialization: "Pediatrics" },
-  { id: 13, name: "Dr. M", city: "Faisalabad", specialization: "Orthopedics" },
-  { id: 14, name: "Dr. N", city: "Islamabad", specialization: "Neurology" },
-  { id: 15, name: "Dr. O", city: "Karachi", specialization: "Urology" },
-  { id: 16, name: "Dr. P", city: "Lahore", specialization: "Cardiology" },
-  { id: 17, name: "Dr. Q", city: "Faisalabad", specialization: "Dermatology" },
-  { id: 18, name: "Dr. R", city: "Islamabad", specialization: "Pediatrics" },
-  { id: 19, name: "Dr. S", city: "Karachi", specialization: "Orthopedics" },
-  { id: 20, name: "Dr. T", city: "Lahore", specialization: "Urology" },
+  { id: 1, name: "Dr. Ahmed Khan", city: "Faisalabad", specialization: "Cardiology" },
+  { id: 2, name: "Dr. Sara Malik", city: "Lahore", specialization: "Dermatology" },
+  { id: 3, name: "Dr. Imran Ali", city: "Karachi", specialization: "Neurology" },
+  { id: 4, name: "Dr. Ayesha Siddiqui", city: "Lahore", specialization: "Urology" },
+  { id: 5, name: "Dr. Bilal Raza", city: "Faisalabad", specialization: "Dermatology" },
+  { id: 6, name: "Dr. Fatima Javed", city: "Islamabad", specialization: "Cardiology" },
+  { id: 7, name: "Dr. Usman Shah", city: "Karachi", specialization: "Orthopedics" },
+  { id: 8, name: "Dr. Hina Qureshi", city: "Lahore", specialization: "Neurology" },
+  { id: 9, name: "Dr. Salman Iqbal", city: "Faisalabad", specialization: "Urology" },
+  { id: 10, name: "Dr. Nadia Khan", city: "Islamabad", specialization: "Dermatology" },
+  { id: 11, name: "Dr. Tariq Mehmood", city: "Karachi", specialization: "Cardiology" },
+  { id: 12, name: "Dr. Mahnoor Riaz", city: "Lahore", specialization: "Pediatrics" },
+  { id: 13, name: "Dr. Zain Ahmed", city: "Faisalabad", specialization: "Orthopedics" },
+  { id: 14, name: "Dr. Rabia Hussain", city: "Islamabad", specialization: "Neurology" },
+  { id: 15, name: "Dr. Faisal Qamar", city: "Karachi", specialization: "Urology" },
+  { id: 16, name: "Dr. Sana Mirza", city: "Lahore", specialization: "Cardiology" },
+  { id: 17, name: "Dr. Omar Saeed", city: "Faisalabad", specialization: "Dermatology" },
+  { id: 18, name: "Dr. Iqra Sheikh", city: "Islamabad", specialization: "Pediatrics" },
+  { id: 19, name: "Dr. Kamran Javed", city: "Karachi", specialization: "Orthopedics" },
+  { id: 20, name: "Dr. Amina Farooq", city: "Lahore", specialization: "Urology" },
 ];
-
 const DoctorListingPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const filters = Object.fromEntries([...searchParams]);
