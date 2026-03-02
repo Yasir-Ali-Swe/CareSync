@@ -1,10 +1,10 @@
 import React from "react";
 import { MessageCirclePlus } from "lucide-react";
 
-const ChatWindowPlaceholder = ({ className }) => {
+const ChatWindowPlaceholder = () => {
   return (
     <div
-      className={`w-full h-full ${className} flex items-center justify-center`}
+      className={`hidden lg:w-full lg:h-full lg:flex lg:items-center lg:justify-center`}
     >
       <div className="px-6 h-50 w-auto bg-secondary rounded-sm flex flex-col items-center justify-center gap-4">
         <MessageCirclePlus className="size-16 text-primary" />
