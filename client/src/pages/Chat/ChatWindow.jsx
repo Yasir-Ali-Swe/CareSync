@@ -4,7 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 const MessageWindow = () => {
   const messages = Array.from({ length: 100 }, (_, i) => ({
     id: i,
-    text: `This is message number ${i + 1}`,
+    text: `This i a long Message content.This i a long Message content.This i a long Message content.This i a long Message content.This i a long Message content.${i + 1}`,
     side: i % 2 === 0 ? "right" : "left",
   }));
 
@@ -15,10 +15,10 @@ const MessageWindow = () => {
           {messages.map((msg) => (
             <div
               key={msg.id}
-              className={`max-w-xs px-4 py-2 rounded-lg ${
+              className={`max-w-xs lg:max-w-sm px-4 py-2 rounded-sm wrap-break-word ${
                 msg.side === "right"
-                  ? "self-end bg-primary text-secondary"
-                  : "self-start bg-secondary text-primary"
+                  ? "self-end bg-primary text-secondary font-medium"
+                  : "self-start bg-secondary text-primary font-medium"
               }`}
             >
               {msg.text}
