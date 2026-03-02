@@ -3,6 +3,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import ConversationItem from "@/components/messages/ConversationItem";
 import { Hospital } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Link } from "react-router-dom";
 
 const ConversationSidebar = () => {
   const tags = Array.from({ length: 50 }).map(
@@ -25,7 +26,9 @@ const ConversationSidebar = () => {
       <ScrollArea className="h-[calc(100vh-6.25rem)]">
         {tags.map((tag) => (
           <div key={tag} className="px-3">
-            <ConversationItem />
+            <Link to={`/messages/${tag}`}>
+              <ConversationItem />
+            </Link>
           </div>
         ))}
       </ScrollArea>
