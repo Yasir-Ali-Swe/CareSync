@@ -5,12 +5,12 @@ import { Hospital } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 
-const ConversationSidebar = () => {
+const ConversationSidebar = ({ className }) => {
   const tags = Array.from({ length: 50 }).map(
     (_, i, a) => `v1.2.0-beta.${a.length - i}`,
   );
   return (
-    <div className=" w-1/5 border-r">
+    <div className={className || `w-full lg:w-1/4 border-r`}>
       <div className="h-25 p-3 border-b">
         <div className="flex items-center gap-1">
           <h1 className="text-primary font-bold text-lg">CareSync</h1>
