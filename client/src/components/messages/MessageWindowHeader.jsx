@@ -1,10 +1,17 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Phone, Video } from "lucide-react";
+import { Phone, Video, ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 const MessageWindowHeader = () => {
   return (
     <div className="border-b h-15 w-full flex items-center justify-between">
       <div className="flex items-center gap-2 p-2">
+        <Link
+          to="/messages"
+          className="lg:hidden mr-1 p-1 hover:bg-accent rounded-full"
+        >
+          <ArrowLeft className="size-5 text-muted-foreground" />
+        </Link>
         <Avatar className="size-9">
           <AvatarImage src="https://github.com/shadcn.png" />
           <AvatarFallback>YA</AvatarFallback>
