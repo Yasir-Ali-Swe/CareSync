@@ -71,12 +71,12 @@ const DoctorListingPage = () => {
         Welcome to CareSync
       </h1>
       <p className="text-xl font-semibold">Doctor Listing Page</p>
-      <div className="flex items-center gap-8 mt-5">
+      <div className="flex items-center gap-2 mt-5">
         <Select
           value={city}
           onValueChange={(value) => updateFilters({ city: value })}
         >
-          <SelectTrigger className="w-45">
+          <SelectTrigger className="w-50">
             <SelectValue placeholder="Select City" />
           </SelectTrigger>
           <SelectContent>
@@ -95,7 +95,7 @@ const DoctorListingPage = () => {
           value={specialization}
           onValueChange={(value) => updateFilters({ specialization: value })}
         >
-          <SelectTrigger className="w-45">
+          <SelectTrigger className="w-50">
             <SelectValue placeholder="Select Specialization" />
           </SelectTrigger>
           <SelectContent>
