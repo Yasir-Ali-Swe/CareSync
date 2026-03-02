@@ -12,9 +12,10 @@ const ConversationItem = () => {
         <h1 className="text-sm font-semibold text-primary truncate">
           Yasir Ali
         </h1>
-        <p className="text-xs text-muted-foreground max-w-[80%] line-clamp-1">
+        <p className="text-xs text-muted-foreground line-clamp-1">
           Hey, how are you doing today? This message is very long and should not
-          break the UI at all.
+          break the UI at all.Hey, how are you doing today? This message is very
+          long and should not break the UI at all.
         </p>
       </div>
     </div>
