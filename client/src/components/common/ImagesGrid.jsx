@@ -4,14 +4,14 @@ import { Star } from "lucide-react";
 const users = [
   { name: "John Smith", rating: 4.8, image: "/img1.png" },
   { name: "Michael Brown", rating: 4.7, image: "/img3.png" },
-  { name: "Olivia Martin", rating: 4.7, image: "/img10.png" },
-  { name: "James Moore", rating: 4.5, image: "/img9.png" },
-  { name: "Jessica Taylor", rating: 4.4, image: "/img6.png" },
-  { name: "Laura Thomas", rating: 4.8, image: "/img8.png" },
   { name: "Emily Johnson", rating: 4.6, image: "/img2.png" },
   { name: "Daniel Anderson", rating: 4.6, image: "/img7.png" },
   { name: "Sarah Davis", rating: 4.5, image: "/img4.png" },
+  { name: "James Moore", rating: 4.5, image: "/img9.png" },
+  { name: "Olivia Martin", rating: 4.7, image: "/img10.png" },
   { name: "David Wilson", rating: 4.9, image: "/img5.png" },
+  { name: "Jessica Taylor", rating: 4.4, image: "/img6.png" },
+  { name: "Laura Thomas", rating: 4.8, image: "/img8.png" },
 ];
 
 const ImagesGrid = () => {
