@@ -1,6 +1,6 @@
 import React from "react";
 import ImagesGrid from "@/components/common/ImagesGrid";
-import Register from "@/components/auth/register";
+import Register from "@/components/auth/Register";
 import { Hospital } from "lucide-react";
 
 const RegisterPage = () => {
