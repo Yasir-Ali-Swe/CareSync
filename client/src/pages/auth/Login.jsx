@@ -1,6 +1,6 @@
 import React from "react";
 import ImagesGrid from "@/components/common/ImagesGrid";
-import Login from "@/components/auth/login";
+import Login from "@/components/auth/Login";
 import { Hospital } from "lucide-react";
 
 const login = () => {
