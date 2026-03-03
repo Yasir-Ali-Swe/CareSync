@@ -1,10 +1,10 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import Login from "@/pages/Auth/login";
-import Register from "@/pages/Auth/register";
-import SendForgetPasswordRequest from "@/pages/Auth/send-forget-password-request";
-import VerifyEmail from "@/pages/Auth/verify-email";
-import ResetPassword from "@/pages/Auth/forget-password";
+import Login from "@/pages/auth/Login";
+import Register from "@/pages/auth/Register";
+import SendForgetPasswordRequest from "@/pages/auth/SendForgetPasswordRequest";
+import VerifyEmail from "@/pages/auth/VerifyEmail";
+import ResetPassword from "@/pages/auth/ForgetPassword";
 import PatientOnboarding from "./pages/Patient/patient-onboarding";
 import DoctorOnboarding from "./pages/Doctor/doctor-onboarding";
 import Home from "./pages/Public/Home";
