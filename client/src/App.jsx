@@ -5,17 +5,17 @@ import Register from "@/pages/auth/Register";
 import SendForgetPasswordRequest from "@/pages/auth/SendForgetPasswordRequest";
 import VerifyEmail from "@/pages/auth/VerifyEmail";
 import ResetPassword from "@/pages/auth/ForgetPassword";
-import PatientOnboarding from "./pages/Patient/patient-onboarding";
-import DoctorOnboarding from "./pages/Doctor/doctor-onboarding";
-import Home from "./pages/Public/Home";
-import Contact from "./pages/Public/Contact";
+import PatientOnboarding from "./pages/patient/PatientOnboarding";
+import DoctorOnboarding from "./pages/doctor/DoctorOnboarding";
+import Home from "./pages/public/Home";
+import Contact from "./pages/public/Contact";
 import PublicLayout from "@/components/layouts/PublicLayout";
-import DoctorListingPage from "@/pages/Public/DoctorListingPage";
+import DoctorListingPage from "@/pages/public/DoctorListingPage";
 import ChatLayout from "@/components/layouts/ChatLayout";
-import ChatWindowPlaceholder from "@/pages/Chat/ChatWIndowPlacholder";
-import ChatWindow from "@/pages/Chat/ChatWindow";
-import BookApointment from "@/pages/Public/BookApointment";
-import DoctorProfile from "@/pages/Public/DoctorProfile";
+import ChatWindowPlaceholder from "@/pages/chat/ChatWIndowPlacholder";
+import ChatWindow from "@/pages/chat/ChatWindow";
+import BookApointment from "@/pages/public/BookApointment";
+import DoctorProfile from "@/pages/public/DoctorProfile";
 
 const App = () => {
   return (
