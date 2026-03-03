@@ -215,9 +215,7 @@ const DoctorListingPage = () => {
                 </div>
                 <div className="flex flex-col items-center justify-center p-2 bg-secondary rounded-xs w-1/3">
                   <p className="text-xs text-muted-foreground">Fee</p>
-                  <p className="font-semibold text-sm">
-                    PKR {doc.consultationFee}
-                  </p>
+                  <p className="font-semibold text-sm">{doc.consultationFee}</p>
                 </div>
               </div>
 
