@@ -30,6 +30,8 @@ const Navbar = () => {
   const location = useLocation();
   const path = location.pathname;
   const [open, setOpen] = useState(false);
+  const doctorRoutes = ["/doctors", "/book-appointment", "/doctor-profile"];
+  const isDoctorsActive = doctorRoutes.some((route) => path.startsWith(route));
   return (
     <nav className="flex items-center justify-between bg-primary py-3 px-6 lg:px-20">
       <Link to={"/"} className="flex items-center gap-1 ">
@@ -37,20 +39,25 @@ const Navbar = () => {
         <h1 className="text-2xl font-bold text-secondary">CareSync</h1>
       </Link>
       <div className="hidden lg:flex lg:gap-15">
-        {NavLinks.map((link, index) => (
-          <Link
-            key={index}
-            to={link.path}
-            className={`
-                        relative text-secondary font-semibold px-2
-                        after:absolute after:left-0 after:-top-4 after:h-0.75 after:bg-destructive
-                        after:w-0 after:transition-all after:duration-300
-                        ${path === link.path ? "after:w-full" : ""}
-                        `}
-          >
-            {link.name}
-          </Link>
-        ))}
+        {NavLinks.map((link, index) => {
+          const isActive =
+            link.path === "/doctors" ? isDoctorsActive : path === link.path;
+
+          return (
+            <Link
+              key={index}
+              to={link.path}
+              className={`
+        relative text-secondary font-semibold px-2
+        after:absolute after:left-0 after:-top-4 after:h-0.75 after:bg-destructive
+        after:w-0 after:transition-all after:duration-300
+        ${isActive ? "after:w-full" : ""}
+      `}
+            >
+              {link.name}
+            </Link>
+          );
+        })}
       </div>
       <div className="block lg:hidden">
         <Popover open={open} onOpenChange={setOpen}>
