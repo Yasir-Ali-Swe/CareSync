@@ -1,19 +1,21 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import Login from "@/pages/auth/login";
-import Register from "@/pages/auth/register";
-import SendForgetPasswordRequest from "@/pages/auth/send-forget-password-request";
-import VerifyEmail from "@/pages/auth/verify-email";
-import ResetPassword from "@/pages/auth/forget-password";
-import PatientOnboarding from "./pages/patient/patient-onboarding";
-import DoctorOnboarding from "./pages/doctor/doctor-onboarding";
-import Home from "./pages/public/home";
-import Contact from "./pages/public/contact";
+import Login from "@/pages/Auth/login";
+import Register from "@/pages/Auth/register";
+import SendForgetPasswordRequest from "@/pages/Auth/send-forget-password-request";
+import VerifyEmail from "@/pages/Auth/verify-email";
+import ResetPassword from "@/pages/Auth/forget-password";
+import PatientOnboarding from "./pages/Patient/patient-onboarding";
+import DoctorOnboarding from "./pages/Doctor/doctor-onboarding";
+import Home from "./pages/Public/Home";
+import Contact from "./pages/Public/Contact";
 import PublicLayout from "@/components/layouts/PublicLayout";
-import DoctorListingPage from "@/pages/public/DoctorListingPage";
+import DoctorListingPage from "@/pages/Public/DoctorListingPage";
 import ChatLayout from "@/components/layouts/ChatLayout";
 import ChatWindowPlaceholder from "@/pages/Chat/ChatWIndowPlacholder";
 import ChatWindow from "@/pages/Chat/ChatWindow";
+import BookApointment from "@/pages/Public/BookApointment";
+import DoctorProfile from "@/pages/Public/DoctorProfile";
 
 const App = () => {
   return (
@@ -22,6 +24,11 @@ const App = () => {
         <Route index element={<Home />} />
         <Route path="/contact-us" element={<Contact />} />
         <Route path="/doctors" element={<DoctorListingPage />} />
+        <Route
+          path="/book-appointment/:doctorId"
+          element={<BookApointment />}
+        />
+        <Route path="/doctor-profile/:doctorId" element={<DoctorProfile />} />
       </Route>
       <Route element={<ChatLayout />}>
         <Route path="/messages" element={<ChatWindowPlaceholder />} />
