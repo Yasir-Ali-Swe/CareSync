@@ -8,14 +8,14 @@ const ConversationItem = () => {
         <AvatarImage src="https://github.com/shadcn.png" />
         <AvatarFallback>YA</AvatarFallback>
       </Avatar>
-      <div className="flex-1 min-w-0">
+      <div className="flex-1">
         <h1 className="text-sm font-semibold text-primary truncate">
           Yasir Ali
         </h1>
-        <p className="text-xs text-muted-foreground line-clamp-1">
+        <p className="text-xs text-muted-foreground w-full line-clamp-1">
           Hey, how are you doing today? This message is very long and should not
-          break the UI at all.Hey, how are you doing today? This message is very
-          long and should not break the UI at all.
+          break the UI at all.This message is very long and should not
+          break the UI at all.
         </p>
       </div>
     </div>
