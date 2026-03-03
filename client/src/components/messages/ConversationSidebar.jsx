@@ -10,7 +10,7 @@ const ConversationSidebar = ({ className }) => {
     (_, i, a) => `v1.2.0-beta.${a.length - i}`,
   );
   return (
-    <div className={className}>
+    <div className={className || "w-full lg:w-1/4 border-r"}>
       <div className="h-25 p-3 border-b">
         <div className="flex items-center gap-1">
           <h1 className="text-primary font-bold text-lg">CareSync</h1>
