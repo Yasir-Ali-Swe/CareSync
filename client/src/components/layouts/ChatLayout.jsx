@@ -10,7 +10,7 @@ const ChatLayout = () => {
   return (
     <div className="flex h-screen w-full">
       <ConversationSidebar
-        className={`${conversationId ? "hidden lg:block lg:w-1/4" : "block w-full lg:w-1/4"} border-r h-full`}
+        className={`${conversationId ? "hidden lg:block lg:w-1/4" : "block w-full lg:w-1/4"} border-r-4 border-border h-full`}
       />
       <div
         className={`${conversationId ? "flex flex-col w-full" : "hidden lg:flex flex-col"} flex-1 h-full`}
