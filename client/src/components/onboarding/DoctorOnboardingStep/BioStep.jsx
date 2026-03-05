@@ -51,7 +51,7 @@ const BioStep = ({ currentStep }) => {
       {/* Short Bio */}
       <div className="space-y-2">
         <Label>Short Bio</Label>
-        <Textarea placeholder="Write a short bio about yourself..." />
+        <Textarea placeholder="Write a short bio about yourself..." className={"rounded-sm"}/>
       </div>
 
       {/* Skills */}
@@ -68,7 +68,7 @@ const BioStep = ({ currentStep }) => {
                   selected
                     ? "bg-primary text-primary-foreground hover:bg-primary/90"
                     : "bg-secondary text-primary hover:bg-secondary/90 hover:text-primary"
-                } transition-colors duration-200`}
+                } transition-colors duration-200 rounded-sm`}
                 onClick={() =>
                   setSkills((prev) =>
                     prev.includes(skill)
@@ -98,7 +98,7 @@ const BioStep = ({ currentStep }) => {
                   selected
                     ? "bg-primary text-primary-foreground hover:bg-primary/90"
                     : "bg-secondary text-primary hover:bg-secondary/90 hover:text-primary"
-                } transition-colors duration-200`}
+                } transition-colors duration-200 rounded-sm`}
                 onClick={() => toggleLanguage(lang)}
               >
                 {lang}
@@ -115,10 +115,11 @@ const BioStep = ({ currentStep }) => {
           variant="outline"
           onClick={handlePrevious}
           disabled={currentStep === 1}
+          className={"rounded-sm"}
         >
           Previous
         </Button>
-        <Button type="button" onClick={handleNext} disabled={currentStep === 6}>
+        <Button type="button" onClick={handleNext} disabled={currentStep === 6} className={"rounded-sm"}>
           Next
         </Button>
       </div>
