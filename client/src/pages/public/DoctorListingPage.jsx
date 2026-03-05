@@ -68,10 +68,10 @@ const DoctorListingPage = () => {
         Welcome to CareSync
       </h1>
       <p className="text-xl font-semibold mb-5">Doctor Listing Page</p>
-      <div className="place-self-end my-5">
+      <div className="place-self-end my-5 space-x-2">
         <Dialog>
           <DialogTrigger asChild>
-            <Button className={"rounded-xs"}>Filters</Button>
+            <Button className={"rounded-sm"}>Filters</Button>
           </DialogTrigger>
           <DialogContent className={"sm:max-w-sm"}>
             <DialogHeader>
@@ -87,10 +87,10 @@ const DoctorListingPage = () => {
                   updateFilters({ city: val || undefined })
                 }
               >
-                <SelectTrigger className="w-[70%] rounded-xs">
+                <SelectTrigger className="w-[70%] rounded-sm">
                   <SelectValue placeholder="Select City" />
                 </SelectTrigger>
-                <SelectContent className={"rounded-xs"}>
+                <SelectContent className={"rounded-sm"}>
                   <SelectGroup>
                     <SelectLabel>City</SelectLabel>
                     <SelectItem value="All">All Cities</SelectItem>
@@ -108,10 +108,10 @@ const DoctorListingPage = () => {
                   updateFilters({ verified: val || undefined })
                 }
               >
-                <SelectTrigger className="w-[70%] rounded-xs">
+                <SelectTrigger className="w-[70%] rounded-sm">
                   <SelectValue placeholder="Select Doctor" />
                 </SelectTrigger>
-                <SelectContent className={"rounded-xs"}>
+                <SelectContent className={"rounded-sm"}>
                   <SelectGroup>
                     <SelectLabel>Doctor</SelectLabel>
                     <SelectItem value="All">All Doctors</SelectItem>
@@ -126,10 +126,10 @@ const DoctorListingPage = () => {
                   updateFilters({ specialization: val || undefined })
                 }
               >
-                <SelectTrigger className="w-[70%] rounded-xs">
+                <SelectTrigger className="w-[70%] rounded-sm">
                   <SelectValue placeholder="Select Specialization" />
                 </SelectTrigger>
-                <SelectContent className={"rounded-xs"}>
+                <SelectContent className={"rounded-sm"}>
                   <SelectGroup>
                     <SelectLabel>Specialization</SelectLabel>
                     <SelectItem value="All">All Specializations</SelectItem>
@@ -142,26 +142,21 @@ const DoctorListingPage = () => {
                 </SelectContent>
               </Select>
             </div>
-
-            <DialogFooter className="w-[70%] mx-auto">
-              <DialogClose asChild>
-                <Button
-                  className={"rounded-xs"}
-                  variant="destructive"
-                  onClick={() => {
-                    updateFilters({
-                      city: undefined,
-                      specialization: undefined,
-                      verified: undefined,
-                    });
-                  }}
-                >
-                  Clear Filters
-                </Button>
-              </DialogClose>
-            </DialogFooter>
           </DialogContent>
         </Dialog>
+        <Button
+          className={"rounded-sm"}
+          variant="destructive"
+          onClick={() => {
+            updateFilters({
+              city: undefined,
+              specialization: undefined,
+              verified: undefined,
+            });
+          }}
+        >
+          Clear Filters
+        </Button>
       </div>
 
       {/* Doctor List */}
@@ -170,12 +165,12 @@ const DoctorListingPage = () => {
           filteredDoctors.map((doc) => (
             <div
               key={doc.id}
-              className="p-5 rounded-xs shadow-md hover:shadow-lg transition transform hover:-translate-y-1 flex flex-col items-center bg-card"
+              className="relative p-5 rounded-sm shadow-md hover:shadow-lg transition transform hover:-translate-y-1 flex flex-col items-center bg-card"
             >
               {/* Avatar */}
               <div className="place-self-end">
                 {doc.verified && (
-                  <Badge className={"bg-green-600 text-white font-semibold"}>
+                  <Badge className={"absolute top-3 right-3 bg-green-600 text-white font-semibold"}>
                     Verified
                   </Badge>
                 )}
@@ -203,17 +198,17 @@ const DoctorListingPage = () => {
               </div>
 
               <div className="flex justify-between w-full mt-3 mb-4 gap-3">
-                <div className="flex flex-col items-center justify-center p-2 bg-secondary rounded-xs w-1/3">
+                <div className="flex flex-col items-center justify-center p-2 bg-secondary rounded-sm w-1/3">
                   <p className="text-xs text-muted-foreground">Experience</p>
                   <p className="font-semibold text-sm">
                     {doc.experienceYears} yrs
                   </p>
                 </div>
-                <div className="flex flex-col items-center justify-center p-2 bg-secondary rounded-xs w-1/3">
+                <div className="flex flex-col items-center justify-center p-2 bg-secondary rounded-sm w-1/3">
                   <p className="text-xs text-muted-foreground">Rating</p>
                   <p className="font-semibold text-sm">{doc.rating} ⭐</p>
                 </div>
-                <div className="flex flex-col items-center justify-center p-2 bg-secondary rounded-xs w-1/3">
+                <div className="flex flex-col items-center justify-center p-2 bg-secondary rounded-sm w-1/3">
                   <p className="text-xs text-muted-foreground">Fee</p>
                   <p className="font-semibold text-sm">{doc.consultationFee}</p>
                 </div>
@@ -222,17 +217,17 @@ const DoctorListingPage = () => {
               {/* Action Buttons */}
               <div className="flex flex-row justify-center items-center gap-3 w-full mt-auto">
                 <Link to={`/book-appointment/${doc.id}`} className="w-[50%]">
-                  <Button className="w-full rounded-xs">Book</Button>
+                  <Button className="w-full rounded-sm">Book</Button>
                 </Link>
                 <Link to={`/messages/${doc.id}`} className="w-[50%]">
-                  <Button className="w-full rounded-xs" variant="outline">
+                  <Button className="w-full rounded-sm" variant="outline">
                     Chat
                   </Button>
                 </Link>
               </div>
 
               <Link to={`/doctor-profile/${doc.id}`} className="w-full mt-2">
-                <Button variant="outline" className="w-full rounded-xs">
+                <Button variant="outline" className="w-full rounded-sm">
                   View Profile
                 </Button>
               </Link>
