@@ -17,7 +17,7 @@ const MessageInput = () => {
     console.log("Selected file:", file);
   };
   return (
-    <div className="flex items-center justify-between gap-2 w-full h-15 p-2 border-t">
+    <div className="flex items-center justify-between gap-2 w-full h-15 p-2 border-t-2">
       <input
         type="file"
         ref={fileInputRef}
