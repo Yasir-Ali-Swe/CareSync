@@ -77,13 +77,22 @@ const PersonalInfoStep = ({ currentStep }) => {
         {/* Full Name */}
         <div className="space-y-2">
           <Label htmlFor="fullName">Full Name</Label>
-          <Input id="fullName" placeholder="Enter your full name" />
+          <Input
+            id="fullName"
+            placeholder="Enter your full name"
+            className={"rounded-sm"}
+          />
         </div>
 
         {/* Email */}
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" placeholder="Enter your email" type="email" />
+          <Input
+            id="email"
+            placeholder="Enter your email"
+            type="email"
+            className={"rounded-sm"}
+          />
         </div>
 
         {/* Date of Birth */}
@@ -93,7 +102,7 @@ const PersonalInfoStep = ({ currentStep }) => {
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className="w-full justify-start text-left font-normal"
+                className="w-full justify-start text-left font-normal rounded-sm"
               >
                 {date ? format(date, "PPP") : "Pick a date"}
               </Button>
@@ -103,6 +112,7 @@ const PersonalInfoStep = ({ currentStep }) => {
                 mode="single"
                 selected={date}
                 onSelect={setDate}
+                className={"rounded-sm"}
                 initialFocus
               />
             </PopoverContent>
@@ -114,37 +124,15 @@ const PersonalInfoStep = ({ currentStep }) => {
           <div className="space-y-2">
             <Label>Gender</Label>
             <Select>
-              <SelectTrigger>
+              <SelectTrigger className="rounded-sm">
                 <SelectValue placeholder="Select Gender" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className={"rounded-sm"}>
                 <SelectGroup>
                   <SelectLabel>Gender</SelectLabel>
                   <SelectItem value="male">Male</SelectItem>
                   <SelectItem value="female">Female</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label>Blood Group</Label>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Select Blood Group" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Blood Group</SelectLabel>
-                  <SelectItem value="A+">A+</SelectItem>
-                  <SelectItem value="A-">A-</SelectItem>
-                  <SelectItem value="B+">B+</SelectItem>
-                  <SelectItem value="B-">B-</SelectItem>
-                  <SelectItem value="AB+">AB+</SelectItem>
-                  <SelectItem value="AB-">AB-</SelectItem>
-                  <SelectItem value="O+">O+</SelectItem>
-                  <SelectItem value="O-">O-</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -158,6 +146,7 @@ const PersonalInfoStep = ({ currentStep }) => {
             variant="outline"
             onClick={handlePrevious}
             disabled={currentStep === 1}
+            className={"rounded-sm"}
           >
             Previous
           </Button>
@@ -166,6 +155,7 @@ const PersonalInfoStep = ({ currentStep }) => {
             type="button"
             onClick={handleNext}
             disabled={currentStep === 4}
+            className={"rounded-sm"}
           >
             Next
           </Button>
