@@ -34,7 +34,12 @@ const ContactInfoStep = ({ currentStep }) => {
         {/* Primary Phone */}
         <div className="space-y-2">
           <Label htmlFor="phoneNumber">Primary Phone Number</Label>
-          <Input id="phoneNumber" placeholder="0330-0000000" type="tel" />
+          <Input
+            id="phoneNumber"
+            placeholder="0330-0000000"
+            type="tel"
+            className={"rounded-sm"}
+          />
         </div>
 
         {/* Secondary Phone */}
@@ -46,24 +51,29 @@ const ContactInfoStep = ({ currentStep }) => {
             id="secondaryPhoneNumber"
             placeholder="0330-0000000"
             type="tel"
+            className={"rounded-sm"}
           />
         </div>
 
         {/* Address */}
         <div className="space-y-2">
           <Label htmlFor="addressLine">Address</Label>
-          <Textarea id="addressLine" placeholder="Enter your address" />
+          <Textarea
+            id="addressLine"
+            placeholder="Enter your address"
+            className={"rounded-sm"}
+          />
         </div>
 
         {/* Province & City */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="flex gap-5">
           <div className="space-y-2">
             <Label>Province</Label>
             <Select>
-              <SelectTrigger>
+              <SelectTrigger className={"rounded-sm"}>
                 <SelectValue placeholder="Select Province" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className={"rounded-sm"}>
                 <SelectGroup>
                   <SelectLabel>Province</SelectLabel>
                   <SelectItem value="Punjab">Punjab</SelectItem>
@@ -77,7 +87,11 @@ const ContactInfoStep = ({ currentStep }) => {
 
           <div className="space-y-2">
             <Label htmlFor="city">City</Label>
-            <Input id="city" placeholder="Enter your city" />
+            <Input
+              id="city"
+              placeholder="Enter your city"
+              className={"rounded-sm"}
+            />
           </div>
         </div>
 
@@ -86,6 +100,7 @@ const ContactInfoStep = ({ currentStep }) => {
           <Button
             type="button"
             variant="outline"
+            className={"rounded-sm"}
             onClick={handlePrevious}
             disabled={currentStep === 1}
           >
@@ -96,6 +111,7 @@ const ContactInfoStep = ({ currentStep }) => {
             type="button"
             onClick={handleNext}
             disabled={currentStep === 4}
+            className={"rounded-sm"}
           >
             Next
           </Button>
