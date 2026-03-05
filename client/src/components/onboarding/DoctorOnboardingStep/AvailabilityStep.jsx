@@ -61,6 +61,7 @@ const AvailabilityStep = ({ currentStep }) => {
                     <Input
                       type="time"
                       value={slot.start}
+                      className={"rounded-sm"}
                       onChange={(e) =>
                         updateSlot(dayIndex, slotIndex, "start", e.target.value)
                       }
@@ -73,6 +74,7 @@ const AvailabilityStep = ({ currentStep }) => {
                     <Input
                       type="time"
                       value={slot.end}
+                      className={"rounded-sm"}
                       onChange={(e) =>
                         updateSlot(dayIndex, slotIndex, "end", e.target.value)
                       }
@@ -85,6 +87,7 @@ const AvailabilityStep = ({ currentStep }) => {
                       <Button
                         type="button"
                         variant="destructive"
+                        className={"rounded-sm"}
                         size="sm"
                         onClick={() => removeSlot(dayIndex, slotIndex)}
                       >
@@ -97,6 +100,7 @@ const AvailabilityStep = ({ currentStep }) => {
               <Button
                 type="button"
                 variant="outline"
+                className={"rounded-sm"}
                 size="sm"
                 onClick={() => addSlot(dayIndex)}
               >
@@ -113,11 +117,12 @@ const AvailabilityStep = ({ currentStep }) => {
           type="button"
           variant="outline"
           onClick={handlePrevious}
+          className={"rounded-sm"}
           disabled={currentStep === 1}
         >
           Previous
         </Button>
-        <Button type="button" onClick={handleNext} disabled={currentStep === 6}>
+        <Button type="button" onClick={handleNext} disabled={currentStep === 6} className={"rounded-sm"}>
           Next
         </Button>
       </div>
