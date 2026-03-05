@@ -16,11 +16,11 @@ const users = [
 
 const ImagesGrid = () => {
   return (
-    <div className="columns-2 gap-4 space-y-2 max-w-md mx-auto">
+    <div className="columns-2 gap-4 space-y-2 max-w-md mx-auto ">
       {users.map((user, index) => (
         <div
           key={index}
-          className="break-inside-avoid bg-popover-foreground rounded-sm shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300 border border-secondary"
+          className="break-inside-avoid bg-card rounded-sm shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300 border border-secondary"
         >
           <img
             src={user.image}
@@ -29,10 +29,10 @@ const ImagesGrid = () => {
           />
           <div className="p-4 flex flex-col">
             <div className="flex items-center justify-between">
-              <h3 className="text-secondary font-semibold">{user.name}</h3>
+              <h3 className="text-primary font-semibold">{user.name}</h3>
               <div className="flex items-center mt-1">
                 <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                <span className="text-sm text-secondary font-semibold ml-1">
+                <span className="text-sm text-primary font-semibold ml-1">
                   {user.rating}
                 </span>
               </div>
