@@ -83,10 +83,10 @@ const ProfessionalInfoStep = ({ currentStep }) => {
         <div className="space-y-2">
           <Label>Specialization</Label>
           <Select>
-            <SelectTrigger>
+            <SelectTrigger className={"rounded-sm"}>
               <SelectValue placeholder="Select Specialization" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className={"rounded-sm"}>
               <SelectGroup>
                 <SelectLabel>Specialization</SelectLabel>
                 {specializations.map((spec) => (
@@ -104,13 +104,14 @@ const ProfessionalInfoStep = ({ currentStep }) => {
           <Input
             type="number"
             min={0}
+            className={"rounded-sm"}
             placeholder="Enter years of experience"
           />
         </div>
 
         <div className="space-y-2">
           <Label>Consultation Fee (PKR)</Label>
-          <Input type="number" min={0} placeholder="Enter consultation fee" />
+          <Input type="number" min={0} placeholder="Enter consultation fee" className={"rounded-sm"}/>
         </div>
       </div>
 
@@ -125,10 +126,12 @@ const ProfessionalInfoStep = ({ currentStep }) => {
             <Input
               placeholder="Enter course or diploma"
               value={course.name}
+              className={"rounded-sm"}
               onChange={(e) => handleCourseNameChange(index, e.target.value)}
             />
             <Input
               type="file"
+              className={"rounded-sm"}
               onChange={(e) =>
                 handleCertificateUpload(index, e.target.files[0])
               }
@@ -137,6 +140,7 @@ const ProfessionalInfoStep = ({ currentStep }) => {
               <Button
                 type="button"
                 variant="destructive"
+                className={"rounded-sm"}
                 size="sm"
                 onClick={() =>
                   setCourses(courses.filter((_, i) => i !== index))
@@ -147,7 +151,7 @@ const ProfessionalInfoStep = ({ currentStep }) => {
             )}
           </div>
         ))}
-        <Button type="button" variant="outline" onClick={addCourse}>
+        <Button type="button" variant="outline" onClick={addCourse} className={"rounded-sm"}>
           + Add Course
         </Button>
       </div>
@@ -160,13 +164,14 @@ const ProfessionalInfoStep = ({ currentStep }) => {
         <Button
           type="button"
           variant="outline"
+          className={"rounded-sm"}
           onClick={handlePrevious}
           disabled={currentStep === 1}
         >
           Previous
         </Button>
 
-        <Button type="button" onClick={handleNext} disabled={currentStep === 5}>
+        <Button type="button" onClick={handleNext} disabled={currentStep === 5} className={"rounded-sm"}>
           Next
         </Button>
       </div>
