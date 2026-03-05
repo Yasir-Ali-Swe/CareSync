@@ -82,6 +82,7 @@ const ClinicDetailsStep = ({ currentStep }) => {
             <Input
               placeholder="Enter clinic or hospital name"
               value={clinic.name}
+              className={"rounded-sm"}
               onChange={(e) =>
                 handleClinicChange(index, "name", e.target.value)
               }
@@ -94,6 +95,7 @@ const ClinicDetailsStep = ({ currentStep }) => {
             <Textarea
               id="clinicAddress"
               placeholder="Enter clinic address"
+              className={"rounded-sm"}
               value={clinic.address.line1}
               onChange={(e) =>
                 handleClinicChange(index, "address.line1", e.target.value)
@@ -107,6 +109,7 @@ const ClinicDetailsStep = ({ currentStep }) => {
               <Input
                 placeholder="City"
                 value={clinic.address.city}
+                className={"rounded-sm"}
                 onChange={(e) =>
                   handleClinicChange(index, "address.city", e.target.value)
                 }
@@ -121,10 +124,10 @@ const ClinicDetailsStep = ({ currentStep }) => {
                   handleClinicChange(index, "address.province", value)
                 }
               >
-                <SelectTrigger>
+                <SelectTrigger className={"rounded-sm"}>
                   <SelectValue placeholder="Select Province" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className={"rounded-sm"}>
                   <SelectGroup>
                     <SelectLabel>Province</SelectLabel>
                     {provinces.map((prov) => (
@@ -140,17 +143,17 @@ const ClinicDetailsStep = ({ currentStep }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="space-y-2">
-              <Label>Clinic Type</Label>
+              <Label>Clinic / Hospital Type</Label>
               <Select
                 value={clinic.type}
                 onValueChange={(value) =>
                   handleClinicChange(index, "type", value)
                 }
               >
-                <SelectTrigger>
+                <SelectTrigger className={"rounded-sm"}>
                   <SelectValue placeholder="Select Type" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className={"rounded-sm"}>
                   <SelectGroup>
                     <SelectLabel>Type</SelectLabel>
                     {clinicTypes.map((type) => (
@@ -170,6 +173,7 @@ const ClinicDetailsStep = ({ currentStep }) => {
             <Input
               placeholder="Clinic phone number"
               value={clinic.contactNumber}
+              className={"rounded-sm"}
               onChange={(e) =>
                 handleClinicChange(index, "contactNumber", e.target.value)
               }
@@ -182,6 +186,7 @@ const ClinicDetailsStep = ({ currentStep }) => {
               type="button"
               variant="destructive"
               size="sm"
+              className={"rounded-sm"}
               onClick={() => removeClinic(index)}
             >
               Remove Clinic
@@ -191,7 +196,7 @@ const ClinicDetailsStep = ({ currentStep }) => {
       ))}
 
       {/* Add Another Clinic */}
-      <Button type="button" variant="outline" onClick={addClinic}>
+      <Button type="button" variant="outline" onClick={addClinic} className={"rounded-sm"}>
         + Add Another Clinic
       </Button>
 
@@ -201,12 +206,13 @@ const ClinicDetailsStep = ({ currentStep }) => {
           type="button"
           variant="outline"
           onClick={handlePrevious}
+          className={"rounded-sm"}
           disabled={currentStep === 1}
         >
           Previous
         </Button>
 
-        <Button type="button" onClick={handleNext} disabled={currentStep === 4}>
+        <Button type="button" onClick={handleNext} disabled={currentStep === 4} className={"rounded-sm"}>
           Next
         </Button>
       </div>
