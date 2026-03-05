@@ -8,7 +8,7 @@ import DoctorsData from "@/dummyData/DoctorData.js";
 const MessageWindowHeader = () => {
   const { id } = useParams();
   return (
-    <div className="border-b h-15 w-full flex items-center justify-between">
+    <div className="border-b-2 h-15 w-full flex items-center justify-between">
       <div className="flex items-center gap-2 p-2">
         <Link
           to="/messages"
@@ -24,7 +24,7 @@ const MessageWindowHeader = () => {
           <h1 className="text-base font-semibold text-primary truncate">
             Yasir Ali
           </h1>
-          <p className="text-sm font-semibold text-green-900 animate-pulse">
+          <p className="text-sm font-semibold text-green-400 animate-pulse">
             typing...
           </p>
         </div>
