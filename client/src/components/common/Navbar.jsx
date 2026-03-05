@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import ToggleTheme from "./ToggleTheme";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -33,10 +34,10 @@ const Navbar = () => {
   const doctorRoutes = ["/doctors", "/book-appointment", "/doctor-profile"];
   const isDoctorsActive = doctorRoutes.some((route) => path.startsWith(route));
   return (
-    <nav className="flex items-center justify-between bg-primary py-3 px-6 lg:px-20">
+    <nav className="flex items-center justify-between bg-card py-3 px-6 lg:px-20 border-b-2 border-border shadow-sm">
       <Link to={"/"} className="flex items-center gap-1 ">
-        <Hospital className="text-secondary font-black size-8" />
-        <h1 className="text-2xl font-bold text-secondary">CareSync</h1>
+        <Hospital className="text-primary font-black size-8" />
+        <h1 className="text-2xl font-bold text-primary">CareSync</h1>
       </Link>
       <div className="hidden lg:flex lg:gap-15">
         {NavLinks.map((link, index) => {
@@ -48,8 +49,8 @@ const Navbar = () => {
               key={index}
               to={link.path}
               className={`
-        relative text-secondary font-semibold px-2
-        after:absolute after:left-0 after:-top-4 after:h-0.75 after:bg-destructive
+        relative text-primary font-semibold px-2
+        after:absolute after:left-0 after:-top-4.5 after:h-0.75 after:bg-destructive
         after:w-0 after:transition-all after:duration-300
         ${isActive ? "after:w-full" : ""}
       `}
@@ -107,12 +108,17 @@ const Navbar = () => {
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className={"mt-2"}>
-            <DropdownMenuItem>Dashboard</DropdownMenuItem>
+          <DropdownMenuContent align="start" className={"mt-3"}>
+            <DropdownMenuItem>
+              <Link to={"/dashboard"} className="w-full">
+                Dashboard
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem variant="destructive">Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <ToggleTheme />
       </div>
     </nav>
   );
