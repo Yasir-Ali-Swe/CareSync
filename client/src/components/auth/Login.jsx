@@ -38,7 +38,7 @@ const Login = () => {
   };
 
   return (
-    <Card className="w-92.5 lg:w-md rounded-sm">
+    <Card className="w-92.5 lg:w-md rounded-sm hover:shadow-lg transition-shadow duration-300 shadow-card">
       <CardHeader className="text-lg">
         <CardTitle>Login</CardTitle>
         <CardDescription>
