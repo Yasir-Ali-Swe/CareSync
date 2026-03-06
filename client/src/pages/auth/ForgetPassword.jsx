@@ -32,13 +32,13 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center h-screen w-screen px-3 bg-card">
+    <div className="flex flex-col justify-center items-center h-screen w-screen px-3 bg-background">
       <div className="my-5 flex items-center gap-3">
         <h1 className="text-3xl font-bold">CareSync</h1>
         <Hospital className="size-9" />
       </div>
 
-      <Card className="w-full max-w-xs md:max-w-sm lg:max-w-md rounded-sm">
+      <Card className="w-full max-w-xs md:max-w-sm lg:max-w-md rounded-sm hover:shadow-lg transition-shadow duration-300 shadow-card">
         <CardHeader>
           <CardTitle className="text-xl">Reset Password</CardTitle>
           <CardDescription>Please enter your new password</CardDescription>
