@@ -16,7 +16,7 @@ const VerifyEmail = () => {
   }, [token]);
 
   return (
-    <div className="flex flex-col justify-center items-center h-screen w-screen px-3 lg:p-0 bg-card">
+    <div className="flex flex-col justify-center items-center h-screen w-screen px-3 lg:p-0 bg-background">
       <div className="my-5 flex items-center justify-center gap-3">
         <h1 className="text-3xl font-bold">CareSync</h1>
         <Hospital className="size-9" />
