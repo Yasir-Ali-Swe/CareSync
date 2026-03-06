@@ -1,6 +1,5 @@
 import React from "react";
 import { useSearchParams } from "react-router-dom";
-import { Funnel } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -10,8 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import DoctorsData from "@/dummyData/DoctorData.js";
@@ -24,8 +21,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
-  DialogClose,
 } from "@/components/ui/dialog";
 const DoctorListingPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -63,11 +58,84 @@ const DoctorListingPage = () => {
   });
 
   return (
-    <div className="h-full flex flex-col items-center p-10 max-w-7xl mx-auto">
-      <h1 className="text-3xl text-primary font-bold mb-2">
-        Welcome to CareSync
-      </h1>
-      <p className="text-xl font-semibold mb-5">Doctor Listing Page</p>
+    <div className="h-full flex flex-col items-center px-6 max-w-7xl mx-auto pb-30">
+      <div className="w-full rounded-sm overflow-hidden my-2 flex flex-col md:flex-row dark:bg-muted/10 bg-card shadow-lg">
+        {/* Left Content */}
+        <div className="w-full md:w-1/2 px-6 flex flex-col justify-center space-y-4 order-2 md:order-1">
+          <h1 className="text-3xl text-center md:text-left md:text-4xl font-bold text-chart-2">
+            Find and Book the <span className="text-chart-1">Best Doctors</span>{" "}
+            near you
+          </h1>
+          <div className="inline-flex items-center mx-auto md:mx-0 space-x-2 bg-primary px-3 py-1 rounded-md w-max">
+            <span className="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+            <span className="text-chart-4 font-semibold">
+              50M+ patients served
+            </span>
+          </div>
+
+          <div className="mt-4 hidden md:flex">
+            <div className="flex-1 flex items-center gap-2">
+              <Select
+                value={city}
+                onValueChange={(val) =>
+                  updateFilters({ city: val || undefined })
+                }
+              >
+                <SelectTrigger className="w-[40%] rounded-sm">
+                  <SelectValue placeholder="Select City" />
+                </SelectTrigger>
+                <SelectContent className={"rounded-sm"}>
+                  <SelectGroup>
+                    <SelectLabel>City</SelectLabel>
+                    <SelectItem value="All">All Cities</SelectItem>
+                    {cities.map((c) => (
+                      <SelectItem key={c} value={c}>
+                        {c}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <div className="border-2 border-border bg-border h-full w-1 " />
+              <Select
+                value={specialization}
+                onValueChange={(val) =>
+                  updateFilters({ specialization: val || undefined })
+                }
+              >
+                <SelectTrigger className="w-[40%] rounded-sm">
+                  <SelectValue placeholder="Select Specialization" />
+                </SelectTrigger>
+                <SelectContent className={"rounded-sm"}>
+                  <SelectGroup>
+                    <SelectLabel>Specialization</SelectLabel>
+                    <SelectItem value="All">All Specializations</SelectItem>
+                    {specializations.map((s) => (
+                      <SelectItem key={s} value={s}>
+                        {s}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Image */}
+        <div className="w-full md:w-1/2 flex justify-center items-center order-1 md:order-2">
+          <img
+            src="/img8.png"
+            alt="Doctor"
+            className="size-120 md:w-full object-contain"
+          />
+        </div>
+      </div>
+      <div className="text-center mt-8">
+        <h1 className="text-primary font-semibold text-3xl">
+          Quickly connect with top doctors near you.
+        </h1>
+      </div>
       <div className="place-self-end my-5 space-x-2">
         <Dialog>
           <DialogTrigger asChild>
@@ -158,7 +226,6 @@ const DoctorListingPage = () => {
           Clear Filters
         </Button>
       </div>
-
       {/* Doctor List */}
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-4 sm:px-6 lg:px-0 ">
         {filteredDoctors.length > 0 ? (
@@ -170,7 +237,11 @@ const DoctorListingPage = () => {
               {/* Avatar */}
               <div className="place-self-end">
                 {doc.verified && (
-                  <Badge className={"absolute top-3 right-3 bg-green-600 text-white font-semibold"}>
+                  <Badge
+                    className={
+                      "absolute top-3 right-3 bg-green-600 text-white font-semibold"
+                    }
+                  >
                     Verified
                   </Badge>
                 )}
