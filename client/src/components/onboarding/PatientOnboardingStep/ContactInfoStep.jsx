@@ -38,7 +38,7 @@ const ContactInfoStep = ({ currentStep }) => {
             id="phoneNumber"
             placeholder="0330-0000000"
             type="tel"
-            className={"rounded-sm"}
+            className={"rounded-2xl"}
           />
         </div>
 
@@ -51,7 +51,7 @@ const ContactInfoStep = ({ currentStep }) => {
             id="secondaryPhoneNumber"
             placeholder="0330-0000000"
             type="tel"
-            className={"rounded-sm"}
+            className={"rounded-2xl"}
           />
         </div>
 
@@ -61,7 +61,7 @@ const ContactInfoStep = ({ currentStep }) => {
           <Textarea
             id="addressLine"
             placeholder="Enter your address"
-            className={"rounded-sm"}
+            className={"rounded-2xl"}
           />
         </div>
 
@@ -70,10 +70,10 @@ const ContactInfoStep = ({ currentStep }) => {
           <div className="space-y-2">
             <Label>Province</Label>
             <Select>
-              <SelectTrigger className={"rounded-sm"}>
+              <SelectTrigger className={"rounded-2xl"}>
                 <SelectValue placeholder="Select Province" />
               </SelectTrigger>
-              <SelectContent className={"rounded-sm"}>
+              <SelectContent className={"rounded-2xl"}>
                 <SelectGroup>
                   <SelectLabel>Province</SelectLabel>
                   <SelectItem value="Punjab">Punjab</SelectItem>
@@ -90,7 +90,7 @@ const ContactInfoStep = ({ currentStep }) => {
             <Input
               id="city"
               placeholder="Enter your city"
-              className={"rounded-sm"}
+              className={"rounded-2xl"}
             />
           </div>
         </div>
@@ -100,7 +100,7 @@ const ContactInfoStep = ({ currentStep }) => {
           <Button
             type="button"
             variant="outline"
-            className={"rounded-sm"}
+            className={"rounded-2xl"}
             onClick={handlePrevious}
             disabled={currentStep === 1}
           >
@@ -111,7 +111,7 @@ const ContactInfoStep = ({ currentStep }) => {
             type="button"
             onClick={handleNext}
             disabled={currentStep === 4}
-            className={"rounded-sm"}
+            className={"rounded-2xl"}
           >
             Next
           </Button>
