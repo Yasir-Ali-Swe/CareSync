@@ -5,7 +5,7 @@ import {
   Clock,
   Stethoscope,
   CreditCard,
-  UserCheck
+  UserCheck,
 } from "lucide-react";
 
 const whyUsData = [
@@ -50,7 +50,7 @@ const WhyChooseUs = () => {
         {whyUsData.map((item, index) => (
           <div
             key={index}
-            className="flex flex-col items-center text-center p-4 dark:bg-muted/10 bg-card rounded-sm shadow-lg"
+            className="flex flex-col items-center text-center p-4 border bg-card shadow-md rounded-2xl"
           >
             <item.icon className="w-12 h-12 text-primary mb-4" />
             <h3 className="text-lg font-semibold text-primary mb-2">
