@@ -96,7 +96,7 @@ const MedicalHistoryStep = ({ currentStep }) => {
             id="height"
             type="number"
             placeholder="Enter your height"
-            className={"rounded-sm"}
+            className={"rounded-2xl"}
           />
         </div>
 
@@ -107,7 +107,7 @@ const MedicalHistoryStep = ({ currentStep }) => {
             id="weight"
             type="number"
             placeholder="Enter your weight"
-            className={"rounded-sm"}
+            className={"rounded-2xl"}
           />
         </div>
 
@@ -115,10 +115,10 @@ const MedicalHistoryStep = ({ currentStep }) => {
         <div className="space-y-2">
           <Label htmlFor="bloodGroup">Blood Group</Label>
           <Select>
-            <SelectTrigger className={"rounded-sm"}>
+            <SelectTrigger className={"rounded-2xl"}>
               <SelectValue placeholder="Select blood group" />
             </SelectTrigger>
-            <SelectContent className={"rounded-sm"}>
+            <SelectContent className={"rounded-2xl"}>
               <SelectGroup>
                 <SelectLabel>Blood Group</SelectLabel>
                 <SelectItem value="A+">A+</SelectItem>
@@ -141,9 +141,9 @@ const MedicalHistoryStep = ({ currentStep }) => {
             multiple
             value={allergyValue}
             onValueChange={setAllergyValue}
-            className="rounded-sm w-full"
+            className="rounded-2xl w-full"
           >
-            <ComboboxChips>
+            <ComboboxChips className="rounded-2xl">
               <ComboboxValue>
                 {allergyValue.map((item) => (
                   <ComboboxChip key={item}>{item}</ComboboxChip>
@@ -154,7 +154,7 @@ const MedicalHistoryStep = ({ currentStep }) => {
             <ComboboxContent
               align="start"
               position="popper"
-              className="min-w-full w-full mt-1"
+              className="min-w-full w-full mt-1 rounded-2xl"
             >
               <ComboboxEmpty>No items found.</ComboboxEmpty>
               <ComboboxList>
@@ -177,9 +177,9 @@ const MedicalHistoryStep = ({ currentStep }) => {
             multiple
             value={conditionValue}
             onValueChange={setConditionValue}
-            className="rounded-sm w-full"
+            className="w-full rounded-2xl"
           >
-            <ComboboxChips>
+            <ComboboxChips className="rounded-2xl">
               <ComboboxValue>
                 {conditionValue.map((item) => (
                   <ComboboxChip key={item}>{item}</ComboboxChip>
@@ -190,7 +190,7 @@ const MedicalHistoryStep = ({ currentStep }) => {
             <ComboboxContent
               align="start"
               position="popper"
-              className="min-w-full w-full mt-1"
+              className="min-w-full w-full mt-1 rounded-2xl"
             >
               <ComboboxEmpty>No items found.</ComboboxEmpty>
               <ComboboxList>
@@ -208,7 +208,7 @@ const MedicalHistoryStep = ({ currentStep }) => {
           <Button
             type="button"
             variant="outline"
-            className={"rounded-sm"}
+            className={"rounded-2xl"}
             onClick={handlePrevious}
             disabled={currentStep === 1}
           >
@@ -218,7 +218,7 @@ const MedicalHistoryStep = ({ currentStep }) => {
           <Button
             type="button"
             onClick={handleNext}
-            className={"rounded-sm"}
+            className={"rounded-2xl"}
             disabled={currentStep === 4}
           >
             Next
