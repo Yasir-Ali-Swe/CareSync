@@ -1,5 +1,6 @@
 import React from "react";
 import { useSearchParams } from "react-router-dom";
+import DoctorsListingHeroSection from "@/components/common/HeroSection.jsx";
 import {
   Select,
   SelectContent,
@@ -22,6 +23,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
+import BookAppointmentDialog from "@/components/appointment/AppointmentDialog.jsx";
+
 const DoctorListingPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -32,12 +36,10 @@ const DoctorListingPage = () => {
 
   const updateFilters = (newFilters) => {
     const updatedParams = new URLSearchParams(searchParams);
-
     Object.entries(newFilters).forEach(([key, value]) => {
       if (value) updatedParams.set(key, value);
       else updatedParams.delete(key);
     });
-
     setSearchParams(updatedParams);
   };
 
@@ -58,79 +60,13 @@ const DoctorListingPage = () => {
   });
 
   return (
-    <div className="h-full flex flex-col items-center px-6 max-w-7xl mx-auto pb-30">
-      <div className="w-full rounded-sm overflow-hidden my-2 flex flex-col md:flex-row dark:bg-muted/10 bg-card shadow-lg">
-        {/* Left Content */}
-        <div className="w-full md:w-1/2 px-6 flex flex-col justify-center space-y-4 order-2 md:order-1">
-          <h1 className="text-3xl text-center md:text-left md:text-4xl font-bold text-chart-2">
-            Find and Book the <span className="text-chart-1">Best Doctors</span>{" "}
-            near you
-          </h1>
-          <div className="inline-flex items-center mx-auto md:mx-0 space-x-2 bg-primary px-3 py-1 rounded-md w-max">
-            <span className="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
-            <span className="text-chart-4 font-semibold">
-              50M+ patients served
-            </span>
-          </div>
-
-          <div className="mt-4 hidden md:flex">
-            <div className="flex-1 flex items-center gap-2">
-              <Select
-                value={city}
-                onValueChange={(val) =>
-                  updateFilters({ city: val || undefined })
-                }
-              >
-                <SelectTrigger className="w-[40%] rounded-sm">
-                  <SelectValue placeholder="Select City" />
-                </SelectTrigger>
-                <SelectContent className={"rounded-sm"}>
-                  <SelectGroup>
-                    <SelectLabel>City</SelectLabel>
-                    <SelectItem value="All">All Cities</SelectItem>
-                    {cities.map((c) => (
-                      <SelectItem key={c} value={c}>
-                        {c}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <div className="border-2 border-border bg-border h-full w-1 " />
-              <Select
-                value={specialization}
-                onValueChange={(val) =>
-                  updateFilters({ specialization: val || undefined })
-                }
-              >
-                <SelectTrigger className="w-[40%] rounded-sm">
-                  <SelectValue placeholder="Select Specialization" />
-                </SelectTrigger>
-                <SelectContent className={"rounded-sm"}>
-                  <SelectGroup>
-                    <SelectLabel>Specialization</SelectLabel>
-                    <SelectItem value="All">All Specializations</SelectItem>
-                    {specializations.map((s) => (
-                      <SelectItem key={s} value={s}>
-                        {s}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Image */}
-        <div className="w-full md:w-1/2 flex justify-center items-center order-1 md:order-2">
-          <img
-            src="/img8.png"
-            alt="Doctor"
-            className="size-120 md:w-full object-contain"
-          />
-        </div>
-      </div>
+    <div className="h-full max-w-7xl w-full mx-auto flex flex-col items-center px-6 mb-20">
+      <DoctorsListingHeroSection
+        Img={"img3.png"}
+        firstText={"Browse qualified doctors by"}
+        secondaryText={"specialization and experience"}
+        thirdText={"near your location"}
+      />
       <div className="text-center mt-8">
         <h1 className="text-primary font-semibold text-3xl">
           Quickly connect with top doctors near you.
@@ -213,7 +149,7 @@ const DoctorListingPage = () => {
           </DialogContent>
         </Dialog>
         <Button
-          className={"rounded-sm"}
+          className={"rounded-sm mr-3 md:mr-6 lg:mr-0"}
           variant="destructive"
           onClick={() => {
             updateFilters({
@@ -226,15 +162,15 @@ const DoctorListingPage = () => {
           Clear Filters
         </Button>
       </div>
+
       {/* Doctor List */}
-      <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-4 sm:px-6 lg:px-0 ">
+      <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-4 sm:px-6 lg:px-0">
         {filteredDoctors.length > 0 ? (
           filteredDoctors.map((doc) => (
             <div
               key={doc.id}
-              className="relative p-5 rounded-sm shadow-md hover:shadow-lg transition transform hover:-translate-y-1 flex flex-col items-center bg-card"
+              className="relative p-5 rounded-2xl hover:shadow-lg transition transform hover:-translate-y-1 flex flex-col items-center border bg-card shadow-md"
             >
-              {/* Avatar */}
               <div className="place-self-end">
                 {doc.verified && (
                   <Badge
@@ -254,7 +190,6 @@ const DoctorListingPage = () => {
                 <AvatarFallback>{doc.fullName[0]}</AvatarFallback>
               </Avatar>
 
-              {/* Name & Specialization */}
               <div className="text-center mb-3">
                 <p className="font-bold text-lg text-primary">{doc.fullName}</p>
                 <p className="text-sm text-muted-foreground">
@@ -287,9 +222,12 @@ const DoctorListingPage = () => {
 
               {/* Action Buttons */}
               <div className="flex flex-row justify-center items-center gap-3 w-full mt-auto">
-                <Link to={`/book-appointment/${doc.id}`} className="w-[50%]">
-                  <Button className="w-full rounded-sm">Book</Button>
-                </Link>
+                <div className="w-[50%]">
+                  <BookAppointmentDialog doc={doc}>
+                    <Button className="w-full rounded-sm">Book</Button>
+                  </BookAppointmentDialog>
+                </div>
+
                 <Link to={`/messages/${doc.id}`} className="w-[50%]">
                   <Button className="w-full rounded-sm" variant="outline">
                     Chat
