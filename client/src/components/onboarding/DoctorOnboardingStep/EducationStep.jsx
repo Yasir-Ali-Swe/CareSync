@@ -72,10 +72,10 @@ const DoctorEducationStep = ({ currentStep }) => {
                 value={edu.degree}
                 onValueChange={(value) => handleChange(index, "degree", value)}
               >
-                <SelectTrigger className={"rounded-sm"}>
+                <SelectTrigger className={"rounded-2xl"}>
                   <SelectValue placeholder="Select Degree" />
                 </SelectTrigger>
-                <SelectContent className={"rounded-sm"}>
+                <SelectContent className={"rounded-2xl"}>
                   <SelectGroup>
                     <SelectLabel>Degree</SelectLabel>
                     {degreeOptions.map((deg) => (
@@ -94,7 +94,7 @@ const DoctorEducationStep = ({ currentStep }) => {
               <Input
                 value={edu.institution}
                 placeholder="Enter Institution"
-                className={"rounded-sm"}
+                className={"rounded-2xl"}
                 onChange={(e) =>
                   handleChange(index, "institution", e.target.value)
                 }
@@ -110,7 +110,7 @@ const DoctorEducationStep = ({ currentStep }) => {
                 type="number"
                 value={edu.startYear}
                 placeholder="YYYY"
-                className={"rounded-sm"}
+                className={"rounded-2xl"}
                 onChange={(e) =>
                   handleChange(index, "startYear", e.target.value)
                 }
@@ -123,7 +123,7 @@ const DoctorEducationStep = ({ currentStep }) => {
               <Input
                 type="number"
                 value={edu.endYear}
-                className={"rounded-sm"}
+                className={"rounded-2xl"}
                 placeholder="YYYY"
                 onChange={(e) => handleChange(index, "endYear", e.target.value)}
               />
@@ -135,7 +135,7 @@ const DoctorEducationStep = ({ currentStep }) => {
             <Button
               type="button"
               variant="destructive"
-              className={"rounded-sm"}
+              className={"rounded-2xl"}
               size="sm"
               onClick={() => removeEducation(index)}
             >
@@ -150,7 +150,7 @@ const DoctorEducationStep = ({ currentStep }) => {
         type="button"
         variant="outline"
         onClick={addEducation}
-        className={"rounded-sm"}
+        className={"rounded-2xl"}
       >
         + Add Another Education
       </Button>
@@ -161,7 +161,7 @@ const DoctorEducationStep = ({ currentStep }) => {
           type="button"
           variant="outline"
           onClick={handlePrevious}
-          className={"rounded-sm"}
+          className={"rounded-2xl"}
           disabled={currentStep === 1}
         >
           Previous
@@ -171,7 +171,7 @@ const DoctorEducationStep = ({ currentStep }) => {
           type="button"
           onClick={handleNext}
           disabled={currentStep === 4}
-          className={"rounded-sm"}
+          className={"rounded-2xl"}
         >
           Next
         </Button>
