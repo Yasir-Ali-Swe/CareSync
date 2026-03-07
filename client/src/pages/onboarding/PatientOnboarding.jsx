@@ -48,7 +48,7 @@ const PatientOnboarding = () => {
             return (
               <div
                 key={s}
-                className={`w-8 h-8 lg:w-10 lg:h-10 flex items-center justify-center rounded-sm border-2 font-semibold z-10 transition-all duration-300
+                className={`w-8 h-8 lg:w-10 lg:h-10 flex items-center justify-center rounded-full border-2 font-semibold z-10 transition-all duration-300
                 ${
                   isCompleted
                     ? "bg-primary text-primary-foreground border-primary"
