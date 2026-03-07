@@ -37,7 +37,7 @@ const EmergencyContactStep = ({ currentStep }) => {
           <Input
             id="emergencyName"
             placeholder="Enter full name"
-            className={"rounded-sm"}
+            className={"rounded-2xl"}
           />
         </div>
 
@@ -45,10 +45,10 @@ const EmergencyContactStep = ({ currentStep }) => {
         <div className="space-y-2">
           <Label htmlFor="relationship">Relationship</Label>
           <Select>
-            <SelectTrigger className={"rounded-sm"}>
+            <SelectTrigger className={"rounded-2xl"}>
               <SelectValue placeholder="Select relationship" />
             </SelectTrigger>
-            <SelectContent className={"rounded-sm"}>
+            <SelectContent className={"rounded-2xl"}>
               <SelectGroup>
                 <SelectLabel>Relationship</SelectLabel>
                 <SelectItem value="Father">Father</SelectItem>
@@ -68,7 +68,7 @@ const EmergencyContactStep = ({ currentStep }) => {
             id="phoneNumber"
             placeholder="0330-0000000"
             type="tel"
-            className={"rounded-sm"}
+            className={"rounded-2xl"}
           />
         </div>
 
@@ -76,7 +76,7 @@ const EmergencyContactStep = ({ currentStep }) => {
         <div className="space-y-2">
           <Label htmlFor="alternatePhoneNumber">Alternate Phone Number</Label>
           <Input
-            className={"rounded-sm"}
+            className={"rounded-2xl"}
             id="alternatePhoneNumber"
             placeholder="0330-0000000"
             type="tel"
@@ -87,7 +87,7 @@ const EmergencyContactStep = ({ currentStep }) => {
         <div className="flex justify-between pt-6">
           <Button
             type="button"
-            className={"rounded-sm"}
+            className={"rounded-2xl"}
             variant="outline"
             onClick={handlePrevious}
             disabled={currentStep === 1}
@@ -99,7 +99,7 @@ const EmergencyContactStep = ({ currentStep }) => {
             type="button"
             onClick={handleNext}
             disabled={currentStep === 4} // last step, could submit instead
-            className={"rounded-sm"}
+            className={"rounded-2xl"}
           >
             Submit
           </Button>
