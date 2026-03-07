@@ -65,7 +65,7 @@ const PersonalInfoStep = ({ currentStep }) => {
               <AvatarImage src={image} />
             ) : (
               <AvatarFallback>
-                <Plus className="w-6 h-6 text-gray-500" />
+                <Plus className="w-6 h-6 text-primary" />
               </AvatarFallback>
             )}
           </Avatar>
@@ -80,7 +80,7 @@ const PersonalInfoStep = ({ currentStep }) => {
           <Input
             id="fullName"
             placeholder="Enter your full name"
-            className={"rounded-sm"}
+            className={"rounded-2xl"}
           />
         </div>
 
@@ -91,7 +91,7 @@ const PersonalInfoStep = ({ currentStep }) => {
             id="email"
             placeholder="Enter your email"
             type="email"
-            className={"rounded-sm"}
+            className={"rounded-2xl"}
           />
         </div>
 
@@ -102,7 +102,7 @@ const PersonalInfoStep = ({ currentStep }) => {
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className="w-full justify-start text-left font-normal rounded-sm"
+                className="w-full justify-start text-left font-normal rounded-2xl"
               >
                 {date ? format(date, "PPP") : "Pick a date"}
               </Button>
@@ -112,7 +112,7 @@ const PersonalInfoStep = ({ currentStep }) => {
                 mode="single"
                 selected={date}
                 onSelect={setDate}
-                className={"rounded-sm"}
+                className={"rounded-2xl"}
                 initialFocus
               />
             </PopoverContent>
@@ -124,10 +124,10 @@ const PersonalInfoStep = ({ currentStep }) => {
           <div className="space-y-2">
             <Label>Gender</Label>
             <Select>
-              <SelectTrigger className="rounded-sm">
+              <SelectTrigger className="rounded-2xl">
                 <SelectValue placeholder="Select Gender" />
               </SelectTrigger>
-              <SelectContent className={"rounded-sm"}>
+              <SelectContent className={"rounded-2xl"}>
                 <SelectGroup>
                   <SelectLabel>Gender</SelectLabel>
                   <SelectItem value="male">Male</SelectItem>
@@ -146,7 +146,7 @@ const PersonalInfoStep = ({ currentStep }) => {
             variant="outline"
             onClick={handlePrevious}
             disabled={currentStep === 1}
-            className={"rounded-sm"}
+            className={"rounded-2xl"}
           >
             Previous
           </Button>
@@ -155,7 +155,7 @@ const PersonalInfoStep = ({ currentStep }) => {
             type="button"
             onClick={handleNext}
             disabled={currentStep === 4}
-            className={"rounded-sm"}
+            className={"rounded-2xl"}
           >
             Next
           </Button>
