@@ -82,7 +82,7 @@ const ClinicDetailsStep = ({ currentStep }) => {
             <Input
               placeholder="Enter clinic or hospital name"
               value={clinic.name}
-              className={"rounded-sm"}
+              className={"rounded-2xl"}
               onChange={(e) =>
                 handleClinicChange(index, "name", e.target.value)
               }
@@ -95,7 +95,7 @@ const ClinicDetailsStep = ({ currentStep }) => {
             <Textarea
               id="clinicAddress"
               placeholder="Enter clinic address"
-              className={"rounded-sm"}
+              className={"rounded-2xl"}
               value={clinic.address.line1}
               onChange={(e) =>
                 handleClinicChange(index, "address.line1", e.target.value)
@@ -109,7 +109,7 @@ const ClinicDetailsStep = ({ currentStep }) => {
               <Input
                 placeholder="City"
                 value={clinic.address.city}
-                className={"rounded-sm"}
+                className={"rounded-2xl"}
                 onChange={(e) =>
                   handleClinicChange(index, "address.city", e.target.value)
                 }
@@ -124,10 +124,10 @@ const ClinicDetailsStep = ({ currentStep }) => {
                   handleClinicChange(index, "address.province", value)
                 }
               >
-                <SelectTrigger className={"rounded-sm"}>
+                <SelectTrigger className={"rounded-2xl"}>
                   <SelectValue placeholder="Select Province" />
                 </SelectTrigger>
-                <SelectContent className={"rounded-sm"}>
+                <SelectContent className={"rounded-2xl"}>
                   <SelectGroup>
                     <SelectLabel>Province</SelectLabel>
                     {provinces.map((prov) => (
@@ -150,10 +150,10 @@ const ClinicDetailsStep = ({ currentStep }) => {
                   handleClinicChange(index, "type", value)
                 }
               >
-                <SelectTrigger className={"rounded-sm"}>
+                <SelectTrigger className={"rounded-2xl"}>
                   <SelectValue placeholder="Select Type" />
                 </SelectTrigger>
-                <SelectContent className={"rounded-sm"}>
+                <SelectContent className={"rounded-2xl"}>
                   <SelectGroup>
                     <SelectLabel>Type</SelectLabel>
                     {clinicTypes.map((type) => (
@@ -173,7 +173,7 @@ const ClinicDetailsStep = ({ currentStep }) => {
             <Input
               placeholder="Clinic phone number"
               value={clinic.contactNumber}
-              className={"rounded-sm"}
+              className={"rounded-2xl"}
               onChange={(e) =>
                 handleClinicChange(index, "contactNumber", e.target.value)
               }
@@ -186,7 +186,7 @@ const ClinicDetailsStep = ({ currentStep }) => {
               type="button"
               variant="destructive"
               size="sm"
-              className={"rounded-sm"}
+              className={"rounded-2xl"}
               onClick={() => removeClinic(index)}
             >
               Remove Clinic
@@ -196,7 +196,7 @@ const ClinicDetailsStep = ({ currentStep }) => {
       ))}
 
       {/* Add Another Clinic */}
-      <Button type="button" variant="outline" onClick={addClinic} className={"rounded-sm"}>
+      <Button type="button" variant="outline" onClick={addClinic} className={"rounded-2xl"}>
         + Add Another Clinic
       </Button>
 
@@ -206,13 +206,13 @@ const ClinicDetailsStep = ({ currentStep }) => {
           type="button"
           variant="outline"
           onClick={handlePrevious}
-          className={"rounded-sm"}
+          className={"rounded-2xl"}
           disabled={currentStep === 1}
         >
           Previous
         </Button>
 
-        <Button type="button" onClick={handleNext} disabled={currentStep === 4} className={"rounded-sm"}>
+        <Button type="button" onClick={handleNext} disabled={currentStep === 4} className={"rounded-2xl"}>
           Next
         </Button>
       </div>
