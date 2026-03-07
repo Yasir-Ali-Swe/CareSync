@@ -83,10 +83,10 @@ const ProfessionalInfoStep = ({ currentStep }) => {
         <div className="space-y-2">
           <Label>Specialization</Label>
           <Select>
-            <SelectTrigger className={"rounded-sm"}>
+            <SelectTrigger className={"rounded-2xl"}>
               <SelectValue placeholder="Select Specialization" />
             </SelectTrigger>
-            <SelectContent className={"rounded-sm"}>
+            <SelectContent className={"rounded-2xl"}>
               <SelectGroup>
                 <SelectLabel>Specialization</SelectLabel>
                 {specializations.map((spec) => (
@@ -104,14 +104,14 @@ const ProfessionalInfoStep = ({ currentStep }) => {
           <Input
             type="number"
             min={0}
-            className={"rounded-sm"}
+            className={"rounded-2xl"}
             placeholder="Enter years of experience"
           />
         </div>
 
         <div className="space-y-2">
           <Label>Consultation Fee (PKR)</Label>
-          <Input type="number" min={0} placeholder="Enter consultation fee" className={"rounded-sm"}/>
+          <Input type="number" min={0} placeholder="Enter consultation fee" className={"rounded-2xl"}/>
         </div>
       </div>
 
@@ -126,12 +126,12 @@ const ProfessionalInfoStep = ({ currentStep }) => {
             <Input
               placeholder="Enter course or diploma"
               value={course.name}
-              className={"rounded-sm"}
+              className={"rounded-2xl"}
               onChange={(e) => handleCourseNameChange(index, e.target.value)}
             />
             <Input
               type="file"
-              className={"rounded-sm"}
+              className={"rounded-2xl"}
               onChange={(e) =>
                 handleCertificateUpload(index, e.target.files[0])
               }
@@ -140,7 +140,7 @@ const ProfessionalInfoStep = ({ currentStep }) => {
               <Button
                 type="button"
                 variant="destructive"
-                className={"rounded-sm"}
+                className={"rounded-2xl"}
                 size="sm"
                 onClick={() =>
                   setCourses(courses.filter((_, i) => i !== index))
@@ -151,7 +151,7 @@ const ProfessionalInfoStep = ({ currentStep }) => {
             )}
           </div>
         ))}
-        <Button type="button" variant="outline" onClick={addCourse} className={"rounded-sm"}>
+        <Button type="button" variant="outline" onClick={addCourse} className={"rounded-2xl"}>
           + Add Course
         </Button>
       </div>
@@ -164,14 +164,14 @@ const ProfessionalInfoStep = ({ currentStep }) => {
         <Button
           type="button"
           variant="outline"
-          className={"rounded-sm"}
+          className={"rounded-2xl"}
           onClick={handlePrevious}
           disabled={currentStep === 1}
         >
           Previous
         </Button>
 
-        <Button type="button" onClick={handleNext} disabled={currentStep === 5} className={"rounded-sm"}>
+        <Button type="button" onClick={handleNext} disabled={currentStep === 5} className={"rounded-2xl"}>
           Next
         </Button>
       </div>
