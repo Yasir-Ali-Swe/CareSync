@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select.jsx";
 import { Input } from "@/components/ui/input.jsx";
 import { Label } from "@/components/ui/label.jsx";
-import { Mail, Eye, EyeOff, UserPlus } from "lucide-react";
+import { Mail, Eye, EyeOff, User } from "lucide-react";
 import { Button } from "@/components/ui/button.jsx";
 import { Link } from "react-router-dom";
 
@@ -49,7 +49,7 @@ const Register = () => {
   };
 
   return (
-    <Card className="w-92.5 lg:w-md rounded-sm hover:shadow-lg transition-shadow duration-300 shadow-card">
+    <Card className="w-92.5 lg:w-md rounded-2xl transition-shadow duration-300 shadow-card">
       <CardHeader className="text-lg">
         <CardTitle>Register</CardTitle>
         <CardDescription>
@@ -66,11 +66,11 @@ const Register = () => {
               name="fullName"
               value={formData.fullName}
               onChange={handleChange}
-              className={"rounded-sm"}
+              className={"rounded-2xl"}
               placeholder="Please enter your full name"
             />
             <Label htmlFor="fullname" className={"cursor-pointer"}>
-              <UserPlus
+              <User
                 className="absolute top-7.5 right-3 text-foreground"
                 size={20}
               />
@@ -85,7 +85,7 @@ const Register = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={"rounded-sm"}
+              className={"rounded-2xl"}
               placeholder="Please enter your email"
             />
             <Label htmlFor="email" className={"cursor-pointer"}>
@@ -103,7 +103,7 @@ const Register = () => {
               id="password"
               name="password"
               value={formData.password}
-              className={"rounded-sm"}
+              className={"rounded-2xl"}
               onChange={handleChange}
               placeholder="Please enter your password"
             />
@@ -134,10 +134,10 @@ const Register = () => {
                 setFormData({ ...formData, role: value })
               }
             >
-              <SelectTrigger className="w-33">
+              <SelectTrigger className="w-33 rounded-2xl">
                 <SelectValue placeholder="Select your role" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className={"rounded-2xl"}>
                 <SelectGroup>
                   <SelectLabel>Roles</SelectLabel>
                   <SelectItem value="patient">Patient</SelectItem>
@@ -148,7 +148,7 @@ const Register = () => {
           </div>
 
           <div className="w-full mt-6">
-            <Button type="submit" className="w-full cursor-pointer rounded-sm">
+            <Button type="submit" className="w-full cursor-pointer rounded-2xl">
               Register
             </Button>
           </div>
