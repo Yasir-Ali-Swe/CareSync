@@ -31,7 +31,7 @@ const ForgetPasswordRequest = () => {
         <h1 className="text-3xl font-bold">CareSync</h1>
         <Hospital className="size-9" />
       </div>
-      <Card className="w-full max-w-xs md:max-w-sm lg:max-w-md rounded-sm hover:shadow-lg transition-shadow duration-300 shadow-card">
+      <Card className="w-full max-w-xs md:max-w-sm lg:max-w-md rounded-2xl transition-shadow duration-300 shadow-card">
         <CardHeader>
           <CardTitle className="text-xl">Forget Password Request</CardTitle>
           <CardDescription>
@@ -49,7 +49,7 @@ const ForgetPasswordRequest = () => {
                 name="email"
                 type="email"
                 placeholder="Enter your email"
-                className="rounded-sm"
+                className="rounded-2xl"
                 value={formData.email}
                 onChange={handleChange}
               />
@@ -69,7 +69,7 @@ const ForgetPasswordRequest = () => {
             </div>
             <Button
               type="submit"
-              className="w-full my-3 rounded-sm cursor-pointer"
+              className="w-full my-3 rounded-2xl cursor-pointer"
             >
               Send Reset Link
             </Button>
