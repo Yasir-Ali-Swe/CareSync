@@ -20,7 +20,7 @@ const ImagesGrid = () => {
       {users.map((user, index) => (
         <div
           key={index}
-          className="break-inside-avoid bg-card rounded-sm shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300 border border-secondary"
+          className="break-inside-avoid bg-card rounded-2xl overflow-hidden shadow-md transition duration-300 border border-secondary hover:-translate-y-2 hover:shadow-lg"
         >
           <img
             src={user.image}
