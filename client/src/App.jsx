@@ -14,7 +14,6 @@ import DoctorListingPage from "@/pages/public/DoctorListingPage";
 import ChatLayout from "@/components/layouts/ChatLayout";
 import ChatWindowPlaceholder from "@/pages/chat/ChatWIndowPlacholder";
 import ChatWindow from "@/pages/chat/ChatWindow";
-import BookApointment from "@/pages/public/BookApointment";
 import DoctorProfile from "@/pages/public/DoctorProfile";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import PatientStats from "@/pages/dashboard/Patient/Stats";
@@ -36,10 +35,6 @@ const App = () => {
         <Route index element={<Home />} />
         <Route path="/contact-us" element={<Contact />} />
         <Route path="/doctors" element={<DoctorListingPage />} />
-        <Route
-          path="/book-appointment/:doctorId"
-          element={<BookApointment />}
-        />
         <Route path="/doctor-profile/:doctorId" element={<DoctorProfile />} />
       </Route>
       <Route element={<ChatLayout />}>
@@ -54,7 +49,7 @@ const App = () => {
         // Patient Routes
         <Route path="patient/appointments" element={<PatientAppointment />} />
         <Route path="patient/profile" element={<PatientProfile />} />
-        // Doctor Routes
+        // Doctor Routesimport BookApointment from
         <Route path="doctor/appointments" element={<DoctorAppointments />} />
         <Route path="doctor/profile" element={<DoctorDashboardProfile />} />
         <Route path="doctor/availability" element={<DoctorAvailability />} />
