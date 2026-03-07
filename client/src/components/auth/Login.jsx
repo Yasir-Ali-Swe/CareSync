@@ -38,7 +38,7 @@ const Login = () => {
   };
 
   return (
-    <Card className="w-92.5 lg:w-md rounded-sm hover:shadow-lg transition-shadow duration-300 shadow-card">
+    <Card className="w-92.5 lg:w-md rounded-2xl transition-shadow duration-300 shadow-card">
       <CardHeader className="text-lg">
         <CardTitle>Login</CardTitle>
         <CardDescription>
@@ -54,7 +54,7 @@ const Login = () => {
               id="email"
               name="email"
               value={formData.email}
-              className={"rounded-sm"}
+              className={"rounded-2xl"}
               onChange={handleChange}
               placeholder="Please enter your email"
             />
@@ -73,7 +73,7 @@ const Login = () => {
               id="password"
               name="password"
               value={formData.password}
-              className={"rounded-sm"}
+              className={"rounded-2xl"}
               onChange={handleChange}
               placeholder="Please enter your password"
             />
@@ -103,7 +103,7 @@ const Login = () => {
           </div>
 
           <div className="w-full mt-6">
-            <Button type="submit" className="w-full cursor-pointer">
+            <Button type="submit" className="w-full cursor-pointer rounded-2xl">
               Login
             </Button>
           </div>
