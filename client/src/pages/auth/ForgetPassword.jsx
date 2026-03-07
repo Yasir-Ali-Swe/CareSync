@@ -38,7 +38,7 @@ const ResetPassword = () => {
         <Hospital className="size-9" />
       </div>
 
-      <Card className="w-full max-w-xs md:max-w-sm lg:max-w-md rounded-sm hover:shadow-lg transition-shadow duration-300 shadow-card">
+      <Card className="w-full max-w-xs md:max-w-sm lg:max-w-md rounded-2xl transition-shadow duration-300 shadow-card">
         <CardHeader>
           <CardTitle className="text-xl">Reset Password</CardTitle>
           <CardDescription>Please enter your new password</CardDescription>
@@ -52,6 +52,7 @@ const ResetPassword = () => {
                 id="password"
                 name="password"
                 type={showPassword ? "text" : "password"}
+                className={"rounded-2xl"}
                 value={formData.password}
                 onChange={handleChange}
               />
@@ -63,6 +64,7 @@ const ResetPassword = () => {
                 id="confirmPassword"
                 name="confirmPassword"
                 type={showPassword ? "text" : "password"}
+                className={"rounded-2xl"}
                 value={formData.confirmPassword}
                 onChange={handleChange}
               />
@@ -78,7 +80,7 @@ const ResetPassword = () => {
 
             <Button
               type="submit"
-              className="w-full my-3 rounded-sm cursor-pointer"
+              className="w-full my-3 rounded-2xl cursor-pointer"
             >
               Reset Password
             </Button>
