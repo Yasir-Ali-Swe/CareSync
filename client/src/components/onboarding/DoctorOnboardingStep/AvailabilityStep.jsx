@@ -50,7 +50,7 @@ const AvailabilityStep = ({ currentStep }) => {
 
       <div className="space-y-6">
         {availability.map((dayItem, dayIndex) => (
-          <div key={dayItem.day} className="border p-4 rounded-lg">
+          <div key={dayItem.day} className="border p-4 rounded-2xl">
             <h2 className="font-semibold mb-2">{dayItem.day}</h2>
             <div className="space-y-2">
               {dayItem.slots.map((slot, slotIndex) => (
@@ -61,7 +61,7 @@ const AvailabilityStep = ({ currentStep }) => {
                     <Input
                       type="time"
                       value={slot.start}
-                      className={"rounded-sm"}
+                      className={"rounded-2xl"}
                       onChange={(e) =>
                         updateSlot(dayIndex, slotIndex, "start", e.target.value)
                       }
@@ -74,7 +74,7 @@ const AvailabilityStep = ({ currentStep }) => {
                     <Input
                       type="time"
                       value={slot.end}
-                      className={"rounded-sm"}
+                      className={"rounded-2xl"}
                       onChange={(e) =>
                         updateSlot(dayIndex, slotIndex, "end", e.target.value)
                       }
@@ -87,7 +87,7 @@ const AvailabilityStep = ({ currentStep }) => {
                       <Button
                         type="button"
                         variant="destructive"
-                        className={"rounded-sm"}
+                        className={"rounded-2xl"}
                         size="sm"
                         onClick={() => removeSlot(dayIndex, slotIndex)}
                       >
@@ -100,7 +100,7 @@ const AvailabilityStep = ({ currentStep }) => {
               <Button
                 type="button"
                 variant="outline"
-                className={"rounded-sm"}
+                className={"rounded-2xl"}
                 size="sm"
                 onClick={() => addSlot(dayIndex)}
               >
@@ -117,12 +117,12 @@ const AvailabilityStep = ({ currentStep }) => {
           type="button"
           variant="outline"
           onClick={handlePrevious}
-          className={"rounded-sm"}
+          className={"rounded-2xl"}
           disabled={currentStep === 1}
         >
           Previous
         </Button>
-        <Button type="button" onClick={handleNext} disabled={currentStep === 6} className={"rounded-sm"}>
+        <Button type="button" onClick={handleNext} disabled={currentStep === 6} className={"rounded-2xl"}>
           Next
         </Button>
       </div>
