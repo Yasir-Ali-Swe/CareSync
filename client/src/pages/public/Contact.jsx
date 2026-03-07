@@ -1,15 +1,17 @@
-import { Button } from "@/components/ui/button";
 import React from "react";
-import { Link } from "react-router-dom";
-const Home = () => {
+import ContactHeroSection from "@/components/common/HeroSection.jsx";
+const Contact = () => {
   return (
-    <div className="h-full flex flex-col justify-center items-center">
-      <h1 className="text-3xl text-primary font-bold">Welcome to CareSync</h1>
-      <p className="text-xl font-semibold">
-        Contact us at contact@caresync.com
-      </p>
+    <div className="h-full max-w-7xl w-full mx-auto flex flex-col items-center px-6">
+      <ContactHeroSection
+        Img={"img4.png"}
+        firstText={"Need help with appointments"}
+        secondaryText={"contact our support"}
+        thirdText={"team for assistance"}
+        showFilters={false}
+      />
     </div>
   );
 };
 
-export default Home;
+export default Contact;
