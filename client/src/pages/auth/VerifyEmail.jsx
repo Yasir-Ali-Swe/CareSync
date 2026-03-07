@@ -37,7 +37,7 @@ const VerifyEmail = () => {
             </h1>
             <MailCheck className="size-8 font-semibold text-green-500" />
           </div>
-          <Button className="mt-5" onClick={() => navigate("/auth/login")}>
+          <Button className="mt-5 rounded-2xl cursor-pointer" onClick={() => navigate("/auth/login")}>
             Go to Login
           </Button>
         </>
