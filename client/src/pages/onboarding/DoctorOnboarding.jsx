@@ -54,7 +54,7 @@ const DoctorOnboarding = () => {
                     ? "bg-primary text-primary-foreground border-primary"
                     : isActive
                       ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-muted text-muted-foreground border-border"
+                      : "bg-card text-muted-foreground border-border"
                 }`}
               >
                 {isCompleted ? <Check className="w-5 h-5" /> : s}
