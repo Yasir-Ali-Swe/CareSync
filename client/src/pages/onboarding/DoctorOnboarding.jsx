@@ -1,6 +1,18 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Check } from "lucide-react";
+import {
+  Check,
+  User,
+  Phone,
+  Stethoscope,
+  Ambulance,
+  GraduationCap,
+  Briefcase,
+} from "lucide-react";
+import { FaBriefcase } from "react-icons/fa";
+import { MdEventAvailable } from "react-icons/md";
+import { BiInfoCircle } from "react-icons/bi";
+import { MdApartment } from "react-icons/md";
 import PersonalInfoStep from "@/components/onboarding/DoctorOnboardingStep/PersonalInfoStep";
 import DoctorEducationStep from "@/components/onboarding/DoctorOnboardingStep/EducationStep";
 import ClinicDetailsStep from "@/components/onboarding/DoctorOnboardingStep/ClinicDetailsStep";
@@ -26,7 +38,7 @@ const DoctorOnboarding = () => {
   };
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <h1 className="text-primary bg-card text-xl font-bold text-center w-full py-5">
+      <h1 className="text-primary text-xl font-bold text-center w-full py-5 bg-card border-b-2 border-border shadow-sm">
         Complete your profile to continue
       </h1>
       <div className="w-full max-w-[90%] md:w-[75%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%] mx-auto px-1 py-4">
@@ -54,10 +66,36 @@ const DoctorOnboarding = () => {
                     ? "bg-primary text-primary-foreground border-primary"
                     : isActive
                       ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-card text-muted-foreground border-border"
+                      : "bg-muted text-muted-foreground border-border"
                 }`}
               >
-                {isCompleted ? <Check className="w-5 h-5" /> : s}
+                {isCompleted ? (
+                  <Check className="w-5 h-5" />
+                ) : s == 1 ? (
+                  <User
+                    className={`w-5 h-5 ${isActive ? "text-background" : "text-primary"}`}
+                  />
+                ) : s == 2 ? (
+                  <GraduationCap
+                    className={`w-5 h-5 ${isActive ? "text-background" : "text-primary"}`}
+                  />
+                ) : s == 3 ? (
+                  <MdApartment
+                    className={`w-5 h-5 ${isActive ? "text-background" : "text-primary"}`}
+                  />
+                ) : s == 4 ? (
+                  <FaBriefcase
+                    className={`w-5 h-5 ${isActive ? "text-background" : "text-primary"}`}
+                  />
+                ) : s == 5 ? (
+                  <BiInfoCircle
+                    className={`w-5 h-5 ${isActive ? "text-background" : "text-primary"}`}
+                  />
+                ) : s == 6 ? (
+                  <MdEventAvailable
+                    className={`w-5 h-5 ${isActive ? "text-background" : "text-primary"}`}
+                  />
+                ) : null}
               </div>
             );
           })}
