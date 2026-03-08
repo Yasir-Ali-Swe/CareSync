@@ -33,7 +33,7 @@ const HowItsWork = () => {
         {howItWorks.map((step) => (
           <div
             key={step.id}
-            className="flex flex-col items-center text-center p-4 border bg-card shadow-md rounded-2xl"
+            className="flex flex-col items-center text-center p-4 border bg-card hover:-translate-y-2 rounded-2xl transition-all duration-300"
           >
             {step.icon}
             <h3 className="text-lg font-semibold text-primary mt-4 mb-2">
