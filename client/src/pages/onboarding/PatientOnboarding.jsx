@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Check } from "lucide-react";
+import { Check, User, Phone, Stethoscope, Ambulance } from "lucide-react";
 
 import PersonalInfoStep from "@/components/onboarding/PatientOnboardingStep/PersonalInfoStep";
 import ContactInfoStep from "@/components/onboarding/PatientOnboardingStep/ContactInfoStep";
@@ -24,7 +24,7 @@ const PatientOnboarding = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <h1 className="text-primary bg-card text-xl font-bold text-center w-full py-5">
+      <h1 className="text-primary text-xl font-bold text-center w-full py-5 bg-card border-b-2 border-border shadow-sm">
         Complete your profile to continue
       </h1>
 
@@ -54,10 +54,28 @@ const PatientOnboarding = () => {
                     ? "bg-primary text-primary-foreground border-primary"
                     : isActive
                       ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-card text-muted-foreground border-border"
+                      : "bg-muted text-muted-foreground border-border"
                 }`}
               >
-                {isCompleted ? <Check className="w-5 h-5 " /> : s}
+                {isCompleted ? (
+                  <Check className="w-5 h-5 " />
+                ) : s == 1 ? (
+                  <User
+                    className={`w-5 h-5 ${isActive ? "text-background" : "text-primary"}`}
+                  />
+                ) : s == 2 ? (
+                  <Phone
+                    className={`w-5 h-5 ${isActive ? "text-background" : "text-primary"}`}
+                  />
+                ) : s == 3 ? (
+                  <Stethoscope
+                    className={`w-5 h-5 ${isActive ? "text-background" : "text-primary"}`}
+                  />
+                ) : (
+                  <Ambulance
+                    className={`w-5 h-5 ${isActive ? "text-background" : "text-primary"}`}
+                  />
+                )}
               </div>
             );
           })}
