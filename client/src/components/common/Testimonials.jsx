@@ -84,7 +84,7 @@ const Testimonials = () => {
               className="basis-1/2 pl-1 lg:basis-1/3"
             >
               <div className="p-2 min-h-60 h-full">
-                <div className="h-full flex flex-col items-center space-y-3 p-4 border bg-card shadow-md rounded-2xl">
+                <div className="h-full flex flex-col items-center space-y-3 p-4 border bg-card hover:-translate-y-2 rounded-2xl transition-all duration-300">
                   <div className="flex gap-1">
                     {Array.from({ length: review.rating }).map((_, i) => (
                       <Star
