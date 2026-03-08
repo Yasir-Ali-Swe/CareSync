@@ -37,7 +37,9 @@ const Contact = () => {
         thirdText={"team for assistance"}
         showFilters={false}
       />
-      <h1 className="my-8 text-3xl font-black w-full text-center">Contact Us</h1>
+      <h1 className="my-8 text-3xl font-black w-full text-center">
+        Contact Us
+      </h1>
       <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="hidden lg:flex flex-col justify-start  mb-8 gap-2 p-4 bg-card rounded-xl shadow-md border">
           <h2 className="text-2xl font-bold text-primary">
@@ -66,8 +68,6 @@ const Contact = () => {
                 Faisalabad, Punjab, Pakistan
               </p>
             </div>
-
-            
 
             <div>
               <h3 className="font-semibold text-lg">Response Time</h3>
