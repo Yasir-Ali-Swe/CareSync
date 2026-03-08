@@ -65,7 +65,7 @@ const PersonalInfoStep = ({ currentStep }) => {
               <AvatarImage src={image} />
             ) : (
               <AvatarFallback>
-                <Plus className="w-6 h-6 text-primary" />
+                <Plus className="w-6 h-6 text-gray-500" />
               </AvatarFallback>
             )}
           </Avatar>
