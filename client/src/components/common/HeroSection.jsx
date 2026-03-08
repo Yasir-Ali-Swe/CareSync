@@ -46,7 +46,7 @@ const HomeHeroSection = ({
           {firstText} <span className="text-primary">{secondaryText}</span>{" "}
           {thirdText}
         </h1>
-        <div className="inline-flex items-center mx-auto md:mx-0 space-x-2 bg-primary px-3 py-1 rounded-md w-max ">
+        <div className="inline-flex items-center mx-auto md:mx-0 space-x-2 bg-primary px-3 py-1 rounded-2xl w-max ">
           <span className="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
           <span className="text-chart-4 font-semibold">
             50M+ patients served
@@ -61,10 +61,10 @@ const HomeHeroSection = ({
                   updateFilters({ city: val || undefined })
                 }
               >
-                <SelectTrigger className="w-[30%] rounded-sm">
+                <SelectTrigger className="w-[30%] rounded-2xl">
                   <SelectValue placeholder="Select City" />
                 </SelectTrigger>
-                <SelectContent className={"rounded-sm"}>
+                <SelectContent className={"rounded-2xl"}>
                   <SelectGroup>
                     <SelectLabel>City</SelectLabel>
                     <SelectItem value="All">All Cities</SelectItem>
@@ -83,10 +83,10 @@ const HomeHeroSection = ({
                   updateFilters({ specialization: val || undefined })
                 }
               >
-                <SelectTrigger className="w-[30%] rounded-sm">
+                <SelectTrigger className="w-[30%] rounded-2xl">
                   <SelectValue placeholder="Select Specialization" />
                 </SelectTrigger>
-                <SelectContent className={"rounded-sm"}>
+                <SelectContent className={"rounded-2xl"}>
                   <SelectGroup>
                     <SelectLabel>Specialization</SelectLabel>
                     <SelectItem value="All">All Specializations</SelectItem>
@@ -102,7 +102,7 @@ const HomeHeroSection = ({
                 to={`/doctors?${new URLSearchParams(filters)}`}
                 className="h-full"
               >
-                <Button className={"rounded-sm"}>Find Doctor</Button>
+                <Button className={"rounded-2xl"}>Find Doctor</Button>
               </Link>
             </div>
           </div>
