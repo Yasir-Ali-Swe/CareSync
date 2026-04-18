@@ -24,7 +24,6 @@ import PatientAppointment from "@/pages/dashboard/Patient/Appointment";
 import PatientProfile from "@/pages/dashboard/Patient/Profile";
 import DoctorAppointments from "@/pages/dashboard/Doctor/Appointments";
 import DoctorDashboardProfile from "@/pages/dashboard/Doctor/Profile";
-import DoctorAvailability from "@/pages/dashboard/Doctor/Availability";
 import AdminUserManagment from "@/pages/dashboard/Admin/UserManagment";
 import AdminProfile from "@/pages/dashboard/Admin/Profile";
 
@@ -42,7 +41,7 @@ const App = () => {
         <Route path="/messages/:conversationId" element={<ChatWindow />} />
       </Route>
       <Route path="/dashboard" element={<DashboardLayout />}>
-        <Route index element={<DashboardIndexRedirect role={"admin"} />} />
+        <Route index element={<DashboardIndexRedirect role={"doctor"} />} />
         <Route path="patient/stats" element={<PatientStats />} />
         <Route path="doctor/stats" element={<DoctorStats />} />
         <Route path="admin/stats" element={<AdminStats />} />
@@ -52,7 +51,6 @@ const App = () => {
         // Doctor Routesimport BookApointment from
         <Route path="doctor/appointments" element={<DoctorAppointments />} />
         <Route path="doctor/profile" element={<DoctorDashboardProfile />} />
-        <Route path="doctor/availability" element={<DoctorAvailability />} />
         //Admin Routes
         <Route path="admin/users-management" element={<AdminUserManagment />} />
         <Route path="admin/profile" element={<AdminProfile />} />
