@@ -10,7 +10,6 @@ export const getDashboardRoutes = (role) => {
       return [
         { name: "Stats", route: "/dashboard/doctor/stats" },
         { name: "Appointments", route: "/dashboard/doctor/appointments" },
-        { name: "Availability", route: "/dashboard/doctor/availability" },
         { name: "Profile", route: "/dashboard/doctor/profile" },
       ];
     case "admin":
