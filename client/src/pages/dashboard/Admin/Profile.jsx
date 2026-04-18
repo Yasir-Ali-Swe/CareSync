@@ -1,11 +1,7 @@
 import React from "react";
+import ProfileFlowPage from "@/components/dashboard/profile/ProfileFlowPage";
+import { adminProfileConfig } from "@/components/dashboard/profile/profileFlowConfigs";
 
-const Profile = () => {
-  return (
-    <div>
-      <h1 className="text-2xl text-primary text-center my-5">Admin Profile</h1>
-    </div>
-  );
-};
+const Profile = () => <ProfileFlowPage {...adminProfileConfig} />;
 
 export default Profile;
