@@ -10,7 +10,6 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Menu } from "lucide-react";
 import {
@@ -21,7 +20,7 @@ import {
 import { getDashboardRoutes } from "@/lib/DasboardRotes";
 
 const DashboardNavbar = () => {
-  const routes = getDashboardRoutes("admin");
+  const routes = getDashboardRoutes("doctor");
   const location = useLocation();
   const path = location.pathname;
   const [open, setOpen] = useState(false);
