@@ -9,6 +9,9 @@ const STATUS_VARIANTS = {
   active: "default",
   inactive: "secondary",
   suspended: "destructive",
+  paid: "default",
+  unpaid: "secondary",
+  refunded: "outline",
 };
 
 const STATUS_LABELS = {
@@ -19,6 +22,9 @@ const STATUS_LABELS = {
   active: "Active",
   inactive: "Inactive",
   suspended: "Suspended",
+  paid: "Paid",
+  unpaid: "Unpaid",
+  refunded: "Refunded",
 };
 
 const StatusBadge = ({ status }) => {
