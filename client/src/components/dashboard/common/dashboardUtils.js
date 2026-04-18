@@ -59,9 +59,13 @@ export const filterDoctorAppointments = (appointments, filter) => {
     case "today":
       return appointments.filter((appointment) => isTodayDate(appointment.dateTime));
     case "upcoming":
-      return appointments.filter(
-        (appointment) => appointment.status === "pending" && isFutureDate(appointment.dateTime)
-      );
+      return appointments.filter((appointment) => {
+        const normalizedStatus = String(appointment.status || "").toLowerCase();
+        return (
+          (normalizedStatus === "upcoming" || normalizedStatus === "pending") &&
+          isFutureDate(appointment.dateTime)
+        );
+      });
     case "completed":
     case "cancelled":
       return appointments.filter((appointment) => appointment.status === filter);
