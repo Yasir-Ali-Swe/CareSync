@@ -1,6 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { MessageCircle, Eye, CalendarRange } from "lucide-react";
+import { Eye, MessageCircle, MoreHorizontal, XCircle } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -30,7 +38,7 @@ const Appointment = () => {
 
   const filteredAppointments = useMemo(
     () => filterPatientAppointments(patientAppointments, filter),
-    [filter]
+    [filter],
   );
 
   const columns = useMemo(
@@ -50,29 +58,52 @@ const Appointment = () => {
       {
         key: "actions",
         label: "Actions",
-        className: "min-w-[220px]",
-        render: (row) => (
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm">
-              <Eye className="size-4" />
-              View
-            </Button>
-            <Button variant="ghost" size="sm">
-              <MessageCircle className="size-4" />
-              Chat
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              disabled={!canCancelPatientAppointment(row)}
-            >
-              Cancel
-            </Button>
-          </div>
-        ),
+        className: "w-[72px]",
+        render: (row) => {
+          const canCancel = row.status === "upcoming" && canCancelPatientAppointment(row);
+
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon-sm" aria-label="Open actions menu">
+                  <MoreHorizontal className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-52">
+                <DropdownMenuItem asChild>
+                  <Link
+                    to={`/doctor-profile/${row.doctorId}`}
+                    className="flex items-center gap-2"
+                  >
+                    <Eye className="size-4" />
+                    View Details
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    to={`/messages/${row.conversationId}`}
+                    className="flex items-center gap-2"
+                  >
+                    <MessageCircle className="size-4" />
+                    Chat
+                  </Link>
+                </DropdownMenuItem>
+                {row.status === "upcoming" ? (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem variant="destructive" disabled={!canCancel}>
+                      <XCircle className="size-4" />
+                      Cancel Appointment
+                    </DropdownMenuItem>
+                  </>
+                ) : null}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          );
+        },
       },
     ],
-    []
+    [],
   );
 
   if (loading) {
@@ -112,6 +143,7 @@ const Appointment = () => {
         description="Track each appointment and take quick actions"
         columns={columns}
         rows={filteredAppointments}
+        minWidth="min-w-[930px]"
         emptyState={
           <EmptyStateCard
             title="No Appointments Found"
@@ -119,13 +151,6 @@ const Appointment = () => {
           />
         }
       />
-
-      <div className="rounded-lg border bg-muted/30 p-4 text-sm text-muted-foreground flex items-start gap-2">
-        <CalendarRange className="mt-0.5 size-4" />
-        <p>
-          Cancellation is available for upcoming appointments with at least 24 hours remaining.
-        </p>
-      </div>
     </div>
   );
 };
