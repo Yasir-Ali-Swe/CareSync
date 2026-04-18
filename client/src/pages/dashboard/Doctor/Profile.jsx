@@ -1,11 +1,7 @@
 import React from "react";
+import ProfileFlowPage from "@/components/dashboard/profile/ProfileFlowPage";
+import { doctorProfileConfig } from "@/components/dashboard/profile/profileFlowConfigs";
 
-const Profile = () => {
-  return (
-    <div>
-      <h1 className="text-2xl text-primary text-center my-5">Doctor Profile</h1>
-    </div>
-  );
-};
+const Profile = () => <ProfileFlowPage {...doctorProfileConfig} />;
 
 export default Profile;
