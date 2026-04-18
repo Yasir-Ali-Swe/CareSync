@@ -1,6 +1,19 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Eye, Trash2, UserRoundX, UserRoundCheck } from "lucide-react";
+import {
+  Eye,
+  MoreHorizontal,
+  UserRoundX,
+  UserRoundCheck,
+} from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -12,12 +25,15 @@ import DataTableCard from "@/components/dashboard/common/DataTableCard";
 import DashboardPageSkeleton from "@/components/dashboard/common/DashboardPageSkeleton";
 import EmptyStateCard from "@/components/dashboard/common/EmptyStateCard";
 import StatusBadge from "@/components/dashboard/common/StatusBadge";
-import { filterUsersByRole, formatDate } from "@/components/dashboard/common/dashboardUtils";
+import {
+  filterUsersByRole,
+  formatDate,
+} from "@/components/dashboard/common/dashboardUtils";
 import { usersManagementList } from "@/dummyData/dashboardData";
 
 const UserManagment = () => {
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState("doctor");
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 700);
@@ -29,8 +45,10 @@ const UserManagment = () => {
     [filter]
   );
 
-  const columns = useMemo(
-    () => [
+  const isDoctorView = filter === "doctor";
+
+  const columns = useMemo(() => {
+    const baseColumns = [
       { key: "name", label: "Name" },
       { key: "email", label: "Email" },
       {
@@ -48,39 +66,59 @@ const UserManagment = () => {
         label: "Joined Date",
         render: (row) => formatDate(row.joinedDate),
       },
+    ];
+
+    if (!isDoctorView) {
+      return baseColumns;
+    }
+
+    return [
+      ...baseColumns,
       {
         key: "actions",
         label: "Actions",
-        className: "min-w-[260px]",
+        className: "min-w-[240px]",
         render: (row) => (
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm">
-              <Eye className="size-4" />
-              View Profile
-            </Button>
-            <Button variant="secondary" size="sm">
-              {row.status === "suspended" ? (
-                <>
-                  <UserRoundCheck className="size-4" />
-                  Activate
-                </>
-              ) : (
-                <>
-                  <UserRoundX className="size-4" />
-                  Suspend
-                </>
-              )}
-            </Button>
-            <Button variant="destructive" size="sm">
-              <Trash2 className="size-4" />
-              Delete
-            </Button>
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon-sm" aria-label="Open actions menu">
+                <MoreHorizontal className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem asChild>
+                <Link
+                  to={`/doctor-profile/${row.doctorId}`}
+                  className="flex items-center gap-2"
+                >
+                  <Eye className="size-4" />
+                  View Profile
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem disabled={row.status !== "active"}>
+                <UserRoundX className="size-4" />
+                Suspend User
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                {row.status === "active" ? (
+                  <>
+                    <UserRoundX className="size-4" />
+                    Deactivate User
+                  </>
+                ) : (
+                  <>
+                    <UserRoundCheck className="size-4" />
+                    Activate User
+                  </>
+                )}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         ),
       },
-    ],
-    []
-  );
+    ];
+  }, [isDoctorView]);
 
   if (loading) {
     return (
@@ -105,9 +143,9 @@ const UserManagment = () => {
               <SelectValue placeholder="Filter users" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Users</SelectItem>
               <SelectItem value="doctor">Doctors</SelectItem>
               <SelectItem value="patient">Patients</SelectItem>
+              <SelectItem value="all">All Users</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -118,6 +156,7 @@ const UserManagment = () => {
         description="Directory of all registered accounts"
         columns={columns}
         rows={filteredUsers}
+        minWidth={isDoctorView ? "min-w-[980px]" : "min-w-[840px]"}
         emptyState={
           <EmptyStateCard
             title="No Users Found"
