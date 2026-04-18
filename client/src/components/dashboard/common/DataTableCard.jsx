@@ -6,7 +6,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const DataTableCard = ({
   title,
@@ -17,45 +24,42 @@ const DataTableCard = ({
   emptyState,
 }) => {
   return (
-    <Card>
+    <Card className={"bg-background border-0"}>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         {description ? <CardDescription>{description}</CardDescription> : null}
       </CardHeader>
       <CardContent>
         {rows.length ? (
-          <ScrollArea className="w-full rounded-md border">
-            <div className={minWidth}>
-              <table className="w-full text-sm">
-                <thead className="bg-muted/50">
-                  <tr>
-                    {columns.map((column) => (
-                      <th
-                        key={column.key}
-                        className={`px-4 py-3 text-left font-semibold text-muted-foreground ${
-                          column.className || ""
-                        }`}
-                      >
-                        {column.label}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map((row) => (
-                    <tr key={row.id} className="border-t">
-                      {columns.map((column) => (
-                        <td key={`${row.id}-${column.key}`} className="px-4 py-3 align-middle">
-                          {column.render ? column.render(row) : row[column.key]}
-                        </td>
-                      ))}
-                    </tr>
+          <div className="w-full rounded-md border-b-2">
+            <Table className={minWidth}>
+              <TableHeader className="bg-muted/50">
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableHead
+                      key={column.key}
+                      className={`px-4 py-3 font-semibold text-muted-foreground ${
+                        column.className || ""
+                      }`}
+                    >
+                      {column.label}
+                    </TableHead>
                   ))}
-                </tbody>
-              </table>
-            </div>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {rows.map((row) => (
+                  <TableRow key={row.id}>
+                    {columns.map((column) => (
+                      <TableCell key={`${row.id}-${column.key}`} className="px-4 py-3 align-middle">
+                        {column.render ? column.render(row) : row[column.key]}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         ) : (
           emptyState
         )}
