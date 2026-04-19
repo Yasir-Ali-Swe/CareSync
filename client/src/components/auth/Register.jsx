@@ -20,15 +20,31 @@ import { Input } from "@/components/ui/input.jsx";
 import { Label } from "@/components/ui/label.jsx";
 import { Mail, Eye, EyeOff, User } from "lucide-react";
 import { Button } from "@/components/ui/button.jsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { authApi } from "@/services/auth.api";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     password: "",
     role: "patient",
+  });
+
+  const registerMutation = useMutation({
+    mutationFn: authApi.register,
+    onSuccess: (response) => {
+      toast.success(response?.message || "Registration successful");
+      navigate("/verify-email", { replace: true });
+    },
+    onError: (error) => {
+      const message = error?.response?.data?.message || "Unable to register";
+      toast.error(message);
+    },
   });
 
   const handleChange = (e) => {
@@ -45,7 +61,7 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    registerMutation.mutate(formData);
   };
 
   return (
@@ -148,8 +164,12 @@ const Register = () => {
           </div>
 
           <div className="w-full mt-6">
-            <Button type="submit" className="w-full cursor-pointer rounded-2xl">
-              Register
+            <Button
+              type="submit"
+              className="w-full cursor-pointer rounded-2xl"
+              disabled={registerMutation.isPending}
+            >
+              {registerMutation.isPending ? "Registering..." : "Register"}
             </Button>
           </div>
         </form>
