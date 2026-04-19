@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import {
   Activity,
   CalendarCheck,
@@ -13,12 +13,8 @@ import DataTableCard from "@/components/dashboard/common/DataTableCard";
 import DashboardPageSkeleton from "@/components/dashboard/common/DashboardPageSkeleton";
 import StatusBadge from "@/components/dashboard/common/StatusBadge";
 import { formatDate } from "@/components/dashboard/common/dashboardUtils";
-import {
-  patientAppointmentsOverTime,
-  patientRecentActivities,
-  patientStatsMetrics,
-  patientStatusDistribution,
-} from "@/dummyData/dashboardData";
+import { useQuery } from "@tanstack/react-query";
+import { patientApi } from "@/services/patient.api";
 
 const METRIC_ICONS = {
   totalAppointments: CalendarCheck,
@@ -28,13 +24,77 @@ const METRIC_ICONS = {
   unreadMessages: MessageSquareMore,
 };
 
-const Stats = () => {
-  const [loading, setLoading] = useState(true);
+const getLastSixMonths = () => {
+  const now = new Date();
+  return Array.from({ length: 6 }).map((_, index) => {
+    const date = new Date(now.getFullYear(), now.getMonth() - (5 - index), 1);
+    return {
+      key: `${date.getFullYear()}-${date.getMonth()}`,
+      label: new Intl.DateTimeFormat("en-US", { month: "short" }).format(date),
+      value: 0,
+    };
+  });
+};
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 700);
-    return () => clearTimeout(timer);
-  }, []);
+const Stats = () => {
+  const statsQuery = useQuery({
+    queryKey: ["patient-stats"],
+    queryFn: patientApi.getStats,
+  });
+
+  const appointmentsQuery = useQuery({
+    queryKey: ["appointments", "patient", "all"],
+    queryFn: () => patientApi.getAppointments({ status: "all" }),
+  });
+
+  const metrics = statsQuery.data?.data?.metrics || {};
+  const appointments = appointmentsQuery.data?.data?.appointments || [];
+
+  const patientStatsMetrics = [
+    { key: "totalAppointments", label: "Total Appointments", value: metrics.totalAppointments ?? 0 },
+    { key: "upcomingAppointments", label: "Upcoming Appointments", value: metrics.upcomingAppointments ?? 0 },
+    { key: "completedAppointments", label: "Completed Appointments", value: metrics.completedAppointments ?? 0 },
+    { key: "totalDoctorsConsulted", label: "Doctors Consulted", value: metrics.totalDoctorsConsulted ?? 0 },
+    { key: "unreadMessages", label: "Unread Messages", value: 0 },
+  ];
+
+  const patientStatusDistribution = [
+    { label: "Completed", value: metrics.completedAppointments ?? 0 },
+    { label: "Upcoming", value: metrics.upcomingAppointments ?? 0 },
+    { label: "Cancelled", value: metrics.cancelledAppointments ?? 0 },
+  ];
+
+  const patientAppointmentsOverTime = useMemo(() => {
+    const monthly = getLastSixMonths();
+    const map = new Map(monthly.map((item) => [item.key, item]));
+
+    appointments.forEach((appointment) => {
+      const date = new Date(appointment.dateTime);
+      const key = `${date.getFullYear()}-${date.getMonth()}`;
+      if (map.has(key)) {
+        map.get(key).value += 1;
+      }
+    });
+
+    return monthly;
+  }, [appointments]);
+
+  const patientRecentActivities = useMemo(
+    () =>
+      appointments.slice(0, 8).map((appointment) => ({
+        id: appointment._id,
+        activity:
+          appointment.status === "completed"
+            ? "Consultation completed"
+            : appointment.status === "cancelled"
+              ? "Appointment cancelled"
+              : "Appointment scheduled",
+        doctorName: appointment.doctor?.fullName || "-",
+        date: appointment.dateTime,
+        status: appointment.status,
+      })),
+    [appointments],
+  );
 
   const activityColumns = useMemo(
     () => [
@@ -54,10 +114,18 @@ const Stats = () => {
     []
   );
 
-  if (loading) {
+  if (statsQuery.isLoading || appointmentsQuery.isLoading) {
     return (
       <div className="mx-auto w-full max-w-[95%] py-5 md:py-8 lg:max-w-[90%]">
         <DashboardPageSkeleton cardCount={5} />
+      </div>
+    );
+  }
+
+  if (statsQuery.isError || appointmentsQuery.isError) {
+    return (
+      <div className="mx-auto w-full max-w-[95%] py-5 md:py-8 lg:max-w-[90%]">
+        <p className="text-sm text-destructive">Unable to load patient dashboard data.</p>
       </div>
     );
   }
