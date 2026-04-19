@@ -1,6 +1,6 @@
 import React from "react";
 import { Hospital, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -19,6 +19,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useDispatch, useSelector } from "react-redux";
+import { clearAuth } from "@/store/slices/authSlice";
+import { authApi, getDashboardRouteByRole } from "@/services/auth.api";
+import toast from "react-hot-toast";
 
 const NavLinks = [
   { name: "Home", path: "/" },
@@ -28,11 +32,28 @@ const NavLinks = [
 ];
 
 const Navbar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isAuthenticated, role } = useSelector((state) => state.auth);
   const location = useLocation();
   const path = location.pathname;
   const [open, setOpen] = useState(false);
   const doctorRoutes = ["/doctors", "/book-appointment", "/doctor-profile"];
   const isDoctorsActive = doctorRoutes.some((route) => path.startsWith(route));
+
+  const handleLogout = async () => {
+    try {
+      await authApi.logout();
+    } catch (error) {
+      // Ignore and clear local session anyway
+    } finally {
+      localStorage.removeItem("accessToken");
+      dispatch(clearAuth());
+      toast.success("Logged out successfully");
+      navigate("/auth/login", { replace: true });
+    }
+  };
+
   return (
     <nav className="flex items-center justify-between bg-card py-3 px-6 lg:px-20 border-b-2 border-border shadow-sm">
       <Link to={"/"} className="flex items-center gap-1 ">
@@ -92,15 +113,17 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center gap-4">
-        <Link to={"/auth/login"}>
-          <Button
-            variant="outline"
-            size="sm"
-            className={"rounded-full cursor-pointer"}
-          >
-            Login
-          </Button>
-        </Link>
+        {!isAuthenticated ? (
+          <Link to={"/auth/login"}>
+            <Button
+              variant="outline"
+              size="sm"
+              className={"rounded-full cursor-pointer"}
+            >
+              Login
+            </Button>
+          </Link>
+        ) : null}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Avatar>
@@ -110,12 +133,14 @@ const Navbar = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className={"mt-3"}>
             <DropdownMenuItem>
-              <Link to={"/dashboard"} className="w-full">
+              <Link to={getDashboardRouteByRole(role)} className="w-full">
                 Dashboard
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">Logout</DropdownMenuItem>
+            <DropdownMenuItem variant="destructive" onClick={handleLogout}>
+              Logout
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
         <ToggleTheme />
