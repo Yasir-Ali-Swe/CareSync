@@ -24,11 +24,14 @@ import {
   canCancelPatientAppointment,
   formatDateTime,
 } from "@/components/dashboard/common/dashboardUtils";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import { patientApi } from "@/services/patient.api";
+import { appointmentApi } from "@/services/appointment.api";
 
 const Appointment = () => {
   const [filter, setFilter] = useState("upcoming");
+  const queryClient = useQueryClient();
 
   const appointmentsQuery = useQuery({
     queryKey: ["appointments", "patient", filter],
@@ -52,6 +55,25 @@ const Appointment = () => {
       })),
     [appointmentsQuery.data],
   );
+
+  const cancelMutation = useMutation({
+    mutationFn: ({ appointmentId }) => appointmentApi.cancel(appointmentId),
+    onSuccess: () => {
+      toast.success("Appointment cancelled.");
+    },
+    onError: (error) => {
+      const errorMessage = error?.response?.data?.message || "Failed to cancel appointment.";
+      toast.error(errorMessage);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      queryClient.invalidateQueries({ queryKey: ["patient-appointments"] });
+      queryClient.invalidateQueries({ queryKey: ["doctor-appointments"] });
+      queryClient.invalidateQueries({ queryKey: ["patient-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["doctor-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
+    },
+  });
 
   const columns = useMemo(
     () => [
@@ -103,9 +125,16 @@ const Appointment = () => {
                 {row.status === "upcoming" ? (
                   <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem variant="destructive" disabled={!canCancel}>
+                    <DropdownMenuItem
+                      variant="destructive"
+                      disabled={!canCancel || cancelMutation.isPending}
+                      onClick={() => {
+                        if (!canCancel) return;
+                        cancelMutation.mutate({ appointmentId: row.id });
+                      }}
+                    >
                       <XCircle className="size-4" />
-                      Cancel Appointment
+                      {cancelMutation.isPending ? "Cancelling..." : "Cancel Appointment"}
                     </DropdownMenuItem>
                   </>
                 ) : null}
