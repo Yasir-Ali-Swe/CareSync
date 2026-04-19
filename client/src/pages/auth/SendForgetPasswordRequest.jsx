@@ -12,9 +12,23 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Hospital, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { authApi } from "@/services/auth.api";
+import toast from "react-hot-toast";
 
 const ForgetPasswordRequest = () => {
   const [formData, setFormData] = useState({ email: "" });
+
+  const forgotPasswordMutation = useMutation({
+    mutationFn: authApi.forgotPassword,
+    onSuccess: (response) => {
+      toast.success(response?.message || "Reset link sent");
+    },
+    onError: (error) => {
+      const message = error?.response?.data?.message || "Unable to send reset link";
+      toast.error(message);
+    },
+  });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,7 +36,7 @@ const ForgetPasswordRequest = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    forgotPasswordMutation.mutate(formData);
   };
 
   return (
@@ -70,8 +84,9 @@ const ForgetPasswordRequest = () => {
             <Button
               type="submit"
               className="w-full my-3 rounded-2xl cursor-pointer"
+              disabled={forgotPasswordMutation.isPending}
             >
-              Send Reset Link
+              {forgotPasswordMutation.isPending ? "Sending..." : "Send Reset Link"}
             </Button>
           </form>
         </CardContent>
