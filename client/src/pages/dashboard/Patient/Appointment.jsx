@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Eye, MessageCircle, MoreHorizontal, XCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -22,23 +22,35 @@ import EmptyStateCard from "@/components/dashboard/common/EmptyStateCard";
 import StatusBadge from "@/components/dashboard/common/StatusBadge";
 import {
   canCancelPatientAppointment,
-  filterPatientAppointments,
   formatDateTime,
 } from "@/components/dashboard/common/dashboardUtils";
-import { patientAppointments } from "@/dummyData/dashboardData";
+import { useQuery } from "@tanstack/react-query";
+import { patientApi } from "@/services/patient.api";
 
 const Appointment = () => {
-  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("upcoming");
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 700);
-    return () => clearTimeout(timer);
-  }, []);
+  const appointmentsQuery = useQuery({
+    queryKey: ["appointments", "patient", filter],
+    queryFn: () =>
+      patientApi.getAppointments({
+        status: filter === "all" ? "all" : filter,
+      }),
+  });
 
   const filteredAppointments = useMemo(
-    () => filterPatientAppointments(patientAppointments, filter),
-    [filter],
+    () =>
+      (appointmentsQuery.data?.data?.appointments || []).map((appointment) => ({
+        id: appointment._id,
+        doctorId: appointment.doctor?._id,
+        conversationId: appointment.conversation,
+        doctorName: appointment.doctor?.fullName || "-",
+        specialization: appointment.doctorProfile?.specialization || "-",
+        dateTime: appointment.dateTime,
+        status: appointment.status,
+        paymentStatus: appointment.paymentStatus,
+      })),
+    [appointmentsQuery.data],
   );
 
   const columns = useMemo(
@@ -106,10 +118,18 @@ const Appointment = () => {
     [],
   );
 
-  if (loading) {
+  if (appointmentsQuery.isLoading) {
     return (
       <div className="mx-auto w-full max-w-[95%] py-5 md:py-8 lg:max-w-[90%]">
         <DashboardPageSkeleton cardCount={4} />
+      </div>
+    );
+  }
+
+  if (appointmentsQuery.isError) {
+    return (
+      <div className="mx-auto w-full max-w-[95%] py-5 md:py-8 lg:max-w-[90%]">
+        <p className="text-sm text-destructive">Unable to load appointments.</p>
       </div>
     );
   }
