@@ -11,14 +11,30 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Hospital, EyeOff, Eye } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { authApi } from "@/services/auth.api";
+import toast from "react-hot-toast";
 
 const ResetPassword = () => {
   const { token } = useParams();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
+  });
+
+  const resetMutation = useMutation({
+    mutationFn: (payload) => authApi.resetPassword(token, payload),
+    onSuccess: (response) => {
+      toast.success(response?.message || "Password reset successful");
+      navigate("/auth/login", { replace: true });
+    },
+    onError: (error) => {
+      const message = error?.response?.data?.message || "Unable to reset password";
+      toast.error(message);
+    },
   });
 
   const handleChange = (e) => {
@@ -27,8 +43,15 @@ const ResetPassword = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // For UI only: you can log or handle form submission here
-    console.log("Form submitted:", formData, "Token:", token);
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    resetMutation.mutate({
+      password: formData.password,
+      confirmPassword: formData.confirmPassword,
+    });
   };
 
   return (
@@ -81,8 +104,9 @@ const ResetPassword = () => {
             <Button
               type="submit"
               className="w-full my-3 rounded-2xl cursor-pointer"
+              disabled={resetMutation.isPending}
             >
-              Reset Password
+              {resetMutation.isPending ? "Resetting..." : "Reset Password"}
             </Button>
           </form>
         </CardContent>
