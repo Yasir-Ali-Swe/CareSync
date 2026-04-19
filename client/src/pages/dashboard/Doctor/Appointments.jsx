@@ -27,8 +27,10 @@ import DashboardPageSkeleton from "@/components/dashboard/common/DashboardPageSk
 import EmptyStateCard from "@/components/dashboard/common/EmptyStateCard";
 import StatusBadge from "@/components/dashboard/common/StatusBadge";
 import { formatDate } from "@/components/dashboard/common/dashboardUtils";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import { doctorApi } from "@/services/doctor.api";
+import { appointmentApi } from "@/services/appointment.api";
 
 const renderAppointmentType = (type) => {
   const normalizedType = String(type || "").toLowerCase();
@@ -44,7 +46,7 @@ const renderAppointmentType = (type) => {
   return <Badge variant="outline">{type || "-"}</Badge>;
 };
 
-const renderActions = (row) => {
+const renderActions = (row, updateStatus, isUpdating) => {
   const status = String(row.status || "").toLowerCase();
   const chatRoute = `/messages/${row.conversationId}`;
 
@@ -63,13 +65,20 @@ const renderActions = (row) => {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem disabled={status !== "upcoming"}>
+        <DropdownMenuItem
+          disabled={status !== "upcoming" || isUpdating}
+          onClick={() => updateStatus(row.id, "completed")}
+        >
           <CheckCircle2 className="size-4" />
-          Mark as Completed
+          {isUpdating ? "Updating..." : "Mark as Completed"}
         </DropdownMenuItem>
-        <DropdownMenuItem variant="destructive" disabled={status !== "upcoming"}>
+        <DropdownMenuItem
+          variant="destructive"
+          disabled={status !== "upcoming" || isUpdating}
+          onClick={() => updateStatus(row.id, "cancelled")}
+        >
           <Ban className="size-4" />
-          Cancel Appointment
+          {isUpdating ? "Updating..." : "Cancel Appointment"}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -78,6 +87,7 @@ const renderActions = (row) => {
 
 const Appointment = () => {
   const [filter, setFilter] = useState("today");
+  const queryClient = useQueryClient();
 
   const appointmentsQuery = useQuery({
     queryKey: ["appointments", "doctor", filter],
@@ -105,6 +115,35 @@ const Appointment = () => {
       })),
     [appointmentsQuery.data],
   );
+
+  const statusMutation = useMutation({
+    mutationFn: ({ appointmentId, status }) =>
+      appointmentApi.updateStatus(appointmentId, { status }),
+    onSuccess: (_response, variables) => {
+      toast.success(
+        variables.status === "completed"
+          ? "Appointment marked as completed."
+          : "Appointment cancelled.",
+      );
+    },
+    onError: (error) => {
+      const errorMessage = error?.response?.data?.message || "Failed to update appointment status.";
+      toast.error(errorMessage);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      queryClient.invalidateQueries({ queryKey: ["patient-appointments"] });
+      queryClient.invalidateQueries({ queryKey: ["doctor-appointments"] });
+      queryClient.invalidateQueries({ queryKey: ["patient-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["doctor-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
+    },
+  });
+
+  const handleStatusUpdate = (appointmentId, status) => {
+    if (statusMutation.isPending) return;
+    statusMutation.mutate({ appointmentId, status });
+  };
 
   const columns = useMemo(
     () => [
@@ -157,10 +196,10 @@ const Appointment = () => {
         key: "actions",
         label: "Actions",
         className: "w-[72px]",
-        render: (row) => renderActions(row),
+        render: (row) => renderActions(row, handleStatusUpdate, statusMutation.isPending),
       },
     ],
-    []
+    [statusMutation.isPending]
   );
 
   if (appointmentsQuery.isLoading) {
