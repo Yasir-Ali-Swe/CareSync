@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Ban,
   CheckCircle2,
@@ -26,11 +26,9 @@ import DataTableCard from "@/components/dashboard/common/DataTableCard";
 import DashboardPageSkeleton from "@/components/dashboard/common/DashboardPageSkeleton";
 import EmptyStateCard from "@/components/dashboard/common/EmptyStateCard";
 import StatusBadge from "@/components/dashboard/common/StatusBadge";
-import {
-  filterDoctorAppointments,
-  formatDate,
-} from "@/components/dashboard/common/dashboardUtils";
-import { doctorAppointments } from "@/dummyData/dashboardData";
+import { formatDate } from "@/components/dashboard/common/dashboardUtils";
+import { useQuery } from "@tanstack/react-query";
+import { doctorApi } from "@/services/doctor.api";
 
 const renderAppointmentType = (type) => {
   const normalizedType = String(type || "").toLowerCase();
@@ -79,17 +77,33 @@ const renderActions = (row) => {
 };
 
 const Appointment = () => {
-  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("today");
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 700);
-    return () => clearTimeout(timer);
-  }, []);
+  const appointmentsQuery = useQuery({
+    queryKey: ["appointments", "doctor", filter],
+    queryFn: () => {
+      if (filter === "today") {
+        return doctorApi.getAppointments({ filter: "today" });
+      }
+
+      return doctorApi.getAppointments({ status: filter });
+    },
+  });
 
   const filteredAppointments = useMemo(
-    () => filterDoctorAppointments(doctorAppointments, filter),
-    [filter]
+    () =>
+      (appointmentsQuery.data?.data?.appointments || []).map((appointment) => ({
+        id: appointment._id,
+        conversationId: appointment.conversation,
+        patientName: appointment.patient?.fullName || "-",
+        patientAge: "-",
+        patientGender: "-",
+        appointmentType: appointment.appointmentType,
+        dateTime: appointment.dateTime,
+        status: appointment.status,
+        paymentStatus: appointment.paymentStatus,
+      })),
+    [appointmentsQuery.data],
   );
 
   const columns = useMemo(
@@ -149,10 +163,18 @@ const Appointment = () => {
     []
   );
 
-  if (loading) {
+  if (appointmentsQuery.isLoading) {
     return (
       <div className="mx-auto w-full max-w-[95%] py-5 md:py-8 lg:max-w-[90%]">
         <DashboardPageSkeleton cardCount={4} />
+      </div>
+    );
+  }
+
+  if (appointmentsQuery.isError) {
+    return (
+      <div className="mx-auto w-full max-w-[95%] py-5 md:py-8 lg:max-w-[90%]">
+        <p className="text-sm text-destructive">Unable to load doctor appointments.</p>
       </div>
     );
   }
