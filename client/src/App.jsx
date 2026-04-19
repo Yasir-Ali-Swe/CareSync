@@ -31,6 +31,8 @@ import PublicRoute from "@/components/PublicRoute";
 import AuthInitializer from "@/components/AuthInitializer";
 import OnboardingGuard from "@/components/OnboardingGuard";
 import OnboardingRedirect from "@/components/OnboardingRedirect";
+import RoleBasedRoute from "@/components/RoleBasedRoute";
+import Unauthorized from "@/pages/Unauthorized";
 
 const App = () => {
   return (
@@ -67,15 +69,78 @@ const App = () => {
           }
         >
           <Route index element={<DashboardIndexRedirect />} />
-          <Route path="patient/stats" element={<PatientStats />} />
-          <Route path="doctor/stats" element={<DoctorStats />} />
-          <Route path="admin/stats" element={<AdminStats />} />
-          <Route path="patient/appointments" element={<PatientAppointment />} />
-          <Route path="patient/profile" element={<PatientProfile />} />
-          <Route path="doctor/appointments" element={<DoctorAppointments />} />
-          <Route path="doctor/profile" element={<DoctorDashboardProfile />} />
-          <Route path="admin/users-management" element={<AdminUserManagment />} />
-          <Route path="admin/profile" element={<AdminProfile />} />
+          <Route
+            path="patient/stats"
+            element={
+              <RoleBasedRoute allowedRole="patient">
+                <PatientStats />
+              </RoleBasedRoute>
+            }
+          />
+          <Route
+            path="doctor/stats"
+            element={
+              <RoleBasedRoute allowedRole="doctor">
+                <DoctorStats />
+              </RoleBasedRoute>
+            }
+          />
+          <Route
+            path="admin/stats"
+            element={
+              <RoleBasedRoute allowedRole="admin">
+                <AdminStats />
+              </RoleBasedRoute>
+            }
+          />
+          <Route
+            path="patient/appointments"
+            element={
+              <RoleBasedRoute allowedRole="patient">
+                <PatientAppointment />
+              </RoleBasedRoute>
+            }
+          />
+          <Route
+            path="patient/profile"
+            element={
+              <RoleBasedRoute allowedRole="patient">
+                <PatientProfile />
+              </RoleBasedRoute>
+            }
+          />
+          <Route
+            path="doctor/appointments"
+            element={
+              <RoleBasedRoute allowedRole="doctor">
+                <DoctorAppointments />
+              </RoleBasedRoute>
+            }
+          />
+          <Route
+            path="doctor/profile"
+            element={
+              <RoleBasedRoute allowedRole="doctor">
+                <DoctorDashboardProfile />
+              </RoleBasedRoute>
+            }
+          />
+          <Route
+            path="admin/users-management"
+            element={
+              <RoleBasedRoute allowedRole="admin">
+                <AdminUserManagment />
+              </RoleBasedRoute>
+            }
+          />
+          <Route
+            path="admin/profile"
+            element={
+              <RoleBasedRoute allowedRole="admin">
+                <AdminProfile />
+              </RoleBasedRoute>
+            }
+          />
         </Route>
 
         <Route
@@ -147,6 +212,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+        <Route path="/unauthorized" element={<Unauthorized />} />
       </Routes>
     </>
   );
