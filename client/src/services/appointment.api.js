@@ -5,6 +5,10 @@ export const appointmentApi = {
     const response = await api.get("/appointments", { params });
     return response.data;
   },
+  book: async (payload) => {
+    const response = await api.post("/appointments", payload);
+    return response.data;
+  },
   cancel: async (appointmentId, payload = {}) => {
     const response = await api.patch(`/appointments/${appointmentId}/cancel`, payload);
     return response.data;
