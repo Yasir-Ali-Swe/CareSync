@@ -11,13 +11,54 @@ import { Input } from "@/components/ui/input.jsx";
 import { Label } from "@/components/ui/label.jsx";
 import { Mail, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button.jsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { authApi, getDashboardRouteByRole } from "@/services/auth.api";
+import { useDispatch } from "react-redux";
+import { setAuthUser } from "@/store/slices/authSlice";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+  });
+
+  const loginMutation = useMutation({
+    mutationFn: authApi.login,
+    onSuccess: async (response) => {
+      const accessToken = response?.data?.accessToken;
+      const apiUser = response?.data?.user;
+
+      if (accessToken) {
+        localStorage.setItem("accessToken", accessToken);
+      }
+
+      const isOnboardingCompleted = await authApi.getOnboardingStatus(apiUser.role);
+
+      const user = {
+        ...apiUser,
+        id: apiUser?.id || apiUser?._id,
+        isOnboardingCompleted,
+      };
+
+      dispatch(setAuthUser(user));
+      toast.success("Login successful");
+
+      if (!isOnboardingCompleted && user.role !== "admin") {
+        navigate("/onboarding", { replace: true });
+        return;
+      }
+
+      navigate(getDashboardRouteByRole(user.role), { replace: true });
+    },
+    onError: (error) => {
+      const message = error?.response?.data?.message || "Unable to login";
+      toast.error(message);
+    },
   });
 
   const handleChange = (e) => {
@@ -34,7 +75,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    loginMutation.mutate(formData);
   };
 
   return (
@@ -103,8 +144,12 @@ const Login = () => {
           </div>
 
           <div className="w-full mt-6">
-            <Button type="submit" className="w-full cursor-pointer rounded-2xl">
-              Login
+            <Button
+              type="submit"
+              className="w-full cursor-pointer rounded-2xl"
+              disabled={loginMutation.isPending}
+            >
+              {loginMutation.isPending ? "Logging in..." : "Login"}
             </Button>
           </div>
         </form>
