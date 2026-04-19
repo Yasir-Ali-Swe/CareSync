@@ -11,6 +11,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { appointmentApi } from "@/services/appointment.api";
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTH_NAMES = [
   "Jan",
@@ -58,6 +61,7 @@ function BookAppointmentDialog({ doc, children }) {
   const [selectedDayIdx, setSelectedDayIdx] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   const selectedDay = weekDays[selectedDayIdx];
   const timings = getClinicTimings(selectedDay.getDay());
@@ -67,12 +71,77 @@ function BookAppointmentDialog({ doc, children }) {
     setPaymentMethod(null);
   };
 
+  const bookingMutation = useMutation({
+    mutationFn: appointmentApi.book,
+    onMutate: async (payload) => {
+      await queryClient.cancelQueries({ queryKey: ["appointments", "patient"] });
+
+      const previousAppointments = queryClient.getQueriesData({
+        queryKey: ["appointments", "patient"],
+      });
+
+      const optimisticAppointment = {
+        _id: `temp-${Date.now()}`,
+        doctor: { _id: payload.doctorId, fullName: doc?.fullName || "Doctor" },
+        doctorProfile: { specialization: doc?.specialization || "-" },
+        dateTime: payload.dateTime,
+        status: "upcoming",
+        paymentStatus: payload.paymentMethod === "online" ? "paid" : "unpaid",
+        appointmentType: "in-person",
+        conversation: null,
+      };
+
+      queryClient.setQueriesData({ queryKey: ["appointments", "patient"] }, (old) => {
+        const appointments = old?.data?.appointments || [];
+
+        return {
+          ...(old || {}),
+          data: {
+            ...(old?.data || {}),
+            appointments: [optimisticAppointment, ...appointments],
+          },
+        };
+      });
+
+      return { previousAppointments };
+    },
+    onError: (error, _payload, context) => {
+      (context?.previousAppointments || []).forEach(([key, value]) => {
+        queryClient.setQueryData(key, value);
+      });
+
+      const errorMessage = error?.response?.data?.message || "Failed to book appointment.";
+      toast.error(errorMessage);
+    },
+    onSuccess: () => {
+      toast.success("Appointment booked successfully.");
+      setOpen(false);
+      setPaymentMethod(null);
+      setSelectedDayIdx(0);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      queryClient.invalidateQueries({ queryKey: ["patient-appointments"] });
+      queryClient.invalidateQueries({ queryKey: ["doctor-appointments"] });
+      queryClient.invalidateQueries({ queryKey: ["patient-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["doctor-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
+    },
+  });
+
   const handleConfirm = () => {
-    if (!paymentMethod || !timings) return;
-    alert(
-      `Appointment confirmed with ${doc.fullName}\nDate: ${DAY_NAMES[selectedDay.getDay()]}, ${selectedDay.getDate()} ${MONTH_NAMES[selectedDay.getMonth()]}\nPayment: ${paymentMethod}`,
-    );
-    setOpen(false);
+    if (!paymentMethod || !timings || bookingMutation.isPending) return;
+
+    const appointmentDateTime = new Date(selectedDay);
+    appointmentDateTime.setHours(9, 0, 0, 0);
+
+    bookingMutation.mutate({
+      doctorId: doc?.id,
+      dateTime: appointmentDateTime.toISOString(),
+      appointmentType: "in-person",
+      paymentMethod: paymentMethod === "Pay Online" ? "online" : "cash",
+      notes: "",
+    });
   };
 
   const canConfirm = paymentMethod && timings;
@@ -290,7 +359,7 @@ function BookAppointmentDialog({ doc, children }) {
               disabled={!canConfirm}
               onClick={handleConfirm}
             >
-              Confirm Appointment
+              {bookingMutation.isPending ? "Booking..." : "Confirm Appointment"}
             </Button>
           </div>
         )}
