@@ -1,6 +1,6 @@
 import React from "react";
 import { Hospital, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -18,13 +18,33 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { getDashboardRoutes } from "@/lib/DasboardRotes";
+import { useDispatch, useSelector } from "react-redux";
+import { authApi } from "@/services/auth.api";
+import { clearAuth } from "@/store/slices/authSlice";
+import toast from "react-hot-toast";
 
 const DashboardNavbar = () => {
-  const routes = getDashboardRoutes("doctor");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const role = useSelector((state) => state.auth.role);
+  const routes = getDashboardRoutes(role);
   const location = useLocation();
   const path = location.pathname;
   const [open, setOpen] = useState(false);
-  console.log(routes);
+
+  const handleLogout = async () => {
+    try {
+      await authApi.logout();
+    } catch (error) {
+      // Ignore and clear local session anyway
+    } finally {
+      localStorage.removeItem("accessToken");
+      dispatch(clearAuth());
+      toast.success("Logged out successfully");
+      navigate("/auth/login", { replace: true });
+    }
+  };
+
   return (
     <nav className="flex items-center justify-between bg-card py-3 px-6 lg:px-20 border-b-2 border-border shadow-sm">
       <Link to={"/"} className="flex items-center gap-1 ">
@@ -91,7 +111,9 @@ const DashboardNavbar = () => {
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className={"mt-3"}>
-            <DropdownMenuItem variant="destructive">Logout</DropdownMenuItem>
+            <DropdownMenuItem variant="destructive" onClick={handleLogout}>
+              Logout
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
