@@ -26,46 +26,129 @@ import DoctorAppointments from "@/pages/dashboard/Doctor/Appointments";
 import DoctorDashboardProfile from "@/pages/dashboard/Doctor/Profile";
 import AdminUserManagment from "@/pages/dashboard/Admin/UserManagment";
 import AdminProfile from "@/pages/dashboard/Admin/Profile";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import PublicRoute from "@/components/PublicRoute";
+import AuthInitializer from "@/components/AuthInitializer";
+import OnboardingGuard from "@/components/OnboardingGuard";
+import OnboardingRedirect from "@/components/OnboardingRedirect";
 
 const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<PublicLayout />}>
-        <Route index element={<Home />} />
-        <Route path="/contact-us" element={<Contact />} />
-        <Route path="/doctors" element={<DoctorListingPage />} />
-        <Route path="/doctor-profile/:doctorId" element={<DoctorProfile />} />
-      </Route>
-      <Route element={<ChatLayout />}>
-        <Route path="/messages" element={<ChatWindowPlaceholder />} />
-        <Route path="/messages/:conversationId" element={<ChatWindow />} />
-      </Route>
-      <Route path="/dashboard" element={<DashboardLayout />}>
-        <Route index element={<DashboardIndexRedirect role={"doctor"} />} />
-        <Route path="patient/stats" element={<PatientStats />} />
-        <Route path="doctor/stats" element={<DoctorStats />} />
-        <Route path="admin/stats" element={<AdminStats />} />
-        // Patient Routes
-        <Route path="patient/appointments" element={<PatientAppointment />} />
-        <Route path="patient/profile" element={<PatientProfile />} />
-        // Doctor Routesimport BookApointment from
-        <Route path="doctor/appointments" element={<DoctorAppointments />} />
-        <Route path="doctor/profile" element={<DoctorDashboardProfile />} />
-        //Admin Routes
-        <Route path="admin/users-management" element={<AdminUserManagment />} />
-        <Route path="admin/profile" element={<AdminProfile />} />
-      </Route>
-      <Route path="/auth/login" element={<Login />} />
-      <Route path="/auth/register" element={<Register />} />
-      <Route
-        path="/auth/send-forget-password-request"
-        element={<SendForgetPasswordRequest />}
-      />
-      <Route path="/auth/verify-email/:token" element={<VerifyEmail />} />
-      <Route path="/auth/reset-password/:token" element={<ResetPassword />} />
-      <Route path="/patient-onboarding/:step" element={<PatientOnboarding />} />
-      <Route path="/doctor-onboarding/:step" element={<DoctorOnboarding />} />
-    </Routes>
+    <>
+      <AuthInitializer />
+
+      <Routes>
+        <Route path="/" element={<PublicLayout />}>
+          <Route index element={<Home />} />
+          <Route path="/contact-us" element={<Contact />} />
+          <Route path="/doctors" element={<DoctorListingPage />} />
+          <Route path="/doctor-profile/:doctorId" element={<DoctorProfile />} />
+        </Route>
+        <Route
+          element={
+            <ProtectedRoute>
+              <OnboardingGuard>
+                <ChatLayout />
+              </OnboardingGuard>
+            </ProtectedRoute>
+          }
+        >
+          <Route path="/messages" element={<ChatWindowPlaceholder />} />
+          <Route path="/messages/:conversationId" element={<ChatWindow />} />
+        </Route>
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <OnboardingGuard>
+                <DashboardLayout />
+              </OnboardingGuard>
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<DashboardIndexRedirect />} />
+          <Route path="patient/stats" element={<PatientStats />} />
+          <Route path="doctor/stats" element={<DoctorStats />} />
+          <Route path="admin/stats" element={<AdminStats />} />
+          <Route path="patient/appointments" element={<PatientAppointment />} />
+          <Route path="patient/profile" element={<PatientProfile />} />
+          <Route path="doctor/appointments" element={<DoctorAppointments />} />
+          <Route path="doctor/profile" element={<DoctorDashboardProfile />} />
+          <Route path="admin/users-management" element={<AdminUserManagment />} />
+          <Route path="admin/profile" element={<AdminProfile />} />
+        </Route>
+
+        <Route
+          path="/auth/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/auth/register"
+          element={
+            <PublicRoute>
+              <Register />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/auth/send-forget-password-request"
+          element={
+            <PublicRoute>
+              <SendForgetPasswordRequest />
+            </PublicRoute>
+          }
+        />
+        <Route path="/auth/verify-email" element={<VerifyEmail />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/auth/verify-email/:token" element={<VerifyEmail />} />
+        <Route path="/verify-email/:token" element={<VerifyEmail />} />
+        <Route path="/auth/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+
+        <Route
+          path="/onboarding"
+          element={
+            <ProtectedRoute>
+              <OnboardingGuard requireIncomplete>
+                <OnboardingRedirect />
+              </OnboardingGuard>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/patient-onboarding/:step"
+          element={
+            <ProtectedRoute>
+              <OnboardingGuard requireIncomplete>
+                <PatientOnboarding />
+              </OnboardingGuard>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/doctor-onboarding/:step"
+          element={
+            <ProtectedRoute>
+              <OnboardingGuard requireIncomplete>
+                <DoctorOnboarding />
+              </OnboardingGuard>
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </>
   );
 };
 
