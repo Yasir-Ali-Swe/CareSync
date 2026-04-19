@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Eye,
   MoreHorizontal,
@@ -25,24 +25,30 @@ import DataTableCard from "@/components/dashboard/common/DataTableCard";
 import DashboardPageSkeleton from "@/components/dashboard/common/DashboardPageSkeleton";
 import EmptyStateCard from "@/components/dashboard/common/EmptyStateCard";
 import StatusBadge from "@/components/dashboard/common/StatusBadge";
-import {
-  filterUsersByRole,
-  formatDate,
-} from "@/components/dashboard/common/dashboardUtils";
-import { usersManagementList } from "@/dummyData/dashboardData";
+import { formatDate } from "@/components/dashboard/common/dashboardUtils";
+import { useQuery } from "@tanstack/react-query";
+import { adminApi } from "@/services/admin.api";
 
 const UserManagment = () => {
-  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("doctor");
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 700);
-    return () => clearTimeout(timer);
-  }, []);
+  const usersQuery = useQuery({
+    queryKey: ["admin-users", filter],
+    queryFn: () => adminApi.getUsers({ role: filter }),
+  });
 
   const filteredUsers = useMemo(
-    () => filterUsersByRole(usersManagementList, filter),
-    [filter]
+    () =>
+      (usersQuery.data?.data?.users || []).map((user) => ({
+        id: user._id,
+        doctorId: user._id,
+        name: user.fullName,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+        joinedDate: user.createdAt,
+      })),
+    [usersQuery.data],
   );
 
   const isDoctorView = filter === "doctor";
@@ -120,10 +126,18 @@ const UserManagment = () => {
     ];
   }, [isDoctorView]);
 
-  if (loading) {
+  if (usersQuery.isLoading) {
     return (
       <div className="mx-auto w-full max-w-[95%] py-5 md:py-8 lg:max-w-[90%]">
         <DashboardPageSkeleton cardCount={4} />
+      </div>
+    );
+  }
+
+  if (usersQuery.isError) {
+    return (
+      <div className="mx-auto w-full max-w-[95%] py-5 md:py-8 lg:max-w-[90%]">
+        <p className="text-sm text-destructive">Unable to load users list.</p>
       </div>
     );
   }
