@@ -1,8 +1,10 @@
 import { Conversation } from "../models/conversation.model.js";
 import { Message } from "../models/message.model.js";
+import { Notification } from "../models/notification.model.js";
 import { User } from "../models/user.model.js";
 import { asyncHandler } from "../middlewares/error.middleware.js";
 import { cloudinaryService } from "../services/cloudinary.service.js";
+import { NOTIFICATION_TYPES } from "../utils/constants.js";
 
 const ensureParticipant = (conversation, userId) =>
   conversation.participants.some((participantId) => String(participantId) === String(userId));
@@ -110,12 +112,38 @@ export const sendMessage = asyncHandler(async (req, res) => {
   conversation.unreadCounts = unreadCounts;
   await conversation.save();
 
+  const otherParticipantId = conversation.participants.find(
+    (participantId) => String(participantId) !== String(req.user._id),
+  );
+
+  if (otherParticipantId) {
+    const otherUser = await User.findById(otherParticipantId).select("fullName");
+
+    await Notification.create({
+      user: otherParticipantId,
+      actor: req.user._id,
+      type: NOTIFICATION_TYPES.CHAT_MESSAGE,
+      title: "New message",
+      body: `You have a new message from ${req.user.fullName}`,
+      entityType: "Conversation",
+      entityId: conversation._id,
+    });
+  }
+
   const io = req.app.get("io");
   if (io) {
     io.to(`conversation:${conversation._id}`).emit("message:new", {
       conversationId: conversation._id,
       message,
     });
+
+    if (otherParticipantId) {
+      io.to(`user:${otherParticipantId}`).emit("notification:new", {
+        type: NOTIFICATION_TYPES.CHAT_MESSAGE,
+        title: "New message",
+        body: `You have a new message from ${req.user.fullName}`,
+      });
+    }
   }
 
   return res.status(201).json({ success: true, data: { conversation, message } });
