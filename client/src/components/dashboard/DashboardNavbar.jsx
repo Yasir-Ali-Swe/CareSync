@@ -22,6 +22,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { authApi } from "@/services/auth.api";
 import { clearAuth } from "@/store/slices/authSlice";
 import toast from "react-hot-toast";
+import NotificationBell from "@/components/common/NotificationBell";
+import ToggleTheme from "@/components/common/ToggleTheme";
 
 const DashboardNavbar = () => {
   const dispatch = useDispatch();
@@ -103,6 +105,8 @@ const DashboardNavbar = () => {
       </div>
 
       <div className="flex items-center gap-4">
+        <NotificationBell />
+        <ToggleTheme />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Avatar>
