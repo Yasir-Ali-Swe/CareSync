@@ -137,12 +137,12 @@ export const cancelAppointment = asyncHandler(async (req, res) => {
   const { appointmentId } = req.params;
   const { reason = "" } = req.body;
 
-  const appointment = await Appointment.findById(appointmentId);
+  const appointment = await Appointment.findById(appointmentId).populate("patient").populate("doctor");
   if (!appointment) {
     return res.status(404).json({ success: false, message: "Appointment not found" });
   }
 
-  if (req.user.role === ROLES.PATIENT && String(appointment.patient) !== String(req.user._id)) {
+  if (req.user.role === ROLES.PATIENT && String(appointment.patient._id) !== String(req.user._id)) {
     return res.status(403).json({ success: false, message: "Forbidden" });
   }
 
@@ -164,6 +164,44 @@ export const cancelAppointment = asyncHandler(async (req, res) => {
   appointment.paymentStatus = PAYMENT_STATUS.REFUNDED;
   await appointment.save();
 
+  const patientName = appointment.patient?.fullName || "Patient";
+  const doctorName = appointment.doctor?.fullName || "Doctor";
+
+  await Notification.insertMany([
+    {
+      user: appointment.patient._id,
+      actor: req.user._id,
+      type: "appointment_cancelled",
+      title: "Appointment cancelled",
+      body: `Your appointment with ${doctorName} has been cancelled.`,
+      entityType: "Appointment",
+      entityId: appointment._id,
+    },
+    {
+      user: appointment.doctor._id,
+      actor: req.user._id,
+      type: "appointment_cancelled",
+      title: "Appointment cancelled",
+      body: `Your appointment with ${patientName} has been cancelled.`,
+      entityType: "Appointment",
+      entityId: appointment._id,
+    },
+  ]);
+
+  const io = req.app.get("io");
+  if (io) {
+    io.to(`user:${appointment.patient._id}`).emit("notification:new", {
+      type: "appointment_cancelled",
+      title: "Appointment cancelled",
+      body: `Your appointment with ${doctorName} has been cancelled.`,
+    });
+    io.to(`user:${appointment.doctor._id}`).emit("notification:new", {
+      type: "appointment_cancelled",
+      title: "Appointment cancelled",
+      body: `Your appointment with ${patientName} has been cancelled.`,
+    });
+  }
+
   return res.status(200).json({
     success: true,
     message: "Appointment cancelled successfully",
@@ -179,20 +217,45 @@ export const doctorUpdateAppointmentStatus = asyncHandler(async (req, res) => {
     return res.status(400).json({ success: false, message: "Invalid appointment status" });
   }
 
-  const appointment = await Appointment.findById(appointmentId);
+  const appointment = await Appointment.findById(appointmentId).populate("patient").populate("doctor");
   if (!appointment) {
     return res.status(404).json({ success: false, message: "Appointment not found" });
   }
 
-  if (String(appointment.doctor) !== String(req.user._id)) {
+  if (String(appointment.doctor._id) !== String(req.user._id)) {
     return res.status(403).json({ success: false, message: "Forbidden" });
   }
 
+  const previousStatus = appointment.status;
   appointment.status = status;
   if (status === APPOINTMENT_STATUS.CANCELLED) {
     appointment.cancelledAt = new Date();
   }
   await appointment.save();
+
+  const notificationType = status === "completed" ? "appointment_completed" : "appointment_cancelled";
+  const patientName = appointment.patient?.fullName || "Patient";
+  const doctorName = appointment.doctor?.fullName || "Doctor";
+  const statusLabel = status === "completed" ? "completed" : "cancelled";
+
+  await Notification.create({
+    user: appointment.patient._id,
+    actor: req.user._id,
+    type: notificationType,
+    title: `Appointment ${statusLabel}`,
+    body: `Your appointment with ${doctorName} has been ${statusLabel}.`,
+    entityType: "Appointment",
+    entityId: appointment._id,
+  });
+
+  const io = req.app.get("io");
+  if (io) {
+    io.to(`user:${appointment.patient._id}`).emit("notification:new", {
+      type: notificationType,
+      title: `Appointment ${statusLabel}`,
+      body: `Your appointment with ${doctorName} has been ${statusLabel}.`,
+    });
+  }
 
   return res.status(200).json({
     success: true,
