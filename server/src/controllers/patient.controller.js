@@ -70,10 +70,11 @@ export const getPatientAppointments = asyncHandler(async (req, res) => {
 export const getPatientDashboardStats = asyncHandler(async (req, res) => {
   const patientId = req.user._id;
 
-  const [totalAppointments, upcomingAppointments, completedAppointments, cancelledAppointments] =
+  const [totalAppointments, upcomingAppointments, pendingAppointments, completedAppointments, cancelledAppointments] =
     await Promise.all([
       Appointment.countDocuments({ patient: patientId }),
       Appointment.countDocuments({ patient: patientId, status: "upcoming" }),
+      Appointment.countDocuments({ patient: patientId, status: "pending" }),
       Appointment.countDocuments({ patient: patientId, status: "completed" }),
       Appointment.countDocuments({ patient: patientId, status: "cancelled" }),
     ]);
@@ -86,6 +87,7 @@ export const getPatientDashboardStats = asyncHandler(async (req, res) => {
       metrics: {
         totalAppointments,
         upcomingAppointments,
+        pendingAppointments,
         completedAppointments,
         cancelledAppointments,
         totalDoctorsConsulted: consultedDoctors.length,
