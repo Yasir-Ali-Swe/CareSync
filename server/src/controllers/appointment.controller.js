@@ -7,6 +7,7 @@ import { asyncHandler } from "../middlewares/error.middleware.js";
 import {
   APPOINTMENT_STATUS,
   APPOINTMENT_TYPE,
+  NOTIFICATION_TYPES,
   PAYMENT_METHOD,
   PAYMENT_STATUS,
   ROLES,
@@ -233,7 +234,7 @@ export const doctorUpdateAppointmentStatus = asyncHandler(async (req, res) => {
   }
   await appointment.save();
 
-  const notificationType = status === "completed" ? "appointment_completed" : "appointment_cancelled";
+  const notificationType = status === "completed" ? NOTIFICATION_TYPES.APPOINTMENT_CONFIRMED : NOTIFICATION_TYPES.APPOINTMENT_CANCELLED;
   const patientName = appointment.patient?.fullName || "Patient";
   const doctorName = appointment.doctor?.fullName || "Doctor";
   const statusLabel = status === "completed" ? "completed" : "cancelled";
