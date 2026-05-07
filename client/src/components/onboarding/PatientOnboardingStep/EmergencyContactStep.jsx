@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { patientApi } from "@/services/patient.api";
+import toast from "react-hot-toast";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,10 +18,40 @@ import {
 
 const EmergencyContactStep = ({ currentStep }) => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleNext = () => {
-    // If this is the last step, maybe submit form or navigate somewhere
-    console.log("Form Completed!");
+  const handleSubmit = async () => {
+    try {
+      setIsLoading(true);
+      // Collect form data
+      const emergencyName = document.getElementById("emergencyName")?.value;
+      const relationship = document.querySelector('[role="combobox"]')?.textContent || document.querySelector('[value]')?.value;
+      const phoneNumber = document.getElementById("phoneNumber")?.value;
+      const alternatePhoneNumber = document.getElementById("alternatePhoneNumber")?.value;
+
+      if (!emergencyName || !phoneNumber) {
+        toast.error("Please fill in required fields");
+        setIsLoading(false);
+        return;
+      }
+
+      // Submit onboarding
+      await patientApi.submitOnboarding({
+        emergencyContact: {
+          fullName: emergencyName,
+          relationship: relationship || "Other",
+          phone: phoneNumber,
+          alternatePhone: alternatePhoneNumber,
+        },
+      });
+
+      toast.success("Profile completed successfully!");
+      navigate("/dashboard");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to complete onboarding");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handlePrevious = () => {
@@ -97,11 +129,11 @@ const EmergencyContactStep = ({ currentStep }) => {
 
           <Button
             type="button"
-            onClick={handleNext}
-            disabled={currentStep === 4} // last step, could submit instead
+            onClick={handleSubmit}
+            disabled={isLoading}
             className={"rounded-2xl"}
           >
-            Submit
+            {isLoading ? "Submitting..." : "Submit"}
           </Button>
         </div>
       </form>
