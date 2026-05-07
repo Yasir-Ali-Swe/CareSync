@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { doctorApi } from "@/services/doctor.api";
+import toast from "react-hot-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -16,6 +18,30 @@ const daysOfWeek = [
 
 const AvailabilityStep = ({ currentStep }) => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    try {
+      setIsLoading(true);
+      if (availability.some((day) => day.slots.some((slot) => !slot.start || !slot.end))) {
+        toast.error("Please fill in all time slots");
+        setIsLoading(false);
+        return;
+      }
+
+      // Submit onboarding
+      await doctorApi.submitOnboarding({
+        schedule: availability.filter((day) => day.slots.some((slot) => slot.start && slot.end)),
+      });
+
+      toast.success("Profile completed successfully!");
+      navigate("/dashboard");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to complete onboarding");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleNext = () => navigate(`/doctor-onboarding/${currentStep + 1}`);
   const handlePrevious = () =>
@@ -122,8 +148,13 @@ const AvailabilityStep = ({ currentStep }) => {
         >
           Previous
         </Button>
-        <Button type="button" onClick={handleNext} disabled={currentStep === 6} className={"rounded-2xl"}>
-          Next
+        <Button
+          type="button"
+          onClick={currentStep === 6 ? handleSubmit : handleNext}
+          disabled={isLoading}
+          className={"rounded-2xl"}
+        >
+          {currentStep === 6 ? (isLoading ? "Submitting..." : "Submit") : "Next"}
         </Button>
       </div>
     </div>
