@@ -1,6 +1,10 @@
 import { api } from "@/lib/axios";
 
 export const doctorApi = {
+  submitOnboarding: async (data) => {
+    const response = await api.patch("/doctor/onboarding", data);
+    return response.data;
+  },
   getStats: async () => {
     const response = await api.get("/doctor/stats");
     return response.data;
