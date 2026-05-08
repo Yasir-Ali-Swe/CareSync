@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import DoctorsListingHeroSection from "@/components/common/HeroSection.jsx";
 import {
   Select,
@@ -12,7 +13,6 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import DoctorsData from "@/dummyData/DoctorData.js";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -23,8 +23,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Loader2 } from "lucide-react";
 
 import BookAppointmentDialog from "@/components/appointment/AppointmentDialog.jsx";
+import { doctorApi } from "@/services/doctor.api.js";
 
 const DoctorListingPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -43,21 +45,28 @@ const DoctorListingPage = () => {
     setSearchParams(updatedParams);
   };
 
-  const cities = [...new Set(DoctorsData.map((doc) => doc.city))];
-  const specializations = [
-    ...new Set(DoctorsData.map((doc) => doc.specialization)),
-  ];
-
-  const filteredDoctors = DoctorsData.filter((doc) => {
-    const verifiedMatch =
-      !verified || verified === "All" || String(doc.verified) === verified;
-    const cityMatch = !city || city === "All" || doc.city === city;
-    const specializationMatch =
-      !specialization ||
-      specialization === "All" ||
-      doc.specialization === specialization;
-    return verifiedMatch && cityMatch && specializationMatch;
+  // Fetch doctors from API with filters
+  const { data: doctorsResponse, isLoading, error } = useQuery({
+    queryKey: ["doctors-public", { city, specialization, verified }],
+    queryFn: async () => {
+      return await doctorApi.listPublicDoctors({
+        city: city && city !== "All" ? city : undefined,
+        specialization: specialization && specialization !== "All" ? specialization : undefined,
+        verified: verified && verified !== "All" ? verified : undefined,
+      });
+    },
   });
+
+  const doctors = doctorsResponse?.data?.doctors || [];
+
+  // Extract available cities and specializations from API response
+  const cities = useMemo(() => {
+    return [...new Set(doctors.map((doc) => doc.city).filter(Boolean))].sort();
+  }, [doctors]);
+
+  const specializations = useMemo(() => {
+    return [...new Set(doctors.map((doc) => doc.specialization).filter(Boolean))].sort();
+  }, [doctors]);
 
   return (
     <div className="h-full max-w-7xl w-full mx-auto flex flex-col items-center px-6 mb-20">
@@ -81,7 +90,7 @@ const DoctorListingPage = () => {
             <DialogHeader>
               <DialogTitle>Filter Doctors</DialogTitle>
               <DialogDescription>
-                Use the filters on the left to narrow down your doctor search.
+                Use the filters to narrow down your doctor search.
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col justify-center items-center gap-5 w-full">
@@ -165,8 +174,16 @@ const DoctorListingPage = () => {
 
       {/* Doctor List */}
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-4 sm:px-6 lg:px-0">
-        {filteredDoctors.length > 0 ? (
-          filteredDoctors.map((doc) => (
+        {isLoading ? (
+          <div className="col-span-full flex items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        ) : error ? (
+          <p className="col-span-full text-center text-destructive">
+            Failed to load doctors. Please try again later.
+          </p>
+        ) : doctors.length > 0 ? (
+          doctors.map((doc) => (
             <div
               key={doc.id}
               className="relative p-5 rounded-2xl hover:shadow-lg transition transform hover:-translate-y-1 flex flex-col items-center border bg-card shadow-md"
@@ -187,7 +204,7 @@ const DoctorListingPage = () => {
                   src={`https://i.pravatar.cc/150?img=${doc.id}`}
                   alt={doc.fullName}
                 />
-                <AvatarFallback>{doc.fullName[0]}</AvatarFallback>
+                <AvatarFallback>{doc.fullName?.[0] || "D"}</AvatarFallback>
               </Avatar>
 
               <div className="text-center mb-3">
@@ -211,12 +228,12 @@ const DoctorListingPage = () => {
                   </p>
                 </div>
                 <div className="flex flex-col items-center justify-center p-2 bg-secondary rounded-sm w-1/3">
-                  <p className="text-xs text-muted-foreground">Rating</p>
-                  <p className="font-semibold text-sm">{doc.rating} ⭐</p>
+                  <p className="text-xs text-muted-foreground">Consultation</p>
+                  <p className="font-semibold text-sm">{doc.consultationFee}</p>
                 </div>
                 <div className="flex flex-col items-center justify-center p-2 bg-secondary rounded-sm w-1/3">
-                  <p className="text-xs text-muted-foreground">Fee</p>
-                  <p className="font-semibold text-sm">{doc.consultationFee}</p>
+                  <p className="text-xs text-muted-foreground">Available</p>
+                  <p className="font-semibold text-sm">{doc.isAvailableToday ? "✓" : "✗"}</p>
                 </div>
               </div>
 
@@ -251,5 +268,6 @@ const DoctorListingPage = () => {
     </div>
   );
 };
+
 
 export default DoctorListingPage;
