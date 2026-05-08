@@ -1,6 +1,14 @@
 import { api } from "@/lib/axios";
 
 export const doctorApi = {
+  listPublicDoctors: async (params = {}) => {
+    const response = await api.get("/doctor/public", { params });
+    return response.data;
+  },
+  getDoctorById: async (doctorId) => {
+    const response = await api.get(`/doctor/public/${doctorId}`);
+    return response.data;
+  },
   submitOnboarding: async (data) => {
     const config = {};
 
