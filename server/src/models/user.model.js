@@ -46,6 +46,38 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    adminProfile: {
+      personalInfo: {
+        avatarUrl: { type: String, default: "" },
+        fullName: { type: String, default: "" },
+        email: { type: String, default: "" },
+        birthDate: { type: String, default: "" },
+        gender: { type: String, default: "other" },
+      },
+      contactInfo: {
+        primaryPhone: { type: String, default: "" },
+        secondaryPhone: { type: String, default: "" },
+        address: { type: String, default: "" },
+        province: { type: String, default: "" },
+        city: { type: String, default: "" },
+      },
+      default: {
+        personalInfo: {
+          avatarUrl: "",
+          fullName: "",
+          email: "",
+          birthDate: "",
+          gender: "other",
+        },
+        contactInfo: {
+          primaryPhone: "",
+          secondaryPhone: "",
+          address: "",
+          province: "",
+          city: "",
+        },
+      },
+    },
     refreshTokenHash: {
       type: String,
       default: null,
