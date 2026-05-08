@@ -40,6 +40,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthenticated, role } = useSelector((state) => state.auth);
+  const user = useSelector((state) => state.auth.user);
   const location = useLocation();
   const path = location.pathname;
   const [open, setOpen] = useState(false);
@@ -133,8 +134,12 @@ const Navbar = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarImage
+                  src={user?.profileImageUrl || "https://github.com/shadcn.png"}
+                />
+                <AvatarFallback>
+                  {user?.fullName?.slice(0, 2)?.toUpperCase() || "CN"}
+                </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className={"mt-3"}>
