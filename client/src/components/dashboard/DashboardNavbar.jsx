@@ -28,6 +28,7 @@ import ToggleTheme from "@/components/common/ToggleTheme";
 const DashboardNavbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const user = useSelector((state) => state.auth.user);
   const role = useSelector((state) => state.auth.role);
   const routes = getDashboardRoutes(role);
   const location = useLocation();
@@ -110,8 +111,8 @@ const DashboardNavbar = () => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarImage src={user?.profileImageUrl || undefined} />
+              <AvatarFallback>{user?.fullName?.slice(0, 2)?.toUpperCase() || "CN"}</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className={"mt-3"}>
