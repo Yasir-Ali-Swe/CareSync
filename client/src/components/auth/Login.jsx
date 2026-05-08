@@ -13,6 +13,7 @@ import { Mail, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { authApi, getDashboardRouteByRole } from "@/services/auth.api";
 import { useDispatch } from "react-redux";
 import { setAuthUser } from "@/store/slices/authSlice";
@@ -22,6 +23,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -46,6 +48,7 @@ const Login = () => {
       };
 
       dispatch(setAuthUser(user));
+      await queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
       toast.success("Login successful");
 
       if (!isOnboardingCompleted && user.role !== "admin") {
