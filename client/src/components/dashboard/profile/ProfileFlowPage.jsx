@@ -1,7 +1,10 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { authApi } from "@/services/auth.api";
 import { doctorApi } from "@/services/doctor.api";
 import { patientApi } from "@/services/patient.api";
+import { setAuthUser } from "@/store/slices/authSlice";
 
 const defaultWidth = "w-full max-w-[90%] md:w-[75%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%] mx-auto";
 
@@ -9,10 +12,18 @@ const clone = (value) => JSON.parse(JSON.stringify(value));
 
 const ProfileFlowPage = ({ title, steps, totalSteps, initialProfile }) => {
   const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const [currentStep, setCurrentStep] = React.useState(1);
   const [profile, setProfile] = React.useState(() => clone(initialProfile));
+  const [avatarFile, setAvatarFile] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const [status, setStatus] = React.useState(null);
+
+  React.useEffect(() => {
+    if (currentStep !== 1) {
+      setAvatarFile(null);
+    }
+  }, [currentStep]);
 
   // Fetch real profile data on mount
   React.useEffect(() => {
@@ -57,7 +68,38 @@ const ProfileFlowPage = ({ title, steps, totalSteps, initialProfile }) => {
     setStatus(null);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 850));
+      const submitApi = user?.role === "doctor" ? doctorApi : patientApi;
+      const currentValues = profile[stepConfig.key];
+      let payload = currentValues;
+
+      if (stepConfig.key === "personalInfo" && avatarFile) {
+        const formData = new FormData();
+        formData.append("personalInfo", JSON.stringify(currentValues));
+        formData.append("avatar", avatarFile);
+        payload = formData;
+      }
+
+      const response =
+        user?.role === "doctor"
+          ? await submitApi.updateDoctorProfile(payload)
+          : await submitApi.updatePatientProfile(payload);
+
+      if (response?.data?.profile) {
+        setProfile(response.data.profile);
+      }
+
+      try {
+        const updatedUser = await authApi.getMe();
+        if (updatedUser?.data?.user) {
+          dispatch(setAuthUser(updatedUser.data.user));
+        }
+      } catch (authError) {
+        // Keep profile save successful even if auth refresh fails.
+      }
+
+      if (stepConfig.key === "personalInfo") {
+        setAvatarFile(null);
+      }
       setStatus({ type: "success", message: `${stepConfig.label} updated successfully.` });
     } catch (error) {
       setStatus({ type: "error", message: error?.message || "Unable to update right now." });
@@ -128,6 +170,8 @@ const ProfileFlowPage = ({ title, steps, totalSteps, initialProfile }) => {
           <StepComponent
             profile={profile}
             setProfile={setProfile}
+            avatarFile={avatarFile}
+            setAvatarFile={setAvatarFile}
             currentStep={currentStep}
             totalSteps={totalSteps}
             onPrevious={() => setCurrentStep((step) => Math.max(1, step - 1))}
