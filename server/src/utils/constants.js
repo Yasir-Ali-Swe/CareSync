@@ -39,6 +39,7 @@ export const RELATIONSHIPS = ["Father", "Mother", "Spouse", "Sibling", "Child", 
 
 export const NOTIFICATION_TYPES = {
   APPOINTMENT_CONFIRMED: "appointment_confirmed",
+  APPOINTMENT_COMPLETED: "appointment_completed",
   APPOINTMENT_CANCELLED: "appointment_cancelled",
   APPOINTMENT_REMINDER: "appointment_reminder",
   CHAT_MESSAGE: "chat_message",
