@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
-import { useState } from "react";
+import { patientApi } from "@/services/patient.api";
+import toast from "react-hot-toast";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,11 +31,41 @@ const PersonalInfoStep = ({ currentStep }) => {
   const navigate = useNavigate();
   const [date, setDate] = useState(null);
   const [image, setImage] = useState(null);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [gender, setGender] = useState("other");
 
-  const handleNext = () => {
-    navigate(`/patient-onboarding/${currentStep + 1}`);
+  const [isLoading, setIsLoading] = useState(false);
+  const isStepValid = Boolean(fullName.trim() && email.trim());
+
+  const handleNext = async () => {
+    try {
+      setIsLoading(true);
+
+      if (!fullName || !email) {
+        toast.error("Please fill in all required fields");
+        setIsLoading(false);
+        return;
+      }
+
+      // Save this step's data
+      await patientApi.submitOnboarding({
+        personalInfo: {
+          fullName: fullName.trim(),
+          email: email.trim(),
+          birthDate: date || null,
+          gender,
+          avatarUrl: image || "",
+        },
+      });
+
+      navigate(`/patient-onboarding/${currentStep + 1}`);
+    } catch (error) {
+      toast.error("Failed to save profile data");
+    } finally {
+      setIsLoading(false);
+    }
   };
-
   const handlePrevious = () => {
     navigate(`/patient-onboarding/${currentStep - 1}`);
   };
@@ -81,6 +112,8 @@ const PersonalInfoStep = ({ currentStep }) => {
             id="fullName"
             placeholder="Enter your full name"
             className={"rounded-2xl"}
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
           />
         </div>
 
@@ -92,6 +125,8 @@ const PersonalInfoStep = ({ currentStep }) => {
             placeholder="Enter your email"
             type="email"
             className={"rounded-2xl"}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
 
@@ -123,7 +158,7 @@ const PersonalInfoStep = ({ currentStep }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="space-y-2">
             <Label>Gender</Label>
-            <Select>
+            <Select value={gender} onValueChange={setGender}>
               <SelectTrigger className="rounded-2xl">
                 <SelectValue placeholder="Select Gender" />
               </SelectTrigger>
@@ -154,10 +189,10 @@ const PersonalInfoStep = ({ currentStep }) => {
           <Button
             type="button"
             onClick={handleNext}
-            disabled={currentStep === 4}
+            disabled={!isStepValid || isLoading}
             className={"rounded-2xl"}
           >
-            Next
+            {isLoading ? "Saving..." : "Next"}
           </Button>
         </div>
       </form>
