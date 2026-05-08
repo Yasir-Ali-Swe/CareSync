@@ -135,7 +135,7 @@ const Navbar = () => {
             <DropdownMenuTrigger asChild>
               <Avatar>
                 <AvatarImage
-                  src={user?.profileImageUrl || "https://github.com/shadcn.png"}
+                  src={user?.profileImageUrl || undefined}
                 />
                 <AvatarFallback>
                   {user?.fullName?.slice(0, 2)?.toUpperCase() || "CN"}
