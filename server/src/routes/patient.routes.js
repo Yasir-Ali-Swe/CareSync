@@ -17,7 +17,7 @@ const router = Router();
 
 router.use(protect, allowRoles(ROLES.PATIENT));
 
-router.patch("/onboarding", upsertPatientOnboarding);
+router.patch("/onboarding", upload.single("avatar"), upsertPatientOnboarding);
 
 router.use(requireOnboardingCompleted());
 
