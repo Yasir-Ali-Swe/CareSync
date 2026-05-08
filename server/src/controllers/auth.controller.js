@@ -2,6 +2,8 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
 import { PatientProfile } from "../models/patientProfile.model.js";
 import { DoctorProfile } from "../models/doctorProfile.model.js";
+import { PatientProfile } from "../models/patientProfile.model.js";
+import { DoctorProfile } from "../models/doctorProfile.model.js";
 import { asyncHandler } from "../middlewares/error.middleware.js";
 import { emailService } from "../services/email.service.js";
 import { tokenService } from "../services/token.service.js";
@@ -369,5 +371,25 @@ export const me = asyncHandler(async (req, res) => {
     return res.status(404).json({ success: false, message: "User not found" });
   }
 
-  return res.status(200).json({ success: true, data: { user } });
+  let isOnboardingCompleted = true;
+
+  if (user.role === "patient") {
+    const profile = await PatientProfile.findOne({ user: user._id }).select("onboardingCompleted");
+    isOnboardingCompleted = Boolean(profile?.onboardingCompleted);
+  }
+
+  if (user.role === "doctor") {
+    const profile = await DoctorProfile.findOne({ user: user._id }).select("onboardingCompleted");
+    isOnboardingCompleted = Boolean(profile?.onboardingCompleted);
+  }
+
+  return res.status(200).json({
+    success: true,
+    data: {
+      user: {
+        ...user.toObject(),
+        isOnboardingCompleted,
+      },
+    },
+  });
 });
