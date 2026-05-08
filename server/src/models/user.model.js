@@ -61,22 +61,6 @@ const userSchema = new mongoose.Schema(
         province: { type: String, default: "" },
         city: { type: String, default: "" },
       },
-      default: {
-        personalInfo: {
-          avatarUrl: "",
-          fullName: "",
-          email: "",
-          birthDate: "",
-          gender: "other",
-        },
-        contactInfo: {
-          primaryPhone: "",
-          secondaryPhone: "",
-          address: "",
-          province: "",
-          city: "",
-        },
-      },
     },
     refreshTokenHash: {
       type: String,
