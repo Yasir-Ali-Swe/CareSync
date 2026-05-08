@@ -23,7 +23,9 @@ const startServer = async () => {
   registerSocketHandlers(io);
 
   httpServer.listen(env.PORT, () => {
-    console.log(`Server running on port ${env.PORT}`);
+    if (env.NODE_ENV !== "production") {
+      console.log(`Server running on port ${env.PORT}`);
+    }
   });
 };
 
