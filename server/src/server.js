@@ -5,6 +5,8 @@ import { connectDB } from "./config/db.js";
 import { env } from "./config/env.js";
 import { registerSocketHandlers } from "./sockets/socket.handler.js";
 
+const normalizeOrigin = (value) => String(value || "").replace(/\/$/, "");
+
 const startServer = async () => {
   await connectDB();
 
@@ -12,7 +14,7 @@ const startServer = async () => {
 
   const io = new Server(httpServer, {
     cors: {
-      origin: env.FRONTEND_URL,
+      origin: normalizeOrigin(env.FRONTEND_URL),
       credentials: true,
     },
   });
