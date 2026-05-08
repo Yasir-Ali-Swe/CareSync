@@ -461,7 +461,7 @@ export const resetPassword = asyncHandler(async (req, res) => {
 
 export const me = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id).select(
-    "_id fullName email role status isEmailVerified profileImageUrl",
+    "_id fullName email role status isEmailVerified profileImageUrl adminProfile",
   );
 
   if (!user) {
