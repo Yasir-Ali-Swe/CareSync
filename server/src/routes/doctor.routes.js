@@ -29,7 +29,7 @@ router.patch("/onboarding", upload.single("avatar"), upsertDoctorOnboarding);
 router.use(requireOnboardingCompleted());
 
 router.get("/profile", getDoctorProfile);
-router.patch("/profile", updateDoctorProfile);
+router.patch("/profile", upload.single("avatar"), updateDoctorProfile);
 router.post("/profile/avatar", upload.single("avatar"), uploadDoctorAvatar);
 router.post("/profile/certificates", upload.single("certificate"), uploadDoctorCertificate);
 router.patch("/availability", updateDoctorAvailability);
