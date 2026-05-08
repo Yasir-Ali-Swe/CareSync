@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { doctorApi } from "@/services/doctor.api";
+import { authApi } from "@/services/auth.api";
+import { setAuthUser } from "@/store/slices/authSlice";
 import toast from "react-hot-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,21 +21,36 @@ const daysOfWeek = [
 
 const AvailabilityStep = ({ currentStep }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
-      if (availability.some((day) => day.slots.some((slot) => !slot.start || !slot.end))) {
-        toast.error("Please fill in all time slots");
+      const schedule = availability
+        .map((day) => ({
+          ...day,
+          slots: day.slots.filter((slot) => slot.start && slot.end),
+        }))
+        .filter((day) => day.slots.length > 0);
+
+      if (schedule.length === 0) {
+        toast.error("Please add at least one valid time slot");
         setIsLoading(false);
         return;
       }
 
       // Submit onboarding
       await doctorApi.submitOnboarding({
-        schedule: availability.filter((day) => day.slots.some((slot) => slot.start && slot.end)),
+        schedule,
       });
+
+      // Refresh user state to update isOnboardingCompleted
+      const updatedUser = await authApi.getMe();
+      dispatch(setAuthUser({
+        ...updatedUser.data.user,
+        isOnboardingCompleted: true,
+      }));
 
       toast.success("Profile completed successfully!");
       navigate("/dashboard");
