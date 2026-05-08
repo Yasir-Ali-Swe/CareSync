@@ -12,7 +12,7 @@ import Contact from "./pages/public/Contact";
 import PublicLayout from "@/components/layouts/PublicLayout";
 import DoctorListingPage from "@/pages/public/DoctorListingPage";
 import ChatLayout from "@/components/layouts/ChatLayout";
-import ChatWindowPlaceholder from "@/pages/chat/ChatWIndowPlacholder";
+import ChatWindowPlaceholder from "@/pages/chat/ChatWindowPlaceholder";
 import ChatWindow from "@/pages/chat/ChatWindow";
 import DoctorProfile from "@/pages/public/DoctorProfile";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
@@ -24,7 +24,7 @@ import PatientAppointment from "@/pages/dashboard/Patient/Appointment";
 import PatientProfile from "@/pages/dashboard/Patient/Profile";
 import DoctorAppointments from "@/pages/dashboard/Doctor/Appointments";
 import DoctorDashboardProfile from "@/pages/dashboard/Doctor/Profile";
-import AdminUserManagment from "@/pages/dashboard/Admin/UserManagment";
+import AdminUserManagement from "@/pages/dashboard/Admin/UserManagement";
 import AdminProfile from "@/pages/dashboard/Admin/Profile";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import PublicRoute from "@/components/PublicRoute";
@@ -129,7 +129,7 @@ const App = () => {
             path="admin/users-management"
             element={
               <RoleBasedRoute allowedRole="admin">
-                <AdminUserManagment />
+                <AdminUserManagement />
               </RoleBasedRoute>
             }
           />
