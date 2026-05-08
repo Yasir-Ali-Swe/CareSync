@@ -26,16 +26,37 @@ import DashboardPageSkeleton from "@/components/dashboard/common/DashboardPageSk
 import EmptyStateCard from "@/components/dashboard/common/EmptyStateCard";
 import StatusBadge from "@/components/dashboard/common/StatusBadge";
 import { formatDate } from "@/components/dashboard/common/dashboardUtils";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import { adminApi } from "@/services/admin.api";
 
 const UserManagment = () => {
   const [filter, setFilter] = useState("doctor");
 
+  const queryClient = useQueryClient();
+
   const usersQuery = useQuery({
     queryKey: ["admin-users", filter],
     queryFn: () => adminApi.getUsers({ role: filter }),
   });
+
+  const updateUserStatusMutation = useMutation({
+    mutationFn: ({ userId, status }) => adminApi.updateUserStatus(userId, status),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
+        queryClient.invalidateQueries({ queryKey: ["admin-stats"] }),
+      ]);
+      toast.success("User status updated");
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Unable to update user status.");
+    },
+  });
+
+  const handleStatusChange = (userId, status) => {
+    updateUserStatusMutation.mutate({ userId, status });
+  };
 
   const filteredUsers = useMemo(
     () =>
@@ -74,10 +95,6 @@ const UserManagment = () => {
       },
     ];
 
-    if (!isDoctorView) {
-      return baseColumns;
-    }
-
     return [
       ...baseColumns,
       {
@@ -92,39 +109,50 @@ const UserManagment = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem asChild>
-                <Link
-                  to={`/doctor-profile/${row.doctorId}`}
-                  className="flex items-center gap-2"
-                >
-                  <Eye className="size-4" />
-                  View Profile
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem disabled={row.status !== "active"}>
+              {row.role === "doctor" ? (
+                <>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to={`/doctor-profile/${row.doctorId}`}
+                      className="flex items-center gap-2"
+                    >
+                      <Eye className="size-4" />
+                      View Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </>
+              ) : null}
+              <DropdownMenuItem
+                disabled={row.status !== "active" || updateUserStatusMutation.isPending}
+                onSelect={(event) => {
+                  event.preventDefault();
+                  if (row.status === "active") {
+                    handleStatusChange(row.id, "suspended");
+                  }
+                }}
+              >
                 <UserRoundX className="size-4" />
                 Suspend User
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                {row.status === "active" ? (
-                  <>
-                    <UserRoundX className="size-4" />
-                    Deactivate User
-                  </>
-                ) : (
-                  <>
-                    <UserRoundCheck className="size-4" />
-                    Activate User
-                  </>
-                )}
+              <DropdownMenuItem
+                disabled={row.status === "active" || updateUserStatusMutation.isPending}
+                onSelect={(event) => {
+                  event.preventDefault();
+                  if (row.status !== "active") {
+                    handleStatusChange(row.id, "active");
+                  }
+                }}
+              >
+                <UserRoundCheck className="size-4" />
+                Activate User
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         ),
       },
     ];
-  }, [isDoctorView]);
+  }, [handleStatusChange, updateUserStatusMutation.isPending]);
 
   if (usersQuery.isLoading) {
     return (
