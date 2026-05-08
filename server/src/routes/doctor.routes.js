@@ -24,7 +24,7 @@ router.get("/public/:doctorId", getDoctorById);
 
 router.use(protect, allowRoles(ROLES.DOCTOR));
 
-router.patch("/onboarding", upsertDoctorOnboarding);
+router.patch("/onboarding", upload.single("avatar"), upsertDoctorOnboarding);
 
 router.use(requireOnboardingCompleted());
 
