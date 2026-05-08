@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { doctorApi } from "@/services/doctor.api";
+import toast from "react-hot-toast";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,8 +18,36 @@ import { Button } from "@/components/ui/button";
 
 const ProfessionalInfoStep = ({ currentStep }) => {
   const navigate = useNavigate();
+  const [specialization, setSpecialization] = useState("");
+  const [yearsExperience, setYearsExperience] = useState("");
+  const [consultationFee, setConsultationFee] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleNext = () => navigate(`/doctor-onboarding/${currentStep + 1}`);
+  const isStepValid = Boolean(specialization && yearsExperience && consultationFee);
+
+  const handleNext = async () => {
+    try {
+      setIsLoading(true);
+      if (!isStepValid) {
+        toast.error("Please complete all required professional fields");
+        setIsLoading(false);
+        return;
+      }
+
+      await doctorApi.submitOnboarding({
+        specialization,
+        yearsExperience,
+        consultationFee,
+        courses: courses.map((course) => ({ name: course.name })).filter((course) => course.name),
+      });
+
+      navigate(`/doctor-onboarding/${currentStep + 1}`);
+    } catch (error) {
+      toast.error("Failed to save professional details");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const handlePrevious = () =>
     navigate(`/doctor-onboarding/${currentStep - 1}`);
 
@@ -82,7 +112,7 @@ const ProfessionalInfoStep = ({ currentStep }) => {
       <div className="space-y-5">
         <div className="space-y-2">
           <Label>Specialization</Label>
-          <Select>
+          <Select value={specialization} onValueChange={setSpecialization}>
             <SelectTrigger className={"rounded-2xl"}>
               <SelectValue placeholder="Select Specialization" />
             </SelectTrigger>
@@ -106,12 +136,14 @@ const ProfessionalInfoStep = ({ currentStep }) => {
             min={0}
             className={"rounded-2xl"}
             placeholder="Enter years of experience"
+            value={yearsExperience}
+            onChange={(e) => setYearsExperience(e.target.value)}
           />
         </div>
 
         <div className="space-y-2">
           <Label>Consultation Fee (PKR)</Label>
-          <Input type="number" min={0} placeholder="Enter consultation fee" className={"rounded-2xl"}/>
+          <Input type="number" min={0} placeholder="Enter consultation fee" className={"rounded-2xl"} value={consultationFee} onChange={(e) => setConsultationFee(e.target.value)} />
         </div>
       </div>
 
@@ -171,8 +203,8 @@ const ProfessionalInfoStep = ({ currentStep }) => {
           Previous
         </Button>
 
-        <Button type="button" onClick={handleNext} disabled={currentStep === 5} className={"rounded-2xl"}>
-          Next
+        <Button type="button" onClick={handleNext} disabled={!isStepValid || isLoading} className={"rounded-2xl"}>
+          {isLoading ? "Saving..." : "Next"}
         </Button>
       </div>
     </div>
