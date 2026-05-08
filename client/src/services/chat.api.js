@@ -23,11 +23,7 @@ export const chatApi = {
       });
       formData.append("attachment", attachment);
 
-      const response = await api.post("/chat/messages", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await api.post("/chat/messages", formData);
       return response.data;
     }
 
