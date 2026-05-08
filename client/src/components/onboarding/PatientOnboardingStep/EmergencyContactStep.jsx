@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { patientApi } from "@/services/patient.api";
+import { authApi } from "@/services/auth.api";
+import { setAuthUser } from "@/store/slices/authSlice";
 import toast from "react-hot-toast";
 
 import { Input } from "@/components/ui/input";
@@ -19,15 +22,17 @@ import {
 const EmergencyContactStep = ({ currentStep }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [emergencyName, setEmergencyName] = useState("");
+  const [relationship, setRelationship] = useState("Other");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [alternatePhoneNumber, setAlternatePhoneNumber] = useState("");
+
+  const dispatch = useDispatch();
+  const isStepValid = Boolean(emergencyName.trim() && phoneNumber.trim());
 
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
-      // Collect form data
-      const emergencyName = document.getElementById("emergencyName")?.value;
-      const relationship = document.querySelector('[role="combobox"]')?.textContent || document.querySelector('[value]')?.value;
-      const phoneNumber = document.getElementById("phoneNumber")?.value;
-      const alternatePhoneNumber = document.getElementById("alternatePhoneNumber")?.value;
 
       if (!emergencyName || !phoneNumber) {
         toast.error("Please fill in required fields");
@@ -38,12 +43,19 @@ const EmergencyContactStep = ({ currentStep }) => {
       // Submit onboarding
       await patientApi.submitOnboarding({
         emergencyContact: {
-          fullName: emergencyName,
+          fullName: emergencyName.trim(),
           relationship: relationship || "Other",
-          phone: phoneNumber,
-          alternatePhone: alternatePhoneNumber,
+          phone: phoneNumber.trim(),
+          alternatePhone: alternatePhoneNumber.trim(),
         },
       });
+
+      // Refresh user state to update isOnboardingCompleted
+      const updatedUser = await authApi.getMe();
+      dispatch(setAuthUser({
+        ...updatedUser.data.user,
+        isOnboardingCompleted: true,
+      }));
 
       toast.success("Profile completed successfully!");
       navigate("/dashboard");
@@ -70,13 +82,15 @@ const EmergencyContactStep = ({ currentStep }) => {
             id="emergencyName"
             placeholder="Enter full name"
             className={"rounded-2xl"}
+            value={emergencyName}
+            onChange={(e) => setEmergencyName(e.target.value)}
           />
         </div>
 
         {/* Relationship */}
         <div className="space-y-2">
           <Label htmlFor="relationship">Relationship</Label>
-          <Select>
+          <Select value={relationship} onValueChange={setRelationship}>
             <SelectTrigger className={"rounded-2xl"}>
               <SelectValue placeholder="Select relationship" />
             </SelectTrigger>
@@ -101,6 +115,8 @@ const EmergencyContactStep = ({ currentStep }) => {
             placeholder="0330-0000000"
             type="tel"
             className={"rounded-2xl"}
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
           />
         </div>
 
@@ -112,6 +128,8 @@ const EmergencyContactStep = ({ currentStep }) => {
             id="alternatePhoneNumber"
             placeholder="0330-0000000"
             type="tel"
+            value={alternatePhoneNumber}
+            onChange={(e) => setAlternatePhoneNumber(e.target.value)}
           />
         </div>
 
@@ -130,7 +148,7 @@ const EmergencyContactStep = ({ currentStep }) => {
           <Button
             type="button"
             onClick={handleSubmit}
-            disabled={isLoading}
+            disabled={!isStepValid || isLoading}
             className={"rounded-2xl"}
           >
             {isLoading ? "Submitting..." : "Submit"}
