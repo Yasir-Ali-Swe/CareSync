@@ -24,8 +24,8 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log(formData);
+    // TODO: Implement contact form submission to backend
+    // Currently placeholder-only
   };
 
   return (
