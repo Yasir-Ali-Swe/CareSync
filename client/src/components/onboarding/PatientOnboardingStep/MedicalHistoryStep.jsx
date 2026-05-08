@@ -1,6 +1,8 @@
 import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { patientApi } from "@/services/patient.api";
+import toast from "react-hot-toast";
 import {
   Combobox,
   ComboboxChip,
@@ -75,9 +77,39 @@ const MedicalHistoryStep = ({ currentStep }) => {
   const navigate = useNavigate();
   const [allergyValue, setAllergyValue] = useState([]);
   const [conditionValue, setConditionValue] = useState([]);
+  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("");
+  const [bloodGroup, setBloodGroup] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const isStepValid = Boolean(bloodGroup);
 
-  const handleNext = () => {
-    navigate(`/patient-onboarding/${currentStep + 1}`);
+  const handleNext = async () => {
+    try {
+      setIsLoading(true);
+
+      if (!bloodGroup) {
+        toast.error("Please select blood group");
+        setIsLoading(false);
+        return;
+      }
+
+      // Save this step's data
+      await patientApi.submitOnboarding({
+        medicalInformation: {
+          height,
+          weight,
+          bloodGroup,
+          allergies: allergyValue || [],
+          chronicConditions: conditionValue || [],
+        },
+      });
+
+      navigate(`/patient-onboarding/${currentStep + 1}`);
+    } catch (error) {
+      toast.error("Failed to save medical information");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handlePrevious = () => {
@@ -97,6 +129,8 @@ const MedicalHistoryStep = ({ currentStep }) => {
             type="number"
             placeholder="Enter your height"
             className={"rounded-2xl"}
+            value={height}
+            onChange={(e) => setHeight(e.target.value)}
           />
         </div>
 
@@ -108,13 +142,15 @@ const MedicalHistoryStep = ({ currentStep }) => {
             type="number"
             placeholder="Enter your weight"
             className={"rounded-2xl"}
+            value={weight}
+            onChange={(e) => setWeight(e.target.value)}
           />
         </div>
 
         {/* Blood Group */}
         <div className="space-y-2">
           <Label htmlFor="bloodGroup">Blood Group</Label>
-          <Select>
+          <Select value={bloodGroup} onValueChange={setBloodGroup}>
             <SelectTrigger className={"rounded-2xl"}>
               <SelectValue placeholder="Select blood group" />
             </SelectTrigger>
@@ -219,9 +255,9 @@ const MedicalHistoryStep = ({ currentStep }) => {
             type="button"
             onClick={handleNext}
             className={"rounded-2xl"}
-            disabled={currentStep === 4}
+            disabled={!isStepValid || isLoading}
           >
-            Next
+            {isLoading ? "Saving..." : "Next"}
           </Button>
         </div>
       </form>
