@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { doctorApi } from "@/services/doctor.api";
+import toast from "react-hot-toast";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,9 +22,27 @@ const DoctorEducationStep = ({ currentStep }) => {
   const [educationList, setEducationList] = useState([
     { degree: "", institution: "", startYear: "", endYear: "" },
   ]);
+  const [isLoading, setIsLoading] = useState(false);
+  const isStepValid = educationList.every(
+    (edu) => edu.degree && edu.institution && edu.startYear && edu.endYear,
+  );
 
-  const handleNext = () => {
-    navigate(`/doctor-onboarding/${currentStep + 1}`);
+  const handleNext = async () => {
+    try {
+      setIsLoading(true);
+      if (!isStepValid) {
+        toast.error("Please complete all education fields");
+        setIsLoading(false);
+        return;
+      }
+
+      await doctorApi.submitOnboarding({ education: educationList });
+      navigate(`/doctor-onboarding/${currentStep + 1}`);
+    } catch (error) {
+      toast.error("Failed to save education details");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handlePrevious = () => {
@@ -170,10 +190,10 @@ const DoctorEducationStep = ({ currentStep }) => {
         <Button
           type="button"
           onClick={handleNext}
-          disabled={currentStep === 4}
+          disabled={!isStepValid || isLoading}
           className={"rounded-2xl"}
         >
-          Next
+          {isLoading ? "Saving..." : "Next"}
         </Button>
       </div>
     </div>
