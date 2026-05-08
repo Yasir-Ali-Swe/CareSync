@@ -24,12 +24,17 @@ import { clearAuth } from "@/store/slices/authSlice";
 import { authApi, getDashboardRouteByRole } from "@/services/auth.api";
 import toast from "react-hot-toast";
 
-const NavLinks = [
-  { name: "Home", path: "/" },
-  { name: "Doctors", path: "/doctors" },
-  { name: "Messages", path: "/messages" },
-  { name: "Contact Us", path: "/contact-us" },
-];
+const getNavLinks = (isAuthenticated) => {
+  const links = [
+    { name: "Home", path: "/" },
+    { name: "Doctors", path: "/doctors" },
+    { name: "Contact Us", path: "/contact-us" },
+  ];
+  if (isAuthenticated) {
+    links.splice(2, 0, { name: "Messages", path: "/messages" });
+  }
+  return links;
+};
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -61,7 +66,7 @@ const Navbar = () => {
         <h1 className="text-2xl font-bold text-primary">CareSync</h1>
       </Link>
       <div className="hidden lg:flex lg:gap-15">
-        {NavLinks.map((link, index) => {
+        {getNavLinks(isAuthenticated).map((link, index) => {
           const isActive =
             link.path === "/doctors" ? isDoctorsActive : path === link.path;
 
@@ -93,7 +98,7 @@ const Navbar = () => {
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-screen mt-3 bg-primary text-secondary rounded-none">
-            {NavLinks.map((link, index) => (
+            {getNavLinks(isAuthenticated).map((link, index) => (
               <Link key={index} to={link.path}>
                 <Button
                   variant="ghost"
@@ -124,25 +129,27 @@ const Navbar = () => {
             </Button>
           </Link>
         ) : null}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className={"mt-3"}>
-            <DropdownMenuItem>
-              <Link to={getDashboardRouteByRole(role)} className="w-full">
-                Dashboard
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive" onClick={handleLogout}>
-              Logout
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {isAuthenticated && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar>
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className={"mt-3"}>
+              <DropdownMenuItem>
+                <Link to={getDashboardRouteByRole(role)} className="w-full">
+                  Dashboard
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive" onClick={handleLogout}>
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
         <ToggleTheme />
       </div>
     </nav>
