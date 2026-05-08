@@ -6,5 +6,7 @@ export const connectDB = async () => {
   await mongoose.connect(env.MONGO_URI, {
     autoIndex: !env.NODE_ENV || env.NODE_ENV !== "production",
   });
-  console.log("MongoDB connected");
+  if (env.NODE_ENV !== "production") {
+    console.log("MongoDB connected");
+  }
 };
