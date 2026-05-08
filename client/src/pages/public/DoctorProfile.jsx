@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import DoctorsData from "@/dummyData/DoctorData.js";
+import { useQuery } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert.jsx";
+import { Loader2 } from "lucide-react";
 
 import {
   Star,
@@ -24,6 +25,7 @@ import {
   BadgeCheck,
   MapPin,
 } from "lucide-react";
+import { doctorApi } from "@/services/doctor.api.js";
 
 // ── Date helpers ──────────────────────────────────────────────────────────────
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -110,15 +112,32 @@ function TimingRow({ icon, label, time, available }) {
 // ── Main Component ────────────────────────────────────────────────────────────
 const DoctorProfile = () => {
   const { doctorId } = useParams();
-  const id = Number(doctorId) - 1;
-  const doctor = DoctorsData[id];
+
+  const { data: doctorResponse, isLoading, error } = useQuery({
+    queryKey: ["doctor-profile-public", doctorId],
+    queryFn: async () => {
+      return await doctorApi.getDoctorById(doctorId);
+    },
+    enabled: !!doctorId,
+  });
+
+  const doctor = doctorResponse?.data?.doctor;
 
   const weekDays = getCurrentWeekDays();
   const [selectedDayIdx, setSelectedDayIdx] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [confirmed, setConfirmed] = useState(false);
 
-  if (!doctor) {
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <p className="text-muted-foreground">Loading doctor profile...</p>
+      </div>
+    );
+  }
+
+  if (error || !doctor) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
         <p className="text-xl font-semibold text-muted-foreground">
