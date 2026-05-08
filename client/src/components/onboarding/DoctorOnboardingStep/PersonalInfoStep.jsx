@@ -31,7 +31,8 @@ import { Plus } from "lucide-react";
 const PersonalInfoStep = ({ currentStep }) => {
   const navigate = useNavigate();
   const [date, setDate] = useState(null);
-  const [image, setImage] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("other");
@@ -47,15 +48,20 @@ const PersonalInfoStep = ({ currentStep }) => {
         return;
       }
 
-      await doctorApi.submitOnboarding({
-        personalInfo: {
-          fullName: fullName.trim(),
-          email: email.trim(),
-          birthDate: date || null,
-          gender,
-          avatarUrl: image || "",
-        },
-      });
+      // Create FormData for multipart submission
+      const formData = new FormData();
+      formData.append("personalInfo", JSON.stringify({
+        fullName: fullName.trim(),
+        email: email.trim(),
+        birthDate: date || null,
+        gender,
+      }));
+      
+      if (imageFile) {
+        formData.append("avatar", imageFile);
+      }
+
+      await doctorApi.submitOnboarding(formData);
 
       navigate(`/doctor-onboarding/${currentStep + 1}`);
     } catch (error) {
@@ -72,7 +78,8 @@ const PersonalInfoStep = ({ currentStep }) => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImage(URL.createObjectURL(file));
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -91,8 +98,8 @@ const PersonalInfoStep = ({ currentStep }) => {
         />
         <label htmlFor="avatar-upload">
           <Avatar className="w-24 h-24 cursor-pointer border border-border">
-            {image ? (
-              <AvatarImage src={image} />
+            {imagePreview ? (
+              <AvatarImage src={imagePreview} />
             ) : (
               <AvatarFallback>
                 <Plus className="w-6 h-6 text-gray-500" />
