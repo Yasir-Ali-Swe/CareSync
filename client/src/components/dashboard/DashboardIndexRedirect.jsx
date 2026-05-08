@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { getDashboardHomeRoute } from "../../lib/DasboardRotes";
+import { getDashboardHomeRoute } from "../../lib/DashboardRoutes";
 
 const DashboardIndexRedirect = () => {
   const role = useSelector((state) => state.auth.role);
