@@ -10,6 +10,12 @@ export const patientApi = {
     const response = await api.patch("/patient/onboarding", data, config);
     return response.data;
   },
+  updatePatientProfile: async (data) => {
+    const config = {};
+
+    const response = await api.patch("/patient/profile", data, config);
+    return response.data;
+  },
   getPatientProfile: async () => {
     const response = await api.get("/patient/profile");
     return response.data;
