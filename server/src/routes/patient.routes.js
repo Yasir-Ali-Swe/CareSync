@@ -22,7 +22,7 @@ router.patch("/onboarding", upload.single("avatar"), upsertPatientOnboarding);
 router.use(requireOnboardingCompleted());
 
 router.get("/profile", getPatientProfile);
-router.patch("/profile", updatePatientProfile);
+router.patch("/profile", upload.single("avatar"), updatePatientProfile);
 router.post("/profile/avatar", upload.single("avatar"), uploadPatientAvatar);
 router.get("/appointments", getPatientAppointments);
 router.get("/stats", getPatientDashboardStats);
