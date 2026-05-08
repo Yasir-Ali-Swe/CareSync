@@ -64,9 +64,26 @@ export const registerSocketHandlers = (io) => {
     socket.join(`user:${userId}`);
     io.emit("presence:online-users", socketService.getOnlineUserIds());
 
-    socket.on("conversation:join", ({ conversationId }) => {
+    socket.on("conversation:join", async ({ conversationId }) => {
       if (!conversationId) return;
-      socket.join(`conversation:${conversationId}`);
+
+      try {
+        const conversation = await Conversation.findById(conversationId);
+        if (!conversation) return;
+
+        const isParticipant = conversation.participants.some(
+          (participantId) => String(participantId) === String(socket.data.userId),
+        );
+
+        if (!isParticipant) {
+          socket.emit("error", { message: "Unauthorized: not a participant in this conversation" });
+          return;
+        }
+
+        socket.join(`conversation:${conversationId}`);
+      } catch (error) {
+        socket.emit("error", { message: "Failed to join conversation" });
+      }
     });
 
     socket.on("typing:start", ({ conversationId }) => {
