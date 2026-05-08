@@ -10,6 +10,12 @@ export const doctorApi = {
     const response = await api.patch("/doctor/onboarding", data, config);
     return response.data;
   },
+  updateDoctorProfile: async (data) => {
+    const config = {};
+
+    const response = await api.patch("/doctor/profile", data, config);
+    return response.data;
+  },
   getDoctorProfile: async () => {
     const response = await api.get("/doctor/profile");
     return response.data;
