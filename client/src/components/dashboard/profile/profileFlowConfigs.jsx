@@ -1259,7 +1259,7 @@ function DoctorProfessionalDetailsStep({
               className="rounded-2xl"
               onChange={(e) => {
                 const next = clone(courses);
-                next[index].certificate = e.target.files?.[0] || null;
+                next[index].certificateUrl = e.target.files?.[0] || null;
                 setCourses(next);
               }}
             />
@@ -1282,7 +1282,7 @@ function DoctorProfessionalDetailsStep({
           type="button"
           variant="outline"
           onClick={() =>
-            setCourses([...courses, { name: "", certificate: null }])
+            setCourses([...courses, { name: "", certificateUrl: null }])
           }
           className="rounded-2xl"
         >
@@ -1719,8 +1719,8 @@ const doctorInitialProfile = {
   yearsExperience: "12",
   consultationFee: "4500",
   courses: [
-    { name: "Advanced Cardiac Life Support", certificate: null },
-    { name: "Echocardiography Workshop", certificate: null },
+    { name: "Advanced Cardiac Life Support", certificateUrl: "" },
+    { name: "Echocardiography Workshop", certificateUrl: "" },
   ],
   bio: "Board-certified cardiologist focused on preventive care, long-term heart health, and evidence-based consultation.",
   skills: ["Diagnosis", "Patient Care"],
