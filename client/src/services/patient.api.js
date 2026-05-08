@@ -5,6 +5,10 @@ export const patientApi = {
     const response = await api.patch("/patient/onboarding", data);
     return response.data;
   },
+  getPatientProfile: async () => {
+    const response = await api.get("/patient/profile");
+    return response.data;
+  },
   getStats: async () => {
     const response = await api.get("/patient/stats");
     return response.data;
