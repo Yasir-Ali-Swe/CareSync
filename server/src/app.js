@@ -18,10 +18,24 @@ import notificationRoutes from "./routes/notification.routes.js";
 
 const app = express();
 
+const normalizeOrigin = (value) => String(value || "").replace(/\/$/, "");
+const allowedOrigins = new Set([normalizeOrigin(env.FRONTEND_URL)].filter(Boolean));
+
 app.use(helmet());
 app.use(
   cors({
-    origin: true,
+    origin: (origin, callback) => {
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      const normalizedOrigin = normalizeOrigin(origin);
+      if (allowedOrigins.has(normalizedOrigin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   }),
