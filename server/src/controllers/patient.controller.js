@@ -1,5 +1,6 @@
 import { Appointment } from "../models/appointment.model.js";
 import { PatientProfile } from "../models/patientProfile.model.js";
+import { User } from "../models/user.model.js";
 import { asyncHandler } from "../middlewares/error.middleware.js";
 import { cloudinaryService } from "../services/cloudinary.service.js";
 
