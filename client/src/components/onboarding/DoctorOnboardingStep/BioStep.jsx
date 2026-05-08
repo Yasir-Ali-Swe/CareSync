@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { doctorApi } from "@/services/doctor.api";
+import toast from "react-hot-toast";
 
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -17,8 +19,33 @@ const languageOptions = [
 
 const BioStep = ({ currentStep }) => {
   const navigate = useNavigate();
+  const [bio, setBio] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleNext = () => navigate(`/doctor-onboarding/${currentStep + 1}`);
+  const isStepValid = Boolean(bio.trim());
+
+  const handleNext = async () => {
+    try {
+      setIsLoading(true);
+      if (!isStepValid) {
+        toast.error("Please add your bio");
+        setIsLoading(false);
+        return;
+      }
+
+      await doctorApi.submitOnboarding({
+        bio: bio.trim(),
+        skills,
+        languages,
+      });
+
+      navigate(`/doctor-onboarding/${currentStep + 1}`);
+    } catch (error) {
+      toast.error("Failed to save bio details");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const handlePrevious = () =>
     navigate(`/doctor-onboarding/${currentStep - 1}`);
 
@@ -51,7 +78,7 @@ const BioStep = ({ currentStep }) => {
       {/* Short Bio */}
       <div className="space-y-2">
         <Label>Short Bio</Label>
-        <Textarea placeholder="Write a short bio about yourself..." className={"rounded-2xl"}/>
+        <Textarea placeholder="Write a short bio about yourself..." className={"rounded-2xl"} value={bio} onChange={(e) => setBio(e.target.value)} />
       </div>
 
       {/* Skills */}
@@ -119,8 +146,8 @@ const BioStep = ({ currentStep }) => {
         >
           Previous
         </Button>
-        <Button type="button" onClick={handleNext} disabled={currentStep === 6} className={"rounded-2xl"}>
-          Next
+        <Button type="button" onClick={handleNext} disabled={!isStepValid || isLoading} className={"rounded-2xl"}>
+          {isLoading ? "Saving..." : "Next"}
         </Button>
       </div>
     </div>
