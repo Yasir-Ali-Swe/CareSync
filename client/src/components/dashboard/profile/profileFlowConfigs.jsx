@@ -210,6 +210,9 @@ const AlertText = ({ status }) =>
 
 const AvatarPicker = ({ value, onChange }) => {
   const [preview, setPreview] = useState(value || null);
+  React.useEffect(() => {
+    setPreview(value || null);
+  }, [value]);
   return (
     <div className="flex flex-col items-center space-y-2">
       <input
@@ -222,7 +225,7 @@ const AvatarPicker = ({ value, onChange }) => {
           if (!file) return;
           const url = URL.createObjectURL(file);
           setPreview(url);
-          onChange(url);
+          onChange(file, url);
         }}
       />
       <label htmlFor="avatar-upload">
@@ -244,6 +247,7 @@ const AvatarPicker = ({ value, onChange }) => {
 function PatientPersonalInfoStep({
   profile,
   setProfile,
+  setAvatarFile,
   currentStep,
   totalSteps,
   onPrevious,
@@ -262,9 +266,10 @@ function PatientPersonalInfoStep({
       <h1 className="text-2xl font-bold">Personal Information</h1>
       <AvatarPicker
         value={profile.personalInfo.avatarUrl}
-        onChange={(avatarUrl) =>
-          setProfile((p) => updatePath(p, "personalInfo.avatarUrl", avatarUrl))
-        }
+        onChange={(file, avatarUrl) => {
+          setAvatarFile(file);
+          setProfile((p) => updatePath(p, "personalInfo.avatarUrl", avatarUrl));
+        }}
       />
       <form className="space-y-5">
         <div className="space-y-2">
@@ -743,6 +748,7 @@ function PatientEmergencyContactStep({
 function DoctorPersonalInfoStep({
   profile,
   setProfile,
+  setAvatarFile,
   currentStep,
   totalSteps,
   onPrevious,
@@ -761,9 +767,10 @@ function DoctorPersonalInfoStep({
       <h1 className="text-2xl font-bold">Personal Information</h1>
       <AvatarPicker
         value={profile.personalInfo.avatarUrl}
-        onChange={(avatarUrl) =>
-          setProfile((p) => updatePath(p, "personalInfo.avatarUrl", avatarUrl))
-        }
+        onChange={(file, avatarUrl) => {
+          setAvatarFile(file);
+          setProfile((p) => updatePath(p, "personalInfo.avatarUrl", avatarUrl));
+        }}
       />
       <form className="space-y-5">
         <div className="space-y-2">
