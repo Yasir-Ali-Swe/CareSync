@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { authApi } from "@/services/auth.api";
+import { adminApi } from "@/services/admin.api";
 import { doctorApi } from "@/services/doctor.api";
 import { patientApi } from "@/services/patient.api";
 import { setAuthUser } from "@/store/slices/authSlice";
@@ -39,6 +40,11 @@ const ProfileFlowPage = ({ title, steps, totalSteps, initialProfile }) => {
           if (response.success && response.data?.profile) {
             setProfile(response.data.profile);
           }
+        } else if (user?.role === "admin") {
+          const response = await adminApi.getProfile();
+          if (response.success && response.data?.profile) {
+            setProfile(response.data.profile);
+          }
         }
       } catch (error) {
         console.error("Failed to fetch profile:", error);
@@ -68,7 +74,12 @@ const ProfileFlowPage = ({ title, steps, totalSteps, initialProfile }) => {
     setStatus(null);
 
     try {
-      const submitApi = user?.role === "doctor" ? doctorApi : patientApi;
+      const submitApi =
+        user?.role === "doctor"
+          ? doctorApi
+          : user?.role === "admin"
+            ? adminApi
+            : patientApi;
       const currentValues = profile[stepConfig.key];
       let payload = currentValues;
 
@@ -82,19 +93,25 @@ const ProfileFlowPage = ({ title, steps, totalSteps, initialProfile }) => {
       const response =
         user?.role === "doctor"
           ? await submitApi.updateDoctorProfile(payload)
-          : await submitApi.updatePatientProfile(payload);
+          : user?.role === "admin"
+            ? await submitApi.updateProfile(payload)
+            : await submitApi.updatePatientProfile(payload);
 
       if (response?.data?.profile) {
         setProfile(response.data.profile);
       }
 
-      try {
-        const updatedUser = await authApi.getMe();
-        if (updatedUser?.data?.user) {
-          dispatch(setAuthUser(updatedUser.data.user));
+      if (response?.data?.user) {
+        dispatch(setAuthUser(response.data.user));
+      } else {
+        try {
+          const updatedUser = await authApi.getMe();
+          if (updatedUser?.data?.user) {
+            dispatch(setAuthUser(updatedUser.data.user));
+          }
+        } catch (authError) {
+          // Keep profile save successful even if auth refresh fails.
         }
-      } catch (authError) {
-        // Keep profile save successful even if auth refresh fails.
       }
 
       if (stepConfig.key === "personalInfo") {
