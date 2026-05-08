@@ -1,14 +1,44 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import { doctorApi } from "@/services/doctor.api";
+import { patientApi } from "@/services/patient.api";
 
 const defaultWidth = "w-full max-w-[90%] md:w-[75%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%] mx-auto";
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
 
 const ProfileFlowPage = ({ title, steps, totalSteps, initialProfile }) => {
+  const { user } = useSelector((state) => state.auth);
   const [currentStep, setCurrentStep] = React.useState(1);
   const [profile, setProfile] = React.useState(() => clone(initialProfile));
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   const [status, setStatus] = React.useState(null);
+
+  // Fetch real profile data on mount
+  React.useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        if (user?.role === "doctor") {
+          const response = await doctorApi.getDoctorProfile();
+          if (response.success && response.data?.profile) {
+            setProfile(response.data.profile);
+          }
+        } else if (user?.role === "patient") {
+          const response = await patientApi.getPatientProfile();
+          if (response.success && response.data?.profile) {
+            setProfile(response.data.profile);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch profile:", error);
+        // Keep initialProfile as fallback
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfileData();
+  }, [user?.role]);
 
   const progressPercentage = ((currentStep - 1) / (totalSteps - 1 || 1)) * 100;
 
@@ -35,6 +65,17 @@ const ProfileFlowPage = ({ title, steps, totalSteps, initialProfile }) => {
       setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
