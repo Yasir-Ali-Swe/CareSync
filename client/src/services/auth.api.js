@@ -13,6 +13,10 @@ export const authApi = {
     const response = await api.post("/auth/logout");
     return response.data;
   },
+  refreshToken: async () => {
+    const response = await api.post("/auth/refresh-token");
+    return response.data;
+  },
   verifyEmail: async (token) => {
     const response = await api.get(`/auth/verify-email/${token}`);
     return response.data;
@@ -71,3 +75,5 @@ export const getDashboardRouteByRole = (role) => {
       return "/";
   }
 };
+
+
