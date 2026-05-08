@@ -14,6 +14,20 @@ import {
 } from "../utils/constants.js";
 import { emailService } from "../services/email.service.js";
 
+// ── Appointment Status State Machine ──────────────────────────────────────
+// Define valid state transitions for appointment lifecycle
+const VALID_TRANSITIONS = {
+  [APPOINTMENT_STATUS.PENDING]: [APPOINTMENT_STATUS.UPCOMING, APPOINTMENT_STATUS.CANCELLED],
+  [APPOINTMENT_STATUS.UPCOMING]: [APPOINTMENT_STATUS.COMPLETED, APPOINTMENT_STATUS.CANCELLED],
+  [APPOINTMENT_STATUS.COMPLETED]: [], // Terminal state
+  [APPOINTMENT_STATUS.CANCELLED]: [], // Terminal state
+};
+
+const isValidTransition = (currentStatus, newStatus) => {
+  const allowedTransitions = VALID_TRANSITIONS[currentStatus] || [];
+  return allowedTransitions.includes(newStatus);
+};
+
 const getOrCreateConversation = async (userA, userB) => {
   const participants = [String(userA), String(userB)].sort();
 
@@ -227,17 +241,35 @@ export const doctorUpdateAppointmentStatus = asyncHandler(async (req, res) => {
     return res.status(403).json({ success: false, message: "Forbidden" });
   }
 
-  const previousStatus = appointment.status;
+  // ── Validate state transition via state machine ──
+  const currentStatus = appointment.status;
+  if (!isValidTransition(currentStatus, status)) {
+    return res.status(409).json({
+      success: false,
+      message: `Cannot transition appointment from ${currentStatus} to ${status}`,
+    });
+  }
+
   appointment.status = status;
   if (status === APPOINTMENT_STATUS.CANCELLED) {
     appointment.cancelledAt = new Date();
   }
   await appointment.save();
 
-  const notificationType = status === "completed" ? NOTIFICATION_TYPES.APPOINTMENT_CONFIRMED : NOTIFICATION_TYPES.APPOINTMENT_CANCELLED;
+  // ── Use correct notification type based on status ──
+  let notificationType;
+  let statusLabel;
+
+  if (status === APPOINTMENT_STATUS.COMPLETED) {
+    notificationType = NOTIFICATION_TYPES.APPOINTMENT_COMPLETED;
+    statusLabel = "completed";
+  } else if (status === APPOINTMENT_STATUS.CANCELLED) {
+    notificationType = NOTIFICATION_TYPES.APPOINTMENT_CANCELLED;
+    statusLabel = "cancelled";
+  }
+
   const patientName = appointment.patient?.fullName || "Patient";
   const doctorName = appointment.doctor?.fullName || "Doctor";
-  const statusLabel = status === "completed" ? "completed" : "cancelled";
 
   await Notification.create({
     user: appointment.patient._id,
