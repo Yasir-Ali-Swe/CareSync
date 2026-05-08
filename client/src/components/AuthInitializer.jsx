@@ -28,14 +28,11 @@ const AuthInitializer = () => {
           dispatch(clearAuth());
           return;
         }
-
-        const isOnboardingCompleted = await authApi.getOnboardingStatus(apiUser.role);
-
         dispatch(
           setAuthUser({
             ...apiUser,
             id: apiUser.id || apiUser._id,
-            isOnboardingCompleted,
+            isOnboardingCompleted: Boolean(apiUser.isOnboardingCompleted),
           }),
         );
       } catch (error) {
