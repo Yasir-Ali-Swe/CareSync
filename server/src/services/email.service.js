@@ -30,10 +30,14 @@ const sendMail = async ({ to, subject, html, text }) => {
       html,
       text,
     });
-    console.log(`Email sent to ${to} | subject: ${subject} | messageId: ${info.messageId}`);
+    if (env.NODE_ENV !== "production") {
+      console.log(`Email sent to ${to} | subject: ${subject} | messageId: ${info.messageId}`);
+    }
     return info;
   } catch (error) {
-    console.error(`Email failed to ${to} | subject: ${subject}`, error);
+    if (env.NODE_ENV !== "production") {
+      console.error(`Email failed to ${to} | subject: ${subject}`, error);
+    }
     throw error;
   }
 };
