@@ -2,7 +2,16 @@ import { api } from "@/lib/axios";
 
 export const doctorApi = {
   submitOnboarding: async (data) => {
-    const response = await api.patch("/doctor/onboarding", data);
+    const config = {};
+    
+    // If data is FormData, set appropriate headers
+    if (data instanceof FormData) {
+      config.headers = {
+        "Content-Type": "multipart/form-data",
+      };
+    }
+    
+    const response = await api.patch("/doctor/onboarding", data, config);
     return response.data;
   },
   getDoctorProfile: async () => {
