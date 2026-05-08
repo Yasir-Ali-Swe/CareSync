@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { doctorApi } from "@/services/doctor.api";
+import toast from "react-hot-toast";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,9 +28,32 @@ const ClinicDetailsStep = ({ currentStep }) => {
       contactNumber: "",
     },
   ]);
+  const [isLoading, setIsLoading] = useState(false);
+  const isStepValid = clinics.every(
+    (clinic) =>
+      clinic.name &&
+      clinic.address?.line1 &&
+      clinic.address?.city &&
+      clinic.address?.province &&
+      clinic.type,
+  );
 
-  const handleNext = () => {
-    navigate(`/doctor-onboarding/${currentStep + 1}`);
+  const handleNext = async () => {
+    try {
+      setIsLoading(true);
+      if (!isStepValid) {
+        toast.error("Please complete all required clinic fields");
+        setIsLoading(false);
+        return;
+      }
+
+      await doctorApi.submitOnboarding({ clinics });
+      navigate(`/doctor-onboarding/${currentStep + 1}`);
+    } catch (error) {
+      toast.error("Failed to save clinic details");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handlePrevious = () => {
@@ -212,8 +237,8 @@ const ClinicDetailsStep = ({ currentStep }) => {
           Previous
         </Button>
 
-        <Button type="button" onClick={handleNext} disabled={currentStep === 4} className={"rounded-2xl"}>
-          Next
+        <Button type="button" onClick={handleNext} disabled={!isStepValid || isLoading} className={"rounded-2xl"}>
+          {isLoading ? "Saving..." : "Next"}
         </Button>
       </div>
     </div>
