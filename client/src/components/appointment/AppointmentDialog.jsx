@@ -139,7 +139,7 @@ function BookAppointmentDialog({ doc, children }) {
       doctorId: doc?.id,
       dateTime: appointmentDateTime.toISOString(),
       appointmentType: "in-person",
-      paymentMethod: paymentMethod === "Pay Online" ? "online" : "cash",
+      paymentMethod: paymentMethod,
       notes: "",
     });
   };
