@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { patientApi } from "@/services/patient.api";
+import toast from "react-hot-toast";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,11 +19,43 @@ import { Textarea } from "@/components/ui/textarea";
 
 const ContactInfoStep = ({ currentStep }) => {
   const navigate = useNavigate();
+  const [primaryPhone, setPrimaryPhone] = useState("");
+  const [secondaryPhone, setSecondaryPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [province, setProvince] = useState("");
+  const [city, setCity] = useState("");
 
-  const handleNext = () => {
-    navigate(`/patient-onboarding/${currentStep + 1}`);
+  const [isLoading, setIsLoading] = useState(false);
+  const isStepValid = Boolean(primaryPhone.trim() && address.trim());
+
+  const handleNext = async () => {
+    try {
+      setIsLoading(true);
+
+      if (!primaryPhone || !address) {
+        toast.error("Please fill in all required fields");
+        setIsLoading(false);
+        return;
+      }
+
+      // Save this step's data
+      await patientApi.submitOnboarding({
+        contactInfo: {
+          primaryPhone: primaryPhone.trim(),
+          secondaryPhone: secondaryPhone.trim(),
+          address: address.trim(),
+          province,
+          city: city.trim(),
+        },
+      });
+
+      navigate(`/patient-onboarding/${currentStep + 1}`);
+    } catch (error) {
+      toast.error("Failed to save contact information");
+    } finally {
+      setIsLoading(false);
+    }
   };
-
   const handlePrevious = () => {
     navigate(`/patient-onboarding/${currentStep - 1}`);
   };
@@ -39,6 +73,8 @@ const ContactInfoStep = ({ currentStep }) => {
             placeholder="0330-0000000"
             type="tel"
             className={"rounded-2xl"}
+            value={primaryPhone}
+            onChange={(e) => setPrimaryPhone(e.target.value)}
           />
         </div>
 
@@ -52,6 +88,8 @@ const ContactInfoStep = ({ currentStep }) => {
             placeholder="0330-0000000"
             type="tel"
             className={"rounded-2xl"}
+            value={secondaryPhone}
+            onChange={(e) => setSecondaryPhone(e.target.value)}
           />
         </div>
 
@@ -62,6 +100,8 @@ const ContactInfoStep = ({ currentStep }) => {
             id="addressLine"
             placeholder="Enter your address"
             className={"rounded-2xl"}
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
           />
         </div>
 
@@ -69,7 +109,7 @@ const ContactInfoStep = ({ currentStep }) => {
         <div className="flex gap-5">
           <div className="space-y-2">
             <Label>Province</Label>
-            <Select>
+            <Select value={province} onValueChange={setProvince}>
               <SelectTrigger className={"rounded-2xl"}>
                 <SelectValue placeholder="Select Province" />
               </SelectTrigger>
@@ -91,6 +131,8 @@ const ContactInfoStep = ({ currentStep }) => {
               id="city"
               placeholder="Enter your city"
               className={"rounded-2xl"}
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
             />
           </div>
         </div>
@@ -110,10 +152,10 @@ const ContactInfoStep = ({ currentStep }) => {
           <Button
             type="button"
             onClick={handleNext}
-            disabled={currentStep === 4}
+            disabled={!isStepValid || isLoading}
             className={"rounded-2xl"}
           >
-            Next
+            {isLoading ? "Saving..." : "Next"}
           </Button>
         </div>
       </form>
