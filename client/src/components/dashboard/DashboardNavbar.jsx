@@ -17,7 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { getDashboardRoutes } from "@/lib/DasboardRotes";
+import { getDashboardRoutes } from "@/lib/DashboardRoutes";
 import { useDispatch, useSelector } from "react-redux";
 import { authApi } from "@/services/auth.api";
 import { clearAuth } from "@/store/slices/authSlice";
