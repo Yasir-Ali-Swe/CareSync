@@ -17,22 +17,60 @@ const markOnboardingCompleteIfEligible = (profile) => {
 };
 
 export const upsertPatientOnboarding = asyncHandler(async (req, res) => {
-  const updates = req.body || {};
+  try {
+    // Parse FormData fields
+    let updates = {};
+    if (req.body.personalInfo) {
+      try {
+        updates = JSON.parse(req.body.personalInfo);
+        if (typeof updates === 'object') {
+          updates = { personalInfo: updates };
+        }
+      } catch (e) {
+        updates = req.body;
+      }
+    } else {
+      updates = req.body || {};
+    }
 
-  let profile = await PatientProfile.findOne({ user: req.user._id });
-  if (!profile) {
-    profile = await PatientProfile.create({
-      user: req.user._id,
-      personalInfo: {
-        fullName: req.user.fullName,
-        email: req.user.email,
-      },
-    });
+    // Handle file upload if present
+    let avatarUrl = null;
+    if (req.file) {
+      const uploaded = await cloudinaryService.uploadImage(req.file.buffer, "caresync/patient/avatars");
+      avatarUrl = uploaded.secure_url;
+      if (updates.personalInfo) {
+        updates.personalInfo.avatarUrl = avatarUrl;
+      } else {
+        updates = { personalInfo: { avatarUrl } };
+      }
+    }
+
+    let profile = await PatientProfile.findOne({ user: req.user._id });
+    if (!profile) {
+      profile = await PatientProfile.create({
+        user: req.user._id,
+        personalInfo: {
+          fullName: req.user.fullName,
+          email: req.user.email,
+        },
+      });
+    }
+
+    profile.set(updates);
+    markOnboardingCompleteIfEligible(profile);
+    await profile.save();
+
+    // Update User.profileImageUrl if avatar was uploaded
+    if (avatarUrl) {
+      await User.findByIdAndUpdate(
+        req.user._id,
+        { profileImageUrl: avatarUrl },
+        { new: true }
+      );
+    }
+  } catch (error) {
+    throw error;
   }
-
-  profile.set(updates);
-  markOnboardingCompleteIfEligible(profile);
-  await profile.save();
 
   return res.status(200).json({
     success: true,
