@@ -32,12 +32,15 @@ import { adminApi } from "@/services/admin.api";
 
 const UserManagement = () => {
   const [filter, setFilter] = useState("doctor");
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 20;
 
   const queryClient = useQueryClient();
 
   const usersQuery = useQuery({
-    queryKey: ["admin-users", filter],
-    queryFn: () => adminApi.getUsers({ role: filter }),
+    queryKey: ["admin-users", filter, currentPage],
+    queryFn: () => adminApi.getUsers({ role: filter, page: currentPage, limit: PAGE_SIZE }),
+    keepPreviousData: true,
   });
 
   const updateUserStatusMutation = useMutation({
@@ -206,6 +209,37 @@ const UserManagement = () => {
           />
         }
       />
+
+      {/* Pagination Controls */}
+      {usersQuery.data?.data?.pagination && (
+        <div className="flex items-center justify-center gap-4 border-t pt-4">
+          <Button
+            variant="outline"
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={
+              !usersQuery.data?.data?.pagination?.hasPrevPage || usersQuery.isLoading
+            }
+          >
+            Previous
+          </Button>
+
+          <span className="text-sm text-muted-foreground">
+            Page {usersQuery.data?.data?.pagination?.page} of{" "}
+            {usersQuery.data?.data?.pagination?.totalPages} (
+            {usersQuery.data?.data?.pagination?.total} total users)
+          </span>
+
+          <Button
+            variant="outline"
+            onClick={() => setCurrentPage((prev) => prev + 1)}
+            disabled={
+              !usersQuery.data?.data?.pagination?.hasNextPage || usersQuery.isLoading
+            }
+          >
+            Next
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
