@@ -34,10 +34,6 @@ export const authApi = {
     return response.data;
   },
   getOnboardingStatus: async (role) => {
-    if (role === "admin") {
-      return true;
-    }
-
     try {
       if (role === "patient") {
         await api.get("/patient/profile");
@@ -46,6 +42,11 @@ export const authApi = {
 
       if (role === "doctor") {
         await api.get("/doctor/profile");
+        return true;
+      }
+
+      if (role === "admin") {
+        await api.get("/admin/profile");
         return true;
       }
 
