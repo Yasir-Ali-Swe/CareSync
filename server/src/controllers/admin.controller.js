@@ -215,6 +215,10 @@ export const updateAdminProfile = asyncHandler(async (req, res) => {
     };
   }
 
+  if (hasDirectContactInfo || user.adminProfile?.onboardingCompleted) {
+    adminProfile.onboardingCompleted = true;
+  }
+
   user.profileImageUrl = avatarUrl;
   user.adminProfile = adminProfile;
   await user.save();
