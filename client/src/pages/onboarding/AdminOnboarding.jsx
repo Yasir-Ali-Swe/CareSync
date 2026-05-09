@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
+import { useDispatch } from "react-redux";
 import { Check, User, Phone } from "lucide-react";
 import { adminApi } from "@/services/admin.api";
+import { authApi } from "@/services/auth.api";
+import { setAuthUser } from "@/store/slices/authSlice";
 
 const AdminOnboarding = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     personalInfo: {
@@ -25,9 +29,24 @@ const AdminOnboarding = () => {
 
   const updateProfileMutation = useMutation({
     mutationFn: (data) => adminApi.updateProfile(data),
-    onSuccess: () => {
+    onSuccess: async () => {
       if (currentStep === 2) {
-        navigate("/dashboard/admin/stats");
+        try {
+          const refreshed = await authApi.getMe();
+          if (refreshed?.data?.user) {
+            dispatch(
+              setAuthUser({
+                ...refreshed.data.user,
+                id: refreshed.data.user.id || refreshed.data.user._id,
+                isOnboardingCompleted: Boolean(refreshed.data.user.isOnboardingCompleted),
+              }),
+            );
+          }
+        } catch (error) {
+          // Keep the save successful even if auth refresh fails.
+        }
+
+        navigate("/admin/dashboard");
       } else {
         setCurrentStep(2);
       }
