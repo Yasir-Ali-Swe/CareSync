@@ -6,12 +6,10 @@ import { getDashboardRouteByRole } from "@/services/auth.api";
 const PublicRoute = ({ children }) => {
   const { isAuthenticated, loading, user, role } = useSelector((state) => state.auth);
 
-  if (loading) {
-    return null;
-  }
-
+  // Allow rendering of public pages (like login) while auth is loading
+  // Only redirect if already authenticated
   if (isAuthenticated) {
-    if (!user?.isOnboardingCompleted && role !== "admin") {
+    if (!user?.isOnboardingCompleted) {
       return <Navigate to="/onboarding" replace />;
     }
 
