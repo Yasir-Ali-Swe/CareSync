@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  createUser,
   getAdminProfile,
   getAdminStats,
   listUsers,
@@ -15,6 +16,7 @@ const router = Router();
 
 router.use(protect, allowRoles(ROLES.ADMIN));
 
+router.post("/users", createUser);
 router.get("/profile", getAdminProfile);
 router.patch("/profile", upload.single("avatar"), updateAdminProfile);
 router.get("/users", listUsers);
