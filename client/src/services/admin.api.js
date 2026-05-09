@@ -18,7 +18,10 @@ export const adminApi = {
     return response.data;
   },
   getUsers: async (params = {}) => {
-    const response = await api.get("/admin/users", { params });
+    const { page = 1, limit = 20, ...rest } = params;
+    const response = await api.get("/admin/users", {
+      params: { page, limit, ...rest },
+    });
     return response.data;
   },
 };
