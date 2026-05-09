@@ -484,6 +484,10 @@ export const me = asyncHandler(async (req, res) => {
     isOnboardingCompleted = Boolean(profile?.onboardingCompleted);
   }
 
+  if (user.role === "admin") {
+    isOnboardingCompleted = Boolean(user.adminProfile?.onboardingCompleted);
+  }
+
   return res.status(200).json({
     success: true,
     data: {
