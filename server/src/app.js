@@ -6,7 +6,10 @@ import cookieParser from "cookie-parser";
 import { env } from "./config/env.js";
 import { mongoSanitizeMiddleware } from "./utils/validators.js";
 import { globalRateLimit } from "./middlewares/rateLimit.middleware.js";
-import { errorHandler, notFoundHandler } from "./middlewares/error.middleware.js";
+import {
+  errorHandler,
+  notFoundHandler,
+} from "./middlewares/error.middleware.js";
 
 import authRoutes from "./routes/auth.routes.js";
 import patientRoutes from "./routes/patient.routes.js";
@@ -19,7 +22,9 @@ import notificationRoutes from "./routes/notification.routes.js";
 const app = express();
 
 const normalizeOrigin = (value) => String(value || "").replace(/\/$/, "");
-const allowedOrigins = new Set([normalizeOrigin(env.FRONTEND_URL)].filter(Boolean));
+const allowedOrigins = new Set(
+  [normalizeOrigin(env.FRONTEND_URL)].filter(Boolean),
+);
 
 app.use(helmet());
 app.use(
@@ -44,7 +49,6 @@ app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(mongoSanitizeMiddleware);
-// app.use(globalRateLimit);
 
 app.get("/health", (req, res) => {
   res.status(200).json({ success: true, message: "Server is healthy" });
