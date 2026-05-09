@@ -1,9 +1,18 @@
 import { Appointment } from "../models/appointment.model.js";
 import { DoctorProfile } from "../models/doctorProfile.model.js";
+import { PatientProfile } from "../models/patientProfile.model.js";
 import { User } from "../models/user.model.js";
 import { asyncHandler } from "../middlewares/error.middleware.js";
 import { cloudinaryService } from "../services/cloudinary.service.js";
+import { emailService } from "../services/email.service.js";
+import { tokenService } from "../services/token.service.js";
 import { ROLES, USER_STATUS } from "../utils/constants.js";
+import {
+  assertRequiredFields,
+  isStrongPassword,
+  isValidEmail,
+} from "../utils/validators.js";
+import jwt from "jsonwebtoken";
 
 const getDefaultAdminProfile = () => ({
   personalInfo: {
@@ -138,7 +147,7 @@ export const getAdminProfile = asyncHandler(async (req, res) => {
       profile: buildAdminProfile(user),
       user: {
         ...user.toObject(),
-        isOnboardingCompleted: true,
+        isOnboardingCompleted: Boolean(user.adminProfile?.onboardingCompleted),
       },
     },
   });
@@ -217,7 +226,7 @@ export const updateAdminProfile = asyncHandler(async (req, res) => {
       profile: buildAdminProfile(user),
       user: {
         ...user.toObject(),
-        isOnboardingCompleted: true,
+          isOnboardingCompleted: Boolean(user.adminProfile?.onboardingCompleted),
       },
     },
   });
@@ -261,6 +270,109 @@ export const getAdminStats = asyncHandler(async (req, res) => {
       },
       appointmentStatusBreakdown,
       specializationDistribution,
+    },
+  });
+});
+
+export const createUser = asyncHandler(async (req, res) => {
+  const { fullName, email, password, role } = req.body;
+
+  const required = assertRequiredFields(req.body, [
+    "fullName",
+    "email",
+    "password",
+    "role",
+  ]);
+  if (!required.isValid) {
+    return res.status(400).json({
+      success: false,
+      message: `Missing required fields: ${required.missing.join(", ")}`,
+    });
+  }
+
+  if (!isValidEmail(email)) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid email format" });
+  }
+
+  if (!isStrongPassword(password)) {
+    return res.status(400).json({
+      success: false,
+      message:
+        "Password must be at least 8 chars and include upper, lower, and number",
+    });
+  }
+
+  if (!Object.values(ROLES).includes(role)) {
+    return res.status(400).json({ success: false, message: "Invalid role" });
+  }
+
+  const existing = await User.findOne({ email: email.toLowerCase() });
+  if (existing) {
+    return res
+      .status(409)
+      .json({ success: false, message: "Email already registered" });
+  }
+
+  const user = await User.create({
+    fullName,
+    email: email.toLowerCase(),
+    password,
+    role,
+    status: USER_STATUS.ACTIVE,
+  });
+
+  // Initialize role-specific profile and mark email verified for admin-initiated creation
+  if (role === ROLES.ADMIN) {
+    user.adminProfile = getDefaultAdminProfile();
+    // ensure onboarding flag exists and is false
+    user.adminProfile.onboardingCompleted = false;
+  }
+
+  if (role === ROLES.PATIENT) {
+    await PatientProfile.updateOne(
+      { user: user._id },
+      {
+        $setOnInsert: {
+          user: user._id,
+          personalInfo: { fullName: user.fullName, email: user.email },
+        },
+      },
+      { upsert: true },
+    );
+  }
+
+  if (role === ROLES.DOCTOR) {
+    await DoctorProfile.updateOne(
+      { user: user._id },
+      {
+        $setOnInsert: {
+          user: user._id,
+          personalInfo: { fullName: user.fullName, email: user.email },
+        },
+      },
+      { upsert: true },
+    );
+  }
+
+  // Admin-created users are considered email-verified immediately
+  user.isEmailVerified = true;
+
+  await user.save();
+  // Admin-created users are considered verified and do not receive verification email.
+
+  return res.status(201).json({
+    success: true,
+    message: "User created successfully",
+    data: {
+      user: {
+        _id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+      },
     },
   });
 });
