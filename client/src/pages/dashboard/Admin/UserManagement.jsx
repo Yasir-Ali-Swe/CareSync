@@ -37,6 +37,44 @@ const UserManagement = () => {
 
   const queryClient = useQueryClient();
 
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newUser, setNewUser] = useState({ fullName: "", email: "", password: "", role: "patient" });
+
+  const createUserMutation = useMutation({
+    mutationFn: (payload) => adminApi.createUser(payload),
+    onSuccess: async () => {
+      setShowCreateModal(false);
+      setNewUser({ fullName: "", email: "", password: "", role: "patient" });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
+        queryClient.invalidateQueries({ queryKey: ["admin-stats"] }),
+      ]);
+      toast.success("User created");
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Unable to create user.");
+    },
+  });
+
+  const handleCreateUser = () => {
+    // Basic validation
+    if (!newUser.fullName || !newUser.email || !newUser.password) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newUser.email)) {
+      toast.error("Please provide a valid email address");
+      return;
+    }
+    if (newUser.password.length < 8) {
+      toast.error("Password must be at least 8 characters");
+      return;
+    }
+
+    createUserMutation.mutate(newUser);
+  };
+
   const usersQuery = useQuery({
     queryKey: ["admin-users", filter, currentPage],
     queryFn: () => adminApi.getUsers({ role: filter, page: currentPage, limit: PAGE_SIZE }),
@@ -126,8 +164,8 @@ const UserManagement = () => {
                   <DropdownMenuSeparator />
                 </>
               ) : null}
-              <DropdownMenuItem
-                disabled={row.status !== "active" || updateUserStatusMutation.isPending}
+                <DropdownMenuItem
+                disabled={row.status !== "active" || updateUserStatusMutation.isLoading}
                 onSelect={(event) => {
                   event.preventDefault();
                   if (row.status === "active") {
@@ -139,7 +177,7 @@ const UserManagement = () => {
                 Suspend User
               </DropdownMenuItem>
               <DropdownMenuItem
-                disabled={row.status === "active" || updateUserStatusMutation.isPending}
+                disabled={row.status === "active" || updateUserStatusMutation.isLoading}
                 onSelect={(event) => {
                   event.preventDefault();
                   if (row.status !== "active") {
@@ -155,7 +193,7 @@ const UserManagement = () => {
         ),
       },
     ];
-  }, [handleStatusChange, updateUserStatusMutation.isPending]);
+  }, [handleStatusChange, updateUserStatusMutation.isLoading]);
 
   if (usersQuery.isLoading) {
     return (
@@ -195,6 +233,46 @@ const UserManagement = () => {
           </Select>
         </div>
       </div>
+
+      {/* Create User Button + Modal */}
+      <div className="flex justify-end">
+        <Button onClick={() => setShowCreateModal(true)}>Create User</Button>
+      </div>
+
+      {showCreateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setShowCreateModal(false)} />
+          <div className="bg-white rounded-lg p-6 z-10 w-full max-w-md">
+            <h2 className="text-lg font-semibold mb-4">Create User</h2>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm mb-1">Full Name</label>
+                <input className="w-full border px-3 py-2" value={newUser.fullName} onChange={(e)=>setNewUser({...newUser, fullName: e.target.value})} />
+              </div>
+              <div>
+                <label className="block text-sm mb-1">Email</label>
+                <input className="w-full border px-3 py-2" value={newUser.email} onChange={(e)=>setNewUser({...newUser, email: e.target.value})} />
+              </div>
+              <div>
+                <label className="block text-sm mb-1">Password</label>
+                <input type="password" className="w-full border px-3 py-2" value={newUser.password} onChange={(e)=>setNewUser({...newUser, password: e.target.value})} />
+              </div>
+              <div>
+                <label className="block text-sm mb-1">Role</label>
+                <select className="w-full border px-3 py-2" value={newUser.role} onChange={(e)=>setNewUser({...newUser, role: e.target.value})}>
+                  <option value="patient">Patient</option>
+                  <option value="doctor">Doctor</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 mt-4">
+              <Button variant="outline" onClick={() => setShowCreateModal(false)}>Cancel</Button>
+              <Button onClick={() => handleCreateUser()} disabled={createUserMutation.isLoading}>Create</Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <DataTableCard
         title="Platform Users"
