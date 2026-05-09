@@ -33,10 +33,22 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+    // Prevent infinite loops by:
+    // 1. Check if _retry flag is set (request already retried)
+    // 2. Ensure it's a 401 error (unauthorized)
+    // 3. Exclude refresh endpoint from retry logic (skipRefreshRetry flag)
+    if (
+      error.response?.status === 401 &&
+      originalRequest &&
+      !originalRequest._retry &&
+      !originalRequest.skipRefreshRetry
+    ) {
       originalRequest._retry = true;
+
       try {
         const auth = await getAuthApi();
+        
+        // Mark refresh request to skip retry logic if it also fails with 401
         const refreshResponse = await auth.refreshToken();
         const newAccessToken = refreshResponse?.data?.accessToken;
 
@@ -46,6 +58,7 @@ api.interceptors.response.use(
           return api(originalRequest);
         }
       } catch (refreshError) {
+        // Refresh failed - logout and redirect to login
         localStorage.removeItem("accessToken");
         window.location.href = "/login";
         return Promise.reject(refreshError);
