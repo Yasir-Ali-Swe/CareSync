@@ -7,6 +7,7 @@ import VerifyEmail from "@/pages/auth/VerifyEmail";
 import ResetPassword from "@/pages/auth/ForgetPassword";
 import PatientOnboarding from "./pages/onboarding/PatientOnboarding";
 import DoctorOnboarding from "./pages/onboarding/DoctorOnboarding";
+import AdminOnboarding from "./pages/onboarding/AdminOnboarding";
 import Home from "./pages/public/Home";
 import Contact from "./pages/public/Contact";
 import PublicLayout from "@/components/layouts/PublicLayout";
@@ -208,6 +209,16 @@ const App = () => {
             <ProtectedRoute>
               <OnboardingGuard requireIncomplete>
                 <DoctorOnboarding />
+              </OnboardingGuard>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin-onboarding/:step"
+          element={
+            <ProtectedRoute>
+              <OnboardingGuard requireIncomplete>
+                <AdminOnboarding />
               </OnboardingGuard>
             </ProtectedRoute>
           }
