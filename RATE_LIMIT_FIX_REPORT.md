@@ -1,72 +1,97 @@
 # RATE LIMIT FIX REPORT
 
 **Date**: 2026-05-09  
-**Scope**: Login rate limiter audit and fix  
-**Status**: Fixed and validated
-
-## Root Cause
-
-The login limiter was effectively **IP-only** and shared across auth flows. That caused:
-
-- the same bucket to be reused across different browsers on the same network
-- different accounts on the same IP to be blocked together
-- successful login attempts to continue counting toward the limit
-- client IPs behind a proxy to be resolved incorrectly without trusted proxy configuration
+**Scope**: Rate-limit architecture improvement  
+**Status**: Implemented and validated
 
 ## Files Changed
 
-- [server/src/middlewares/rateLimit.middleware.js](server/src/middlewares/rateLimit.middleware.js)
-- [server/src/routes/auth.routes.js](server/src/routes/auth.routes.js)
 - [server/src/app.js](server/src/app.js)
+- [server/src/routes/auth.routes.js](server/src/routes/auth.routes.js)
+- [server/src/middlewares/rateLimit.middleware.js](server/src/middlewares/rateLimit.middleware.js)
 
-## Exact Fix
+## Exact Changes
 
-### 1. Added a login-specific rate limiter
-A new `loginRateLimit` was added for the login route only.
+### 1. Global limiter excluded from auth routes
+The global limiter was moved to apply only after the auth route mount in [server/src/app.js](server/src/app.js#L45-L56).
 
-### 2. Made the limiter account-aware
-The limiter key is now built from:
+Result:
+- `/api/auth/login`
+- `/api/auth/register`
+- `/api/auth/forgot-password`
+- `/api/auth/reset-password`
 
-- client IP
-- normalized login email
+are no longer throttled by the app-wide limiter.
 
-This isolates attempts by account while still keeping IP-based protection.
+### 2. Login uses dual-layer protection in the correct order
+In [server/src/routes/auth.routes.js](server/src/routes/auth.routes.js#L20-L28), login middleware order is now:
 
-### 3. Enabled successful-request skipping
-`skipSuccessfulRequests: true` ensures successful logins do not consume attempts.
+1. account limiter
+2. IP limiter
+3. controller
 
-### 4. Enabled trusted proxy handling
-`app.set("trust proxy", 1)` was added so `req.ip` resolves correctly when the server is behind a proxy.
+### 3. Login thresholds updated
+In [server/src/middlewares/rateLimit.middleware.js](server/src/middlewares/rateLimit.middleware.js#L29-L44):
 
-### 5. Kept non-login auth routes separate
-`/register`, `/forgot-password`, and `/reset-password` still use the auth limiter, but `/login` now uses the dedicated login limiter.
+- IP-based login limiter: `max = 100`, `windowMs = 15 minutes`, `skipSuccessfulRequests = true`
+- account-based login limiter: `max = 5`, `windowMs = 15 minutes`, `skipSuccessfulRequests = true`
 
-## Why This Fix Works
+### 4. Unknown-email collision removed
+If login email is missing, the account limiter key now becomes `req.ip + ":unknown-email"` instead of a shared static fallback.
 
-- **Different accounts**: isolated because the key includes email
-- **Different IPs**: isolated because the key includes IP and trusted proxy resolution is enabled
-- **Successful login**: does not increment the limiter because successful requests are skipped
-- **Window expiration**: still 15 minutes, with the default in-memory store, so counters expire automatically after `windowMs`
+## Why This Is Safer
+
+This version is safer because it separates concerns:
+
+- the global limiter protects the rest of the API without interfering with auth flows
+- the account limiter remains the primary brute-force defense for a single identity
+- the IP limiter remains a secondary abuse-control signal for source-network spraying
+- successful logins do not consume account attempts
+- missing-email payloads no longer collapse into one shared static bucket
+
+## Before vs After Behavior
+
+### Before
+- auth routes were also subject to the global limiter
+- login used a combined IP+email bucket
+- missing email collapsed into a shared static fallback
+- IP limiter was lower and could block normal login flow sooner
+
+### After
+- auth routes are excluded from the global limiter
+- login uses two explicit layers:
+	- account limiter first
+	- IP limiter second
+- missing email uses `req.ip + ":unknown-email"`
+- IP threshold is `100`, account threshold stays `5`
+
+## Test Scenarios
+
+### Scenario 1: Same IP, multiple emails
+Expected: IP limiter eventually blocks repeated abuse from one network source.
+
+### Scenario 2: Same email, multiple IPs
+Expected: account limiter blocks repeated password guessing for that account after 5 failed attempts.
+
+### Scenario 3: Successful login after failures
+Expected: successful login does not consume account attempts because `skipSuccessfulRequests = true` is preserved.
+
+### Scenario 4: Auth routes under normal traffic
+Expected: register / forgot-password / reset-password are not throttled by the global limiter.
+
+### Scenario 5: Window expiration
+Expected: counters reset after 15 minutes in the default in-memory store.
+
+### Scenario 6: Missing email payload
+Expected: key becomes `req.ip + ":unknown-email"`, avoiding a static shared collision bucket.
 
 ## Validation Results
 
-### Syntax validation
-Ran:
-- `node --check src/app.js`
-- `node --check src/routes/auth.routes.js`
-- `node --check src/middlewares/rateLimit.middleware.js`
+- Syntax checks passed for:
+	- [server/src/app.js](server/src/app.js)
+	- [server/src/routes/auth.routes.js](server/src/routes/auth.routes.js)
+	- [server/src/middlewares/rateLimit.middleware.js](server/src/middlewares/rateLimit.middleware.js)
 
-Result: **Passed**
+## Summary
 
-### Code-level verification
-Confirmed:
-- `windowMs` remains 15 minutes
-- `max` remains 25 attempts
-- `keyGenerator` is now explicit and account-aware
-- no persistent store is configured, so the limiter uses the default in-memory store
-- `skipSuccessfulRequests` is enabled
-- login limiter is applied only on `/api/auth/login`
-
-## Notes
-
-No unrelated files were refactored.
+The login rate-limit architecture now has clearer separation and lower false-positive risk while preserving brute-force protection.
