@@ -52,6 +52,15 @@ const buildAdminProfile = (user) => {
 
 export const listUsers = asyncHandler(async (req, res) => {
   const { role = "all", status } = req.query;
+  const page = Number(req.query.page || 1);
+  const limit = Number(req.query.limit || 20);
+
+  // Validate pagination params
+  if (page < 1 || limit < 1) {
+    return res.status(400).json({ success: false, message: "Invalid pagination parameters" });
+  }
+
+  const skip = (page - 1) * limit;
 
   const filter = {};
 
@@ -63,11 +72,32 @@ export const listUsers = asyncHandler(async (req, res) => {
     filter.status = status;
   }
 
-  const users = await User.find(filter)
-    .select("_id fullName email role status createdAt")
-    .sort({ createdAt: -1 });
+  // Fetch users and total count in parallel
+  const [users, total] = await Promise.all([
+    User.find(filter)
+      .select("_id fullName email role status createdAt")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
+    User.countDocuments(filter),
+  ]);
 
-  return res.status(200).json({ success: true, data: { users } });
+  const totalPages = Math.ceil(total / limit);
+
+  return res.status(200).json({
+    success: true,
+    data: {
+      users,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
+    },
+  });
 });
 
 export const updateUserStatus = asyncHandler(async (req, res) => {
