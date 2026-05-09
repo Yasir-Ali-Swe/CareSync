@@ -17,6 +17,7 @@ import chatRoutes from "./routes/chat.routes.js";
 import notificationRoutes from "./routes/notification.routes.js";
 
 const app = express();
+app.set("trust proxy", 1);
 
 const normalizeOrigin = (value) => String(value || "").replace(/\/$/, "");
 const allowedOrigins = new Set([normalizeOrigin(env.FRONTEND_URL)].filter(Boolean));
