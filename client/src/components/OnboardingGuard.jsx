@@ -14,13 +14,6 @@ const OnboardingGuard = ({ children, requireIncomplete = false }) => {
     return <Navigate to="/auth/login" replace />;
   }
 
-  if (role === "admin") {
-    if (requireIncomplete) {
-      return <Navigate to={getDashboardRouteByRole(role)} replace />;
-    }
-    return children;
-  }
-
   const completed = Boolean(user?.isOnboardingCompleted);
 
   if (!requireIncomplete && !completed) {
