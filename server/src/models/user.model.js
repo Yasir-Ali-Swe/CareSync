@@ -61,6 +61,7 @@ const userSchema = new mongoose.Schema(
         province: { type: String, default: "" },
         city: { type: String, default: "" },
       },
+      onboardingCompleted: { type: Boolean, default: false, index: true },
     },
     refreshTokenHash: {
       type: String,
