@@ -1,10 +1,12 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Activity,
   CalendarCheck,
   CalendarClock,
   CheckCircle2,
   MessageSquareMore,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import StatCard from "@/components/dashboard/common/StatCard";
 import BarChartCard from "@/components/dashboard/common/BarChartCard";
@@ -15,6 +17,7 @@ import StatusBadge from "@/components/dashboard/common/StatusBadge";
 import { formatDate } from "@/components/dashboard/common/dashboardUtils";
 import { useQuery } from "@tanstack/react-query";
 import { patientApi } from "@/services/patient.api";
+import { Button } from "@/components/ui/button";
 
 const METRIC_ICONS = {
   totalAppointments: CalendarCheck,
@@ -37,18 +40,23 @@ const getLastSixMonths = () => {
 };
 
 const Stats = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 20;
+
   const statsQuery = useQuery({
     queryKey: ["patient-stats"],
     queryFn: patientApi.getStats,
   });
 
   const appointmentsQuery = useQuery({
-    queryKey: ["appointments", "patient", "all"],
-    queryFn: () => patientApi.getAppointments({ status: "all" }),
+    queryKey: ["appointments", "patient", "all", currentPage],
+    queryFn: () => patientApi.getAppointments({ status: "all", page: currentPage, limit: PAGE_SIZE }),
+    keepPreviousData: true,
   });
 
   const metrics = statsQuery.data?.data?.metrics || {};
   const appointments = appointmentsQuery.data?.data?.appointments || [];
+  const pagination = appointmentsQuery.data?.data?.pagination || {};
 
   const patientStatsMetrics = [
     { key: "totalAppointments", label: "Total Appointments", value: metrics.totalAppointments ?? 0 },
@@ -173,6 +181,34 @@ const Stats = () => {
           emptyState={<p className="text-sm text-muted-foreground">No recent activity available.</p>}
         />
       </section>
+
+      {pagination.totalPages > 1 && (
+        <section className="flex items-center justify-between border-t pt-4">
+          <p className="text-sm text-muted-foreground">
+            Page {pagination.page} of {pagination.totalPages} (Total: {pagination.total} appointments)
+          </p>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!pagination.hasPrevPage || appointmentsQuery.isLoading}
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!pagination.hasNextPage || appointmentsQuery.isLoading}
+              onClick={() => setCurrentPage((p) => p + 1)}
+            >
+              Next
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
+        </section>
+      )}
     </div>
   );
 };
