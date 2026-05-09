@@ -19,7 +19,8 @@ import {
 const router = Router();
 
 router.post("/register", authRateLimit, register);
-router.post("/login", loginIpRateLimit, loginAccountRateLimit, login);
+// Login uses two layers: the account limiter is the primary guard, and the IP limiter is a secondary abuse-control signal.
+router.post("/login", loginAccountRateLimit, loginIpRateLimit, login);
 router.post("/refresh-token", refreshToken);
 router.post("/logout", logout);
 router.get("/verify-email/:token", verifyEmail);
