@@ -9,6 +9,15 @@ export const adminApi = {
     const response = await api.patch("/admin/profile", data);
     return response.data;
   },
+  // alias for backward compatibility with components calling updateAdminProfile
+  updateAdminProfile: async (data) => {
+    const response = await api.patch("/admin/profile", data);
+    return response.data;
+  },
+  createUser: async (payload) => {
+    const response = await api.post("/admin/users", payload);
+    return response.data;
+  },
   updateUserStatus: async (userId, status) => {
     const response = await api.patch(`/admin/users/${userId}/status`, { status });
     return response.data;
