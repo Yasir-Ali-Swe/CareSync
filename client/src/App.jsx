@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Login from "@/pages/auth/Login";
 import Register from "@/pages/auth/Register";
 import SendForgetPasswordRequest from "@/pages/auth/SendForgetPasswordRequest";
@@ -152,6 +152,25 @@ const App = () => {
             </PublicRoute>
           }
         />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute>
+              <OnboardingGuard>
+                <DashboardLayout />
+              </OnboardingGuard>
+            </ProtectedRoute>
+          }
+        >
+          <Route
+            index
+            element={
+              <RoleBasedRoute allowedRole="admin">
+                <AdminStats />
+              </RoleBasedRoute>
+            }
+          />
+        </Route>
         <Route
           path="/login"
           element={
