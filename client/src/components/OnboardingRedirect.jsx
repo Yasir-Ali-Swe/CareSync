@@ -13,6 +13,10 @@ const OnboardingRedirect = () => {
     return <Navigate to="/patient-onboarding/1" replace />;
   }
 
+  if (role === "admin") {
+    return <Navigate to="/admin-onboarding/1" replace />;
+  }
+
   return <Navigate to="/dashboard" replace />;
 };
 
