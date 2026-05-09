@@ -130,7 +130,7 @@ export const bookAppointment = asyncHandler(async (req, res) => {
 });
 
 export const listAppointments = asyncHandler(async (req, res) => {
-  const { status } = req.query;
+  const { status, page = 1, limit = 20 } = req.query;
 
   const query = {};
 
@@ -139,13 +139,37 @@ export const listAppointments = asyncHandler(async (req, res) => {
 
   if (status && status !== "all") query.status = status;
 
-  const appointments = await Appointment.find(query)
-    .populate("patient", "fullName email")
-    .populate("doctor", "fullName email")
-    .populate("doctorProfile", "specialization")
-    .sort({ dateTime: -1 });
+  const pageNum = parseInt(page) || 1;
+  const limitNum = parseInt(limit) || 20;
+  const skip = (pageNum - 1) * limitNum;
 
-  return res.status(200).json({ success: true, data: { appointments } });
+  const [appointments, total] = await Promise.all([
+    Appointment.find(query)
+      .populate("patient", "fullName email")
+      .populate("doctor", "fullName email")
+      .populate("doctorProfile", "specialization")
+      .sort({ dateTime: -1 })
+      .skip(skip)
+      .limit(limitNum),
+    Appointment.countDocuments(query),
+  ]);
+
+  const totalPages = Math.ceil(total / limitNum);
+
+  return res.status(200).json({
+    success: true,
+    data: {
+      appointments,
+      pagination: {
+        page: pageNum,
+        limit: limitNum,
+        total,
+        totalPages,
+        hasNextPage: pageNum < totalPages,
+        hasPrevPage: pageNum > 1,
+      },
+    },
+  });
 });
 
 export const cancelAppointment = asyncHandler(async (req, res) => {
