@@ -7,7 +7,15 @@ const getRequestIp = (req) =>
     .trim()
     .replace(/^::ffff:/, "") || "unknown-ip";
 
-const getLoginEmailKey = (req) => normalizeEmail(req.body?.email) || "unknown-email";
+const getLoginEmailKey = (req) => {
+  const email = normalizeEmail(req.body?.email);
+
+  if (email) {
+    return email;
+  }
+
+  return `${getRequestIp(req)}:unknown-email`;
+};
 
 export const globalRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -28,10 +36,11 @@ export const authRateLimit = rateLimit({
 
 export const loginIpRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 50,
+  max: 100,
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: getRequestIp,
+  skipSuccessfulRequests: true,
   message: { success: false, message: "Too many attempts, please try again later." },
 });
 
