@@ -71,7 +71,7 @@ export const getDashboardRouteByRole = (role) => {
     case "doctor":
       return "/dashboard/doctor/stats";
     case "admin":
-      return "/dashboard/admin/stats";
+      return "/admin/dashboard";
     default:
       return "/";
   }
